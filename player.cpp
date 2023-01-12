@@ -15,6 +15,7 @@
 #include "bullet.h"
 #include "debugproc.h"
 #include "meshfield.h"
+#include "stage.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -106,7 +107,7 @@ HRESULT InitPlayer(void)
 	g_Player.load = TRUE;
 	LoadModel(MODEL_PLAYER, &g_Player.model);
 
-	g_Player.pos = XMFLOAT3(100.0f, PLAYER_OFFSET_Y+50.0f, -50.0f);
+	g_Player.pos = XMFLOAT3(100.0f,PLAYER_OFFSET_Y, -50.0f);
 	g_Player.rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	g_Player.scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -197,6 +198,8 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+	XMFLOAT3 oldPos = g_Player.pos;
+
 	CAMERA *cam = GetCamera();
 
 	g_Player.spd *= 0.9f;
@@ -274,18 +277,18 @@ void UpdatePlayer(void)
 
 
 	// レイキャストして足元の高さを求める
-	XMFLOAT3 HitPosition;		// 交点
-	XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-	bool ans = RayHitField(g_Player.pos, &HitPosition, &Normal);
-	if (ans)
-	{
-		g_Player.pos.y = HitPosition.y + PLAYER_OFFSET_Y;
-	}
-	else
-	{
-		g_Player.pos.y = PLAYER_OFFSET_Y;
-		Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	}
+	//XMFLOAT3 HitPosition;		// 交点
+	//XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
+	//bool ans = RayHitField(g_Player.pos, &HitPosition, &Normal);
+	//if (ans)
+	//{
+	//	g_Player.pos.y = HitPosition.y + PLAYER_OFFSET_Y;
+	//}
+	//else
+	//{
+	//	g_Player.pos.y = PLAYER_OFFSET_Y;
+	//	Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	//}
 
 
 	// 弾発射処理
@@ -364,36 +367,46 @@ void UpdatePlayer(void)
 	// 姿勢制御
 	//////////////////////////////////////////////////////////////////////
 
-	XMVECTOR vx, nvx, up;
-	XMVECTOR quat;
-	float len, angle;
+//	XMVECTOR vx, nvx, up;
+//	XMVECTOR quat;
+//	float len, angle;
+//
+//
+//	g_Player.UpVector = Normal;
+//	up = { 0.0f, 1.0f, 0.0f, 0.0f };
+//	vx = XMVector3Cross(up, XMLoadFloat3(&g_Player.UpVector));
+//
+//	nvx = XMVector3Length(vx);
+//	XMStoreFloat(&len, nvx);
+//	nvx = XMVector3Normalize(vx);
+//	//nvx = vx / len;
+//	angle = asinf(len);
+//
+//	//quat = XMQuaternionIdentity();
+//
+////	quat = XMQuaternionRotationAxis(nvx, angle);
+//	quat = XMQuaternionRotationNormal(nvx, angle);
+//
+//
+//	quat = XMQuaternionSlerp(XMLoadFloat4(&g_Player.Quaternion), quat, 0.05f);
+//	XMStoreFloat4(&g_Player.Quaternion, quat);
 
 
-	g_Player.UpVector = Normal;
-	up = { 0.0f, 1.0f, 0.0f, 0.0f };
-	vx = XMVector3Cross(up, XMLoadFloat3(&g_Player.UpVector));
-
-	nvx = XMVector3Length(vx);
-	XMStoreFloat(&len, nvx);
-	nvx = XMVector3Normalize(vx);
-	//nvx = vx / len;
-	angle = asinf(len);
-
-	//quat = XMQuaternionIdentity();
-
-//	quat = XMQuaternionRotationAxis(nvx, angle);
-	quat = XMQuaternionRotationNormal(nvx, angle);
-
-
-	quat = XMQuaternionSlerp(XMLoadFloat4(&g_Player.Quaternion), quat, 0.05f);
-	XMStoreFloat4(&g_Player.Quaternion, quat);
-
-
-
+	// Stgge 当たり判定
+	stage* Stage = GetStage();
+	bool ans;
+	XMFLOAT3 hitPos;
+	XMFLOAT3 hitNormal;
+	ans = RayHitModel(&Stage->model, Stage->mtxWorld, g_Player.pos, 1000.0f, XMFLOAT3(-sinf(g_Player.rot.y), g_Player.pos.y, -cosf(g_Player.rot.y)), &hitPos, &hitNormal);
+	if (ans)
+	{
+		g_Player.pos = oldPos;
+	}
 
 #ifdef _DEBUG
 	// デバッグ表示
-	PrintDebugProc("Player X:%f Y:%f Z:% N:%f\n", g_Player.pos.x, g_Player.pos.y, g_Player.pos.z, Normal.y);
+	PrintDebugProc("Player X:%f Y:%f Z:%f\n", g_Player.pos.x, g_Player.pos.y, g_Player.pos.z);
+	PrintDebugProc("HitPos X%f Y%f Z%f\n", hitPos.x, hitPos.y, hitPos.z);
 #endif
 
 }
