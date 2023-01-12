@@ -16,7 +16,7 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define	MODEL_Stage			"data/MODEL/stage.obj"		// 読み込むモデル名
+#define	MODEL_Stage			"data/MODEL/map.obj"		// 読み込むモデル名
 
 
 //*****************************************************************************
@@ -42,7 +42,7 @@ HRESULT InitStage(void)
 		LoadModel(MODEL_Stage, &g_Stage[i].model);
 		g_Stage[i].load = true;
 
-		g_Stage[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Stage[i].pos = XMFLOAT3(0.0f, 6.0f, 0.0f);
 		g_Stage[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_Stage[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -83,7 +83,6 @@ void UpdateStage(void)
 	{
 
 	}
-
 }
 
 //=============================================================================

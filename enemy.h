@@ -10,7 +10,7 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MAX_ENEMY		(5)					// エネミーの数
+#define MAX_ENEMY		(1)				// エネミーの数
 
 #define	ENEMY_SIZE		(5.0f)				// 当たり判定の大きさ
 
@@ -29,6 +29,7 @@ struct ENEMY
 	bool				load;
 	DX11_MODEL			model;				// モデル情報
 	XMFLOAT4			diffuse[MODEL_MAX_MATERIAL];	// モデルの色
+	int					colorIdx;				// enemy color
 
 	float				spd;				// 移動スピード
 	float				size;				// 当たり判定の大きさ
@@ -48,5 +49,10 @@ void UninitEnemy(void);
 void UpdateEnemy(void);
 void DrawEnemy(void);
 
-ENEMY *GetEnemy(void);
+ENEMY *GetGhostRed(void);
+ENEMY* GetGhostOrange(void);
+ENEMY* GetGhostGreen(void);
+ENEMY* GetGhostBlue(void);
+ENEMY* GetGhostPurple(void);
+ENEMY* GetGhostGray(void);
 

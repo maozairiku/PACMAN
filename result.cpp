@@ -35,8 +35,7 @@ static ID3D11Buffer				*g_VertexBuffer = NULL;		// 頂点情報
 static ID3D11ShaderResourceView	*g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 
 static char *g_TexturName[TEXTURE_MAX] = {
-	"data/TEXTURE/bg001.jpg",
-	"data/TEXTURE/result_logo.png",
+	"data/TEXTURE/ResultBg.png",
 	"data/TEXTURE/number16x32.png",
 };
 
@@ -128,11 +127,7 @@ void UpdateResult(void)
 		SetFade(FADE_OUT, MODE_TITLE);
 	}
 	// ゲームパッドで入力処理
-	else if (IsButtonTriggered(0, BUTTON_START))
-	{
-		SetFade(FADE_OUT, MODE_TITLE);
-	}
-	else if (IsButtonTriggered(0, BUTTON_B))
+	else if (IsButtonTriggered(0, BUTTON_A))
 	{
 		SetFade(FADE_OUT, MODE_TITLE);
 	}
@@ -178,23 +173,11 @@ void DrawResult(void)
 		GetDeviceContext()->Draw(4, 0);
 	}
 
-	// リザルトのロゴを描画
-	{
-		// テクスチャ設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[1]);
-
-		// １枚のポリゴンの頂点とテクスチャ座標を設定
-		SetSprite(g_VertexBuffer, g_Pos.x, g_Pos.y, TEXTURE_WIDTH_LOGO, TEXTURE_HEIGHT_LOGO, 0.0f, 0.0f, 1.0f, 1.0f);
-
-		// ポリゴン描画
-		GetDeviceContext()->Draw(4, 0);
-	}
-
 
 	// スコア表示
 	{
 		// テクスチャ設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[2]);
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[1]);
 
 		// 桁数分処理する
 		int number = GetScore();

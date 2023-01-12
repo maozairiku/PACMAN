@@ -117,6 +117,9 @@ void UninitGame(void)
 	// パーティクルの終了処理
 	UninitParticle();
 
+	// ステージの終了処理
+	UninitStage();
+
 	// スコアの終了処理
 	UninitScore();
 
@@ -169,6 +172,9 @@ void UpdateGame(void)
 	// 地面処理の更新
 	UpdateMeshField();
 
+	// ステージの更新
+	UpdateStage();
+
 	// プレイヤーの更新処理
 	UpdatePlayer();
 
@@ -205,6 +211,9 @@ void DrawGame0(void)
 	// 3Dの物を描画する処理
 	// 地面の描画処理
 	DrawMeshField();
+
+	// ステージの描画処理
+	DrawStage();
 
 	// 影の描画処理
 	DrawShadow();
@@ -277,7 +286,7 @@ void DrawGame(void)
 		DrawGame0();
 
 		// エネミー視点
-		pos = GetEnemy()->pos;
+		//pos = GetEnemy()->pos;
 		pos.y = 0.0f;
 		SetCameraAT(pos);
 		SetCamera();
@@ -291,7 +300,7 @@ void DrawGame(void)
 		DrawGame0();
 
 		// エネミー視点
-		pos = GetEnemy()->pos;
+		//pos = GetEnemy()->pos;
 		pos.y = 0.0f;
 		SetCameraAT(pos);
 		SetCamera();
@@ -309,68 +318,154 @@ void DrawGame(void)
 //=============================================================================
 void CheckHit(void)
 {
-	ENEMY *enemy = GetEnemy();		// エネミーのポインターを初期化
-	PLAYER *player = GetPlayer();	// プレイヤーのポインターを初期化
-	BULLET *bullet = GetBullet();	// 弾のポインターを初期化
+	ENEMY *ghostred = GetGhostRed();		// エネミーのポインターを初期化
+	ENEMY* ghostorange = GetGhostOrange();	
+	ENEMY* ghostgreen = GetGhostGreen();	
+	ENEMY* ghostblue = GetGhostBlue();		
+	ENEMY* ghostpurple = GetGhostPurple();	
+	ENEMY* ghostgray = GetGhostGray();		
+	PLAYER *player = GetPlayer();			// プレイヤーのポインターを初期化
+	BULLET *bullet = GetBullet();			// 弾のポインターを初期化
 
 	// 敵とプレイヤーキャラ
 	for (int i = 0; i < MAX_ENEMY; i++)
 	{
-		//敵の有効フラグをチェックする
-		if (enemy[i].use == false)
+		//敵の有効フラグをチェックする(red)
+		if (ghostred[i].use == false)
 			continue;
 
 		//BCの当たり判定
-		if (CollisionBC(player->pos, enemy[i].pos, player->size, enemy[i].size))
+		if (CollisionBC(player->pos, ghostred[i].pos, player->size, ghostred[i].size))
 		{
 			// 敵キャラクターは倒される
-			enemy[i].use = false;
-			ReleaseShadow(enemy[i].shadowIdx);
+			ghostred[i].use = false;
+			ReleaseShadow(ghostred[i].shadowIdx);
 
-			// スコアを足す
+			// HPを減る
 			AddScore(100);
 		}
+
+
+		//敵の有効フラグをチェックする(orange)
+		if (ghostorange[i].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, ghostorange[i].pos, player->size, ghostorange[i].size))
+		{
+			// 敵キャラクターは倒される
+			ghostorange[i].use = false;
+			ReleaseShadow(ghostorange[i].shadowIdx);
+
+			// HPを減る
+			AddScore(100);
+		}
+
+
+		//敵の有効フラグをチェックする(green)
+		if (ghostgreen[i].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, ghostgreen[i].pos, player->size, ghostgreen[i].size))
+		{
+			// 敵キャラクターは倒される
+			ghostgreen[i].use = false;
+			ReleaseShadow(ghostgreen[i].shadowIdx);
+
+			// HPを減る
+			AddScore(100);
+		}
+
+
+		//敵の有効フラグをチェックする(blue)
+		if (ghostblue[i].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, ghostblue[i].pos, player->size, ghostblue[i].size))
+		{
+			// 敵キャラクターは倒される
+			ghostblue[i].use = false;
+			ReleaseShadow(ghostblue[i].shadowIdx);
+
+			// HPを減る
+			AddScore(100);
+		}
+
+
+		//敵の有効フラグをチェックする(purple)
+		if (ghostpurple[i].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, ghostpurple[i].pos, player->size, ghostpurple[i].size))
+		{
+			// 敵キャラクターは倒される
+			ghostpurple[i].use = false;
+			ReleaseShadow(ghostpurple[i].shadowIdx);
+
+			// HPを減る
+			AddScore(100);
+		}
+
+
+		//敵の有効フラグをチェックする(gray)
+		if (ghostgray[i].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, ghostgray[i].pos, player->size, ghostgray[i].size))
+		{
+			// 敵キャラクターは倒される
+			ghostgray[i].use = false;
+			ReleaseShadow(ghostgray[i].shadowIdx);
+
+			// HPを減る
+			AddScore(100);
+		}
+
 	}
 
 
 	// プレイヤーの弾と敵
-	for (int i = 0; i < MAX_BULLET; i++)
-	{
-		//弾の有効フラグをチェックする
-		if (bullet[i].use == false)
-			continue;
+	//for (int i = 0; i < MAX_BULLET; i++)
+	//{
+	//	//弾の有効フラグをチェックする
+	//	if (bullet[i].use == false)
+	//		continue;
 
-		// 敵と当たってるか調べる
-		for (int j = 0; j < MAX_ENEMY; j++)
-		{
-			//敵の有効フラグをチェックする
-			if (enemy[j].use == false)
-				continue;
+	//	// 敵と当たってるか調べる
+	//	for (int j = 0; j < MAX_ENEMY; j++)
+	//	{
+	//		//敵の有効フラグをチェックする
+	//		if (ghostred[j].use == false)
+	//			continue;
 
-			//BCの当たり判定
-			if (CollisionBC(bullet[i].pos, enemy[j].pos, bullet[i].fWidth, enemy[j].size))
-			{
-				// 当たったから未使用に戻す
-				bullet[i].use = false;
-				ReleaseShadow(bullet[i].shadowIdx);
+	//		//BCの当たり判定
+	//		if (CollisionBC(bullet[i].pos, ghostred[j].pos, bullet[i].fWidth, ghostred[j].size))
+	//		{
+	//			// 当たったから未使用に戻す
+	//			bullet[i].use = false;
+	//			ReleaseShadow(bullet[i].shadowIdx);
 
-				// 敵キャラクターは倒される
-				enemy[j].use = false;
-				ReleaseShadow(enemy[j].shadowIdx);
+	//			// 敵キャラクターは倒される
+	//			ghostred[j].use = false;
+	//			ReleaseShadow(ghostred[j].shadowIdx);
 
-				// スコアを足す
-				AddScore(10);
-			}
-		}
+	//			// スコアを足す
+	//			AddScore(10);
+	//		}
+	//	}
 
-	}
+	//}
 
 
 	// エネミーが全部死亡したら状態遷移
 	int enemy_count = 0;
 	for (int i = 0; i < MAX_ENEMY; i++)
 	{
-		if (enemy[i].use == false) continue;
+		if (ghostred[i].use == false) continue;
 		enemy_count++;
 	}
 

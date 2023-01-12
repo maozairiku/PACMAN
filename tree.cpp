@@ -54,10 +54,10 @@ static bool					g_bAlpaTest;		// アルファテストON/OFF
 
 static char *g_TextureName[] =
 {
-	"data/TEXTURE/tree001.png",
-	"data/TEXTURE/tree002.png",
-	"data/TEXTURE/tree003.png",
-	"data/TEXTURE/tree004.png",
+	"data/TEXTURE/enemy.png",
+	"data/TEXTURE/warning.png",
+	"data/TEXTURE/warning2.png",
+	"data/TEXTURE/warning3.png",
 	"data/TEXTURE/tree005.png",
 };
 
@@ -97,11 +97,11 @@ HRESULT InitTree(void)
 	g_bAlpaTest = true;
 
 	// 木の設定
-	SetTree(XMFLOAT3(0.0f, 0.0f, 0.0f), 60.0f, 90.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetTree(XMFLOAT3(200.0f, 0.0f, 0.0f), 60.0f, 90.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetTree(XMFLOAT3(-200.0f, 0.0f, 0.0f), 60.0f, 90.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetTree(XMFLOAT3(0.0f, 0.0f, 200.0f), 60.0f, 90.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetTree(XMFLOAT3(0.0f, 0.0f, -200.0f), 60.0f, 90.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetTree(XMFLOAT3(0.0f, 30.0f, 10.0f), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetTree(XMFLOAT3(4.0f, 30.0f, -330.0f), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetTree(XMFLOAT3(260.0f, 30.0f, -225.0f), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetTree(XMFLOAT3(335.0f, 30.0f, 68.0f), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetTree(XMFLOAT3(330.0f, 30.0f, -435.0f), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	return S_OK;
 }
@@ -275,8 +275,8 @@ HRESULT MakeVertexTree(void)
 
 	VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
 
-	float fWidth = 60.0f;
-	float fHeight = 90.0f;
+	float fWidth = 30.0f;
+	float fHeight = 30.0f;
 
 	// 頂点座標の設定
 	vertex[0].Position = XMFLOAT3(-fWidth / 2.0f, fHeight, 0.0f);

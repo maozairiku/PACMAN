@@ -156,6 +156,7 @@ void UpdateTitle(void)
 	//}
 	else if (IsButtonTriggered(0, BUTTON_A) && ui[0].pos.y == 380)
 	{
+		player[0].select = GetMode();
 		SetFade(FADE_OUT, MODE_TUTORIAL);
 	}
 	else if (IsButtonTriggered(0, BUTTON_A) && ui[0].pos.y == 475)

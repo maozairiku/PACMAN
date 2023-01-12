@@ -27,6 +27,8 @@ static FOG		g_Fog;
 
 static	BOOL	g_FogEnable = true;
 
+float g_time = 0.0f;
+
 
 //=============================================================================
 // 初期化処理
@@ -43,7 +45,7 @@ void InitLight(void)
 		g_Light[i].Ambient   = XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f );
 		g_Light[i].Attenuation = 100.0f;	// 減衰距離
 		g_Light[i].Type = LIGHT_TYPE_NONE;	// ライトのタイプ
-		g_Light[i].Enable = false;			// ON / OFF
+		g_Light[i].Enable = true;			// ON / OFF
 		SetLight(i, &g_Light[i]);
 	}
 
@@ -52,7 +54,7 @@ void InitLight(void)
 	g_Light[0].Diffuse   = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );	// 光の色
 	g_Light[0].Type = LIGHT_TYPE_DIRECTIONAL;					// 並行光源
 	g_Light[0].Enable = true;									// このライトをON
-	SetLight(0, &g_Light[0]);									// これで設定している
+	SetLight(0, &g_Light[0]);								// これで設定している
 
 
 
@@ -71,9 +73,11 @@ void InitLight(void)
 //=============================================================================
 void UpdateLight(void)
 {
-
-
-
+	// 世界の光
+	g_Light[0].Direction.x = -cosf(g_time);
+	g_Light[0].Direction.y = -sinf(g_time);
+	SetLight(0, &g_Light[0]);
+	g_time += 0.01f;
 }
 
 
