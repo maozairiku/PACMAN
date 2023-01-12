@@ -397,7 +397,7 @@ void UpdatePlayer(void)
 	bool ans;
 	XMFLOAT3 hitPos;
 	XMFLOAT3 hitNormal;
-	ans = RayHitModel(&Stage->model, Stage->mtxWorld, g_Player.pos, 1000.0f, XMFLOAT3(-sinf(g_Player.rot.y), g_Player.pos.y, -cosf(g_Player.rot.y)), &hitPos, &hitNormal);
+	ans = RayHitModel(&Stage->model, Stage->mtxWorld, XMFLOAT3(g_Player.pos.x, 6.0f, g_Player.pos.z), 50.0f, XMFLOAT3(-sinf(g_Player.rot.y), 0.0f, -cosf(g_Player.rot.y)), &hitPos, &hitNormal);
 	if (ans)
 	{
 		g_Player.pos = oldPos;
