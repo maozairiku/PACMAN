@@ -25,7 +25,7 @@ static LIGHT	g_Light[LIGHT_MAX];
 
 static FOG		g_Fog;
 
-static	BOOL	g_FogEnable = false;
+static	BOOL	g_FogEnable = true;
 
 float g_time = 0.0f;
 

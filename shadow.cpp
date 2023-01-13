@@ -128,7 +128,7 @@ void DrawShadow(void)
 	SetDepthEnable(false);
 
 	// フォグ無効
-	SetFogEnable(false);
+	SetFogEnable(true);
 
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);

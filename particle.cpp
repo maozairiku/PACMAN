@@ -97,8 +97,8 @@ HRESULT InitParticle(void)
 	// パーティクルワークの初期化
 	for(int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
 	{
-		g_aParticle[nCntParticle].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_aParticle[nCntParticle].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_aParticle[nCntParticle].pos = XMFLOAT3(0.0f, 50.0f, 0.0f);
+		g_aParticle[nCntParticle].rot = XMFLOAT3(0.0f, -1.0f, 0.0f);
 		g_aParticle[nCntParticle].scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 		g_aParticle[nCntParticle].move = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -159,7 +159,7 @@ void UpdateParticle(void)
 		for(int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
 		{
 			if(g_aParticle[nCntParticle].bUse)
-			{// 使用中
+			{	// 使用中
 				g_aParticle[nCntParticle].pos.x += g_aParticle[nCntParticle].move.x;
 				g_aParticle[nCntParticle].pos.z += g_aParticle[nCntParticle].move.z;
 

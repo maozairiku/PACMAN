@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// エネミーモデル処理 [enemy.h]
+// エネミーモデル処理 [dot.h]
 // Author : 
 //
 //=============================================================================
@@ -10,15 +10,15 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MAX_ENEMY		(1)				// エネミーの数
+#define MAX_DOT			(6)				// エネミーの数
 
-#define	ENEMY_SIZE		(5.0f)				// 当たり判定の大きさ
+#define	DOT_SIZE		(5.0f)				// 当たり判定の大きさ
 
 
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
-struct ENEMY
+struct DOT
 {
 	XMFLOAT4X4			mtxWorld;			// ワールドマトリックス
 	XMFLOAT3			pos;				// モデルの位置
@@ -29,7 +29,7 @@ struct ENEMY
 	bool				load;
 	DX11_MODEL			model;				// モデル情報
 	XMFLOAT4			diffuse[MODEL_MAX_MATERIAL];	// モデルの色
-	int					colorIdx;				// enemy color
+	int					colorIdx;				// dot color
 
 	float				spd;				// 移動スピード
 	float				size;				// 当たり判定の大きさ
@@ -44,14 +44,10 @@ struct ENEMY
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitEnemy(void);
-void UninitEnemy(void);
-void UpdateEnemy(void);
-void DrawEnemy(void);
+HRESULT InitDot(void);
+void UninitDot(void);
+void UpdateDot(void);
+void DrawDot(void);
 
-ENEMY *GetGhostRed(void);
-ENEMY* GetGhostOrange(void);
-ENEMY* GetGhostGreen(void);
-ENEMY* GetGhostBlue(void);
-ENEMY* GetGhostPurple(void);
+DOT *GetDot(void);
 

@@ -15,6 +15,7 @@
 #include "stage.h"
 #include "tutorial.h"
 #include "ui.h"
+#include "dot.h"
 
 #include "player.h"
 #include "enemy.h"
@@ -94,6 +95,9 @@ HRESULT InitGame(void)
 	// 木を生やす
 	InitTree();
 
+	// ドットの初期化
+	InitDot();
+
 	// 弾の初期化
 	InitBullet();
 
@@ -125,6 +129,9 @@ void UninitGame(void)
 
 	// 弾の終了処理
 	UninitBullet();
+
+	// ドットの終了処理
+	UninitDot();
 
 	// 木の終了処理
 	UninitTree();
@@ -190,6 +197,9 @@ void UpdateGame(void)
 	// 弾の更新処理
 	UpdateBullet();
 
+	// ドットの更新処理
+	UpdateDot();
+
 	// パーティクルの更新処理
 	UpdateParticle();
 
@@ -226,6 +236,9 @@ void DrawGame0(void)
 
 	// 弾の描画処理
 	DrawBullet();
+
+	//ドットの描画処理
+	DrawDot();
 
 	// 壁の描画処理
 	DrawMeshWall();
@@ -323,9 +336,9 @@ void CheckHit(void)
 	ENEMY* ghostgreen = GetGhostGreen();	
 	ENEMY* ghostblue = GetGhostBlue();		
 	ENEMY* ghostpurple = GetGhostPurple();	
-	ENEMY* ghostgray = GetGhostGray();		
 	PLAYER *player = GetPlayer();			// プレイヤーのポインターを初期化
 	BULLET *bullet = GetBullet();			// 弾のポインターを初期化
+	DOT *dot = GetDot();
 
 	// 敵とプレイヤーキャラ
 	for (int i = 0; i < MAX_ENEMY; i++)
@@ -341,8 +354,8 @@ void CheckHit(void)
 			ghostred[i].use = false;
 			ReleaseShadow(ghostred[i].shadowIdx);
 
-			// HPを減る
-			AddScore(100);
+			// Game Over
+			SetFade(FADE_OUT, MODE_RESULT);
 		}
 
 
@@ -357,10 +370,9 @@ void CheckHit(void)
 			ghostorange[i].use = false;
 			ReleaseShadow(ghostorange[i].shadowIdx);
 
-			// HPを減る
-			AddScore(100);
+			// Game Over
+			SetFade(FADE_OUT, MODE_RESULT);
 		}
-
 
 		//敵の有効フラグをチェックする(green)
 		if (ghostgreen[i].use == false)
@@ -373,8 +385,8 @@ void CheckHit(void)
 			ghostgreen[i].use = false;
 			ReleaseShadow(ghostgreen[i].shadowIdx);
 
-			// HPを減る
-			AddScore(100);
+			// Game Over
+			SetFade(FADE_OUT, MODE_RESULT);
 		}
 
 
@@ -389,8 +401,8 @@ void CheckHit(void)
 			ghostblue[i].use = false;
 			ReleaseShadow(ghostblue[i].shadowIdx);
 
-			// HPを減る
-			AddScore(100);
+			// Game Over
+			SetFade(FADE_OUT, MODE_RESULT);
 		}
 
 
@@ -405,28 +417,29 @@ void CheckHit(void)
 			ghostpurple[i].use = false;
 			ReleaseShadow(ghostpurple[i].shadowIdx);
 
-			// HPを減る
-			AddScore(100);
-		}
-
-
-		//敵の有効フラグをチェックする(gray)
-		if (ghostgray[i].use == false)
-			continue;
-
-		//BCの当たり判定
-		if (CollisionBC(player->pos, ghostgray[i].pos, player->size, ghostgray[i].size))
-		{
-			// 敵キャラクターは倒される
-			ghostgray[i].use = false;
-			ReleaseShadow(ghostgray[i].shadowIdx);
-
-			// HPを減る
-			AddScore(100);
+			// Game Over
+			SetFade(FADE_OUT, MODE_RESULT);
 		}
 
 	}
 
+	// プレイヤーとドット
+	for (int d = 0; d < MAX_DOT; d++)
+	{
+		if (dot[d].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, dot[d].pos, player->size, dot[d].size))
+		{
+			// ドットは食べられる
+			dot[d].use = false;
+			ReleaseShadow(dot[d].shadowIdx);
+
+			//点数加算
+			AddScore(100);
+		}
+	}
 
 	// プレイヤーの弾と敵
 	//for (int i = 0; i < MAX_BULLET; i++)
@@ -461,16 +474,16 @@ void CheckHit(void)
 	//}
 
 
-	// エネミーが全部死亡したら状態遷移
-	int enemy_count = 0;
-	for (int i = 0; i < MAX_ENEMY; i++)
+	// dotが全部なくなったら状態遷移
+	int dot_count = 0;
+	for (int i = 0; i < MAX_DOT; i++)
 	{
-		if (ghostred[i].use == false) continue;
-		enemy_count++;
+		if (dot[i].use == false) continue;
+		dot_count++;
 	}
 
 	// エネミーが０匹？
-	if (enemy_count == 0)
+	if (dot_count == 0)
 	{
 		SetFade(FADE_OUT, MODE_RESULT);
 	}

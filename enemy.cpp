@@ -19,15 +19,14 @@
 #define	MODEL_ENEMY_GR		"data/MODEL/ghostred.obj"		// Ghost_Red
 #define	MODEL_ENEMY_GO		"data/MODEL/ghostorange.obj"	// Ghost_Orange
 #define	MODEL_ENEMY_GG		"data/MODEL/ghostgreen.obj"		// Ghost_Green
-#define	MODEL_ENEMY_GB		"data/MODEL/ghostblue.obj"		// Ghost_Blue
+#define	MODEL_ENEMY_GB		"data/MODEL/ghostblue.obj"		// Ghost_Blue4   zxa
 #define	MODEL_ENEMY_GP		"data/MODEL/ghostpurple.obj"	// Ghost_Purple
-#define	MODEL_ENEMY_GY		"data/MODEL/ghostgray.obj"		// Ghost_Gray
 
 #define	VALUE_MOVE			(5.0f)						// 移動量
 #define	VALUE_ROTATE		(XM_PI * 0.02f)				// 回転量
 
 #define ENEMY_SHADOW_SIZE	(0.4f)						// 影の大きさ
-#define ENEMY_OFFSET_Y		(7.0f)						// エネミーの足元をあわせる
+#define ENEMY_OFFSET_Y		(20.0f)						// エネミーの足元をあわせる
 
 
 //*****************************************************************************
@@ -43,16 +42,54 @@ static ENEMY			g_GhostOrange[MAX_ENEMY];
 static ENEMY			g_GhostGreen[MAX_ENEMY];
 static ENEMY			g_GhostBlue[MAX_ENEMY];
 static ENEMY			g_GhostPurple[MAX_ENEMY];
-static ENEMY			g_GhostGray[MAX_ENEMY];
 
 static BOOL				g_Load = FALSE;
 
 
 static INTERPOLATION_DATA move_tbl[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(   0.0f, ENEMY_OFFSET_Y,  20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60*2 },
-	{ XMFLOAT3(-200.0f, ENEMY_OFFSET_Y,  20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60*1 },
-	{ XMFLOAT3(-200.0f, ENEMY_OFFSET_Y, 200.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60*0.5f },
-	{ XMFLOAT3(   0.0f, ENEMY_OFFSET_Y,  20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60*2 },
+	{ XMFLOAT3(-87.5f, ENEMY_OFFSET_Y, 60.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(-87.5f, ENEMY_OFFSET_Y,  -47.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
+	{ XMFLOAT3(83.0f, ENEMY_OFFSET_Y, -54.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 0.5f },
+	{ XMFLOAT3(82.0f, ENEMY_OFFSET_Y,  60.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(-87.5f, ENEMY_OFFSET_Y, 6-.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+};
+
+static INTERPOLATION_DATA move_tbl2[] = {	// pos, rot, scl, frame
+	{ XMFLOAT3(170.0f, ENEMY_OFFSET_Y, 178.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(170.0f, ENEMY_OFFSET_Y, -535.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
+	{ XMFLOAT3(170.0f, ENEMY_OFFSET_Y, 178.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+
+};
+
+static INTERPOLATION_DATA move_tbl3[] = {	// pos, rot, scl, frame
+	{ XMFLOAT3(3.0f, ENEMY_OFFSET_Y,  -205.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(-101.0f, ENEMY_OFFSET_Y, -205.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
+	{ XMFLOAT3(-99.0f, ENEMY_OFFSET_Y, -310.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 0.5f },
+	{ XMFLOAT3(100.0f, ENEMY_OFFSET_Y,  -310.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(100.0f, ENEMY_OFFSET_Y,  -180.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(3.0f, ENEMY_OFFSET_Y,  -205.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+
+};
+
+static INTERPOLATION_DATA move_tbl4[] = {	// pos, rot, scl, frame
+	{ XMFLOAT3(230.0f, ENEMY_OFFSET_Y,  163.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(245.0f, ENEMY_OFFSET_Y,  127.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
+	{ XMFLOAT3(299.0f, ENEMY_OFFSET_Y, 127.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 0.5f },
+	{ XMFLOAT3(299.0f, ENEMY_OFFSET_Y,  50.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(248.0f, ENEMY_OFFSET_Y,  50.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(250.0f, ENEMY_OFFSET_Y,  -63.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(400.0f, ENEMY_OFFSET_Y,  -63.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(419.0f, ENEMY_OFFSET_Y,  80.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+
+};
+
+static INTERPOLATION_DATA move_tbl5[] = {	// pos, rot, scl, frame
+	{ XMFLOAT3(247.0f, ENEMY_OFFSET_Y,  -391.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(247.0f, ENEMY_OFFSET_Y,  -558.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
+	{ XMFLOAT3(340.0f, ENEMY_OFFSET_Y, -500.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 0.5f },
+	{ XMFLOAT3(434.0f, ENEMY_OFFSET_Y,  -540.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(419.0f, ENEMY_OFFSET_Y,  -382.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(247.0f, ENEMY_OFFSET_Y,  -391.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
 
 };
 
@@ -68,8 +105,8 @@ HRESULT InitEnemy(void)
 		LoadModel(MODEL_ENEMY_GR, &g_GhostRed[i].model);
 		g_GhostRed[i].load = true;
 
-		g_GhostRed[i].pos = XMFLOAT3(310.0f, ENEMY_OFFSET_Y, 435.0f);
-		g_GhostRed[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_GhostRed[i].pos = XMFLOAT3(-87.5f, ENEMY_OFFSET_Y, 60.0f);
+		g_GhostRed[i].rot = XMFLOAT3(0.0f, 360.0f, 0.0f);
 		g_GhostRed[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 		g_GhostRed[i].spd = 0.0f;			// 移動スピードクリア
@@ -94,7 +131,7 @@ HRESULT InitEnemy(void)
 		LoadModel(MODEL_ENEMY_GO, &g_GhostOrange[i].model);
 		g_GhostOrange[i].load = true;
 
-		g_GhostOrange[i].pos = XMFLOAT3(30.0f, ENEMY_OFFSET_Y, 20.0f);
+		g_GhostOrange[i].pos = XMFLOAT3(170.0f, ENEMY_OFFSET_Y, 178.0f);
 		g_GhostOrange[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_GhostOrange[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -117,10 +154,10 @@ HRESULT InitEnemy(void)
 
 
 		// Ghost_Green
-		LoadModel(MODEL_ENEMY_GO, &g_GhostGreen[i].model);
+		LoadModel(MODEL_ENEMY_GG, &g_GhostGreen[i].model);
 		g_GhostGreen[i].load = true;
 
-		g_GhostGreen[i].pos = XMFLOAT3(-50.0f + i * 30.0f, ENEMY_OFFSET_Y, 20.0f);
+		g_GhostGreen[i].pos = XMFLOAT3(3.0f, ENEMY_OFFSET_Y, -205.0f);
 		g_GhostGreen[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_GhostGreen[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -143,10 +180,10 @@ HRESULT InitEnemy(void)
 
 
 		// Ghost_Blue
-		LoadModel(MODEL_ENEMY_GO, &g_GhostBlue[i].model);
+		LoadModel(MODEL_ENEMY_GB, &g_GhostBlue[i].model);
 		g_GhostBlue[i].load = true;
 
-		g_GhostBlue[i].pos = XMFLOAT3(-50.0f + i * 30.0f, ENEMY_OFFSET_Y, 20.0f);
+		g_GhostBlue[i].pos = XMFLOAT3(230.0f, ENEMY_OFFSET_Y, 163.0f);
 		g_GhostBlue[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_GhostBlue[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -169,9 +206,9 @@ HRESULT InitEnemy(void)
 
 
 		// Ghost_Purple
-		LoadModel(MODEL_ENEMY_GR, &g_GhostPurple[i].model);
+		LoadModel(MODEL_ENEMY_GP, &g_GhostPurple[i].model);
 		g_GhostPurple[i].load = true;
-		g_GhostPurple[i].pos = XMFLOAT3(-50.0f + i * 30.0f, ENEMY_OFFSET_Y, 20.0f);
+		g_GhostPurple[i].pos = XMFLOAT3(247.0f, ENEMY_OFFSET_Y, -391.0f);
 		g_GhostPurple[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_GhostPurple[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -192,38 +229,33 @@ HRESULT InitEnemy(void)
 
 		g_GhostPurple[i].use = true;			// true:生きてる
 
-
-		// Ghost_Gray
-		LoadModel(MODEL_ENEMY_GR, &g_GhostGray[i].model);
-		g_GhostGray[i].load = true;
-		g_GhostGray[i].pos = XMFLOAT3(-50.0f + i * 30.0f, ENEMY_OFFSET_Y, 20.0f);
-		g_GhostGray[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_GhostGray[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-		g_GhostGray[i].spd = 0.0f;				// 移動スピードクリア
-		g_GhostGray[i].size = ENEMY_SIZE;		// 当たり判定の大きさ
-		g_GhostGray[i].colorIdx = 6;
-
-		// モデルのディフューズを保存しておく。色変え対応の為。
-		GetModelDiffuse(&g_GhostPurple[0].model, &g_GhostPurple[0].diffuse[0]);
-
-		XMFLOAT3 ypos = g_GhostPurple[i].pos;
-		ypos.y -= (ENEMY_OFFSET_Y - 0.1f);
-		g_GhostGray[i].shadowIdx = CreateShadow(ypos, ENEMY_SHADOW_SIZE, ENEMY_SHADOW_SIZE);
-
-		g_GhostGray[i].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-		g_GhostGray[i].tbl_adr = NULL;			// 再生するアニメデータの先頭アドレスをセット
-		g_GhostGray[i].tbl_size = 0;			// 再生するアニメデータのレコード数をセット
-
-		g_GhostGray[i].use = true;				// true:生きてる
-
 	}
 
 
-	// 0番だけ線形補間で動かしてみる
-	g_GhostRed[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
+	// ghost red線形補間で動かしてみる
+	g_GhostRed[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
 	g_GhostRed[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
-	g_GhostRed[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+	g_GhostRed[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);		// 再生するアニメデータのレコード数をセット
+
+	// ghost orange線形補間で動かしてみる
+	g_GhostOrange[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
+	g_GhostOrange[0].tbl_adr = move_tbl2;	// 再生するアニメデータの先頭アドレスをセット
+	g_GhostOrange[0].tbl_size = sizeof(move_tbl2) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+
+	// ghost green線形補間で動かしてみる
+	g_GhostGreen[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
+	g_GhostGreen[0].tbl_adr = move_tbl3;		// 再生するアニメデータの先頭アドレスをセット
+	g_GhostGreen[0].tbl_size = sizeof(move_tbl3) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+
+	// ghost blue線形補間で動かしてみる
+	g_GhostBlue[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
+	g_GhostBlue[0].tbl_adr = move_tbl4;		// 再生するアニメデータの先頭アドレスをセット
+	g_GhostBlue[0].tbl_size = sizeof(move_tbl4) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+
+	// ghost purple線形補間で動かしてみる
+	g_GhostPurple[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
+	g_GhostPurple[0].tbl_adr = move_tbl5;	// 再生するアニメデータの先頭アドレスをセット
+	g_GhostPurple[0].tbl_size = sizeof(move_tbl5) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
 
 	g_Load = TRUE;
 	return S_OK;
@@ -262,11 +294,6 @@ void UninitEnemy(void)
 		{
 			UnloadModel(&g_GhostPurple[i].model);
 			g_GhostPurple[i].load = false;
-		}
-		if (g_GhostGray[i].load)
-		{
-			UnloadModel(&g_GhostGray[i].model);
-			g_GhostGray[i].load = false;
 		}
 
 	}
@@ -365,13 +392,13 @@ void UpdateEnemy(void)
 				XMVECTOR p1 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 1].pos);	// 次の場所
 				XMVECTOR p0 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 0].pos);	// 現在の場所
 				XMVECTOR vec = p1 - p0;
-				XMStoreFloat3(&g_GhostRed[i].pos, p0 + vec * time);
+				XMStoreFloat3(&g_GhostOrange[i].pos, p0 + vec * time);
 
 				// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
 				XMVECTOR r1 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 1].rot);	// 次の角度
 				XMVECTOR r0 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 0].rot);	// 現在の角度
 				XMVECTOR rot = r1 - r0;
-				XMStoreFloat3(&g_GhostRed[i].rot, r0 + rot * time);
+				XMStoreFloat3(&g_GhostOrange[i].rot, r0 + rot * time);
 
 				// scaleを求める S = StartX + (EndX - StartX) * 今の時間
 				XMVECTOR s1 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 1].scl);	// 次のScale
@@ -424,13 +451,13 @@ void UpdateEnemy(void)
 				XMVECTOR p1 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 1].pos);	// 次の場所
 				XMVECTOR p0 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 0].pos);	// 現在の場所
 				XMVECTOR vec = p1 - p0;
-				XMStoreFloat3(&g_GhostRed[i].pos, p0 + vec * time);
+				XMStoreFloat3(&g_GhostGreen[i].pos, p0 + vec * time);
 
 				// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
 				XMVECTOR r1 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 1].rot);	// 次の角度
 				XMVECTOR r0 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 0].rot);	// 現在の角度
 				XMVECTOR rot = r1 - r0;
-				XMStoreFloat3(&g_GhostRed[i].rot, r0 + rot * time);
+				XMStoreFloat3(&g_GhostGreen[i].rot, r0 + rot * time);
 
 				// scaleを求める S = StartX + (EndX - StartX) * 今の時間
 				XMVECTOR s1 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 1].scl);	// 次のScale
@@ -483,13 +510,13 @@ void UpdateEnemy(void)
 				XMVECTOR p1 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 1].pos);	// 次の場所
 				XMVECTOR p0 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 0].pos);	// 現在の場所
 				XMVECTOR vec = p1 - p0;
-				XMStoreFloat3(&g_GhostRed[i].pos, p0 + vec * time);
+				XMStoreFloat3(&g_GhostBlue[i].pos, p0 + vec * time);
 
 				// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
 				XMVECTOR r1 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 1].rot);	// 次の角度
 				XMVECTOR r0 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 0].rot);	// 現在の角度
 				XMVECTOR rot = r1 - r0;
-				XMStoreFloat3(&g_GhostRed[i].rot, r0 + rot * time);
+				XMStoreFloat3(&g_GhostBlue[i].rot, r0 + rot * time);
 
 				// scaleを求める S = StartX + (EndX - StartX) * 今の時間
 				XMVECTOR s1 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 1].scl);	// 次のScale
@@ -542,13 +569,13 @@ void UpdateEnemy(void)
 				XMVECTOR p1 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 1].pos);	// 次の場所
 				XMVECTOR p0 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 0].pos);	// 現在の場所
 				XMVECTOR vec = p1 - p0;
-				XMStoreFloat3(&g_GhostRed[i].pos, p0 + vec * time);
+				XMStoreFloat3(&g_GhostPurple[i].pos, p0 + vec * time);
 
 				// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
 				XMVECTOR r1 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 1].rot);	// 次の角度
 				XMVECTOR r0 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 0].rot);	// 現在の角度
 				XMVECTOR rot = r1 - r0;
-				XMStoreFloat3(&g_GhostRed[i].rot, r0 + rot * time);
+				XMStoreFloat3(&g_GhostPurple[i].rot, r0 + rot * time);
 
 				// scaleを求める S = StartX + (EndX - StartX) * 今の時間
 				XMVECTOR s1 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 1].scl);	// 次のScale
@@ -578,64 +605,6 @@ void UpdateEnemy(void)
 			SetPositionShadow(g_GhostPurple[i].shadowIdx, pos);
 		}
 
-		// Ghost_Gray
-		if (g_GhostGray[i].use == true)			// このエネミーが使われている？
-		{									// Yes
-			if (g_GhostPurple[i].tbl_adr != NULL)	// 線形補間を実行する？
-			{								// 線形補間の処理
-				// 移動処理
-				int		index = (int)g_GhostGray[i].move_time;
-				float	time = g_GhostGray[i].move_time - index;
-				int		size = g_GhostGray[i].tbl_size;
-
-				float dt = 1.0f / g_GhostGray[i].tbl_adr[index].frame;	// 1フレームで進める時間
-				g_GhostGray[i].move_time += dt;							// アニメーションの合計時間に足す
-
-				if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
-				{
-					g_GhostGray[i].move_time = 0.0f;
-					index = 0;
-				}
-
-				// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR p1 = XMLoadFloat3(&g_GhostGray[i].tbl_adr[index + 1].pos);	// 次の場所
-				XMVECTOR p0 = XMLoadFloat3(&g_GhostGray[i].tbl_adr[index + 0].pos);	// 現在の場所
-				XMVECTOR vec = p1 - p0;
-				XMStoreFloat3(&g_GhostRed[i].pos, p0 + vec * time);
-
-				// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR r1 = XMLoadFloat3(&g_GhostGray[i].tbl_adr[index + 1].rot);	// 次の角度
-				XMVECTOR r0 = XMLoadFloat3(&g_GhostGray[i].tbl_adr[index + 0].rot);	// 現在の角度
-				XMVECTOR rot = r1 - r0;
-				XMStoreFloat3(&g_GhostRed[i].rot, r0 + rot * time);
-
-				// scaleを求める S = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR s1 = XMLoadFloat3(&g_GhostGray[i].tbl_adr[index + 1].scl);	// 次のScale
-				XMVECTOR s0 = XMLoadFloat3(&g_GhostGray[i].tbl_adr[index + 0].scl);	// 現在のScale
-				XMVECTOR scl = s1 - s0;
-				XMStoreFloat3(&g_GhostGray[i].scl, s0 + scl * time);
-
-			}
-
-			// レイキャストして足元の高さを求める
-			XMFLOAT3 HitPosition;		// 交点
-			XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-			bool ans = RayHitField(g_GhostGray[i].pos, &HitPosition, &Normal);
-			if (ans)
-			{
-				g_GhostGray[i].pos.y = HitPosition.y + ENEMY_OFFSET_Y;
-			}
-			else
-			{
-				g_GhostGray[i].pos.y = ENEMY_OFFSET_Y;
-				Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-			}
-
-			// 影もエネミーの位置に合わせる
-			XMFLOAT3 pos = g_GhostGray[i].pos;
-			pos.y -= (ENEMY_OFFSET_Y - 0.1f);
-			SetPositionShadow(g_GhostGray[i].shadowIdx, pos);
-		}
 
 	}
 
@@ -787,33 +756,6 @@ void DrawEnemy(void)
 		// モデル描画
 		DrawModel(&g_GhostPurple[i].model);
 
-
-		// Ghost Gray
-		if (g_GhostGray[i].use == false) continue;
-
-		// ワールドマトリックスの初期化
-		mtxWorld = XMMatrixIdentity();
-
-		// スケールを反映
-		mtxScl = XMMatrixScaling(g_GhostGray[i].scl.x, g_GhostGray[i].scl.y, g_GhostGray[i].scl.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-		// 回転を反映
-		mtxRot = XMMatrixRotationRollPitchYaw(g_GhostGray[i].rot.x, g_GhostGray[i].rot.y + XM_PI, g_GhostGray[i].rot.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-		// 移動を反映
-		mtxTranslate = XMMatrixTranslation(g_GhostGray[i].pos.x, g_GhostGray[i].pos.y, g_GhostGray[i].pos.z);
-		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-		// ワールドマトリックスの設定
-		SetWorldMatrix(&mtxWorld);
-
-		XMStoreFloat4x4(&g_GhostGray[i].mtxWorld, mtxWorld);
-
-		// モデル描画
-		DrawModel(&g_GhostGray[i].model);
-
 	}
 
 	// カリング設定を戻す
@@ -842,9 +784,5 @@ ENEMY* GetGhostBlue()
 ENEMY* GetGhostPurple()
 {
 	return &g_GhostPurple[0];
-}
-ENEMY* GetGhostGray()
-{
-	return &g_GhostGray[0];
 }
 

@@ -27,7 +27,7 @@ static ID3D11Buffer* g_VertexBuffer = NULL;		// 頂点情報
 static ID3D11ShaderResourceView* g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 
 static char* g_TexturName[TEXTURE_MAX] = {
-	"data/TEXTURE/UI/pacmanhp.png",
+	"data/TEXTURE/UI/heart.png",
 	"data/TEXTURE/bar_white.png",
 };
 
@@ -204,60 +204,60 @@ void DrawUi(void)
 
 	PLAYER* player = GetPlayer();
 
-	for (int i = 0; i < MAX_PLAYER; i++)
-	{
-		if (GetMode())
-		{
-			if (player[i].use)
-			{
-				// 下敷きのゲージ（枠的な物）
-				// テクスチャ設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_MAX - 1]);
+	//for (int i = 0; i < MAX_PLAYER; i++)
+	//{
+	//	if (GetMode())
+	//	{
+	//		if (player[i].use)
+	//		{
+	//			// 下敷きのゲージ（枠的な物）
+	//			// テクスチャ設定
+	//			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_MAX - 1]);
 
-				//ゲージの位置やテクスチャー座標を反映
-				float px = 100.0f;		// ゲージの表示位置X
-				float py = 500.0f;		// ゲージの表示位置Y
-				float pw = 300.0f;		// ゲージの表示幅
-				float ph = 30.0f;		// ゲージの表示高さ
+	//			//ゲージの位置やテクスチャー座標を反映
+	//			float px = 100.0f;		// ゲージの表示位置X
+	//			float py = 500.0f;		// ゲージの表示位置Y
+	//			float pw = 300.0f;		// ゲージの表示幅
+	//			float ph = 30.0f;		// ゲージの表示高さ
 
-				float tw = 1.0f;	// テクスチャの幅
-				float th = 1.0f;	// テクスチャの高さ
-				float tx = 0.0f;	// テクスチャの左上X座標
-				float ty = 0.0f;	// テクスチャの左上Y座標
+	//			float tw = 1.0f;	// テクスチャの幅
+	//			float th = 1.0f;	// テクスチャの高さ
+	//			float tx = 0.0f;	// テクスチャの左上X座標
+	//			float ty = 0.0f;	// テクスチャの左上Y座標
 
-				// １枚のポリゴンの頂点とテクスチャ座標を設定
-				SetSpriteColor(g_VertexBuffer, px, py, pw, ph, tx, ty, tw, th,
-				XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
-
-
-				// ポリゴン描画
-				GetDeviceContext()->Draw(4, 0);
+	//			// １枚のポリゴンの頂点とテクスチャ座標を設定
+	//			SetSpriteColor(g_VertexBuffer, px, py, pw, ph, tx, ty, tw, th,
+	//			XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 
 
-				// エネミーの数に従ってゲージの長さを表示してみる
-				// テクスチャ設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_MAX - 1]);
+	//			// ポリゴン描画
+	//			GetDeviceContext()->Draw(4, 0);
 
-				//ゲージの位置やテクスチャー座標を反映
-				pw = pw * ((float)player[i].HP / PLAYER_HP_MAX);
 
-				// １枚のポリゴンの頂点とテクスチャ座標を設定
-				SetSpriteColor(g_VertexBuffer, px, py, pw, ph, tx, ty, tw, th,
-				XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
+	//			// エネミーの数に従ってゲージの長さを表示してみる
+	//			// テクスチャ設定
+	//			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[TEXTURE_MAX - 1]);
 
-				// ポリゴン描画
-				GetDeviceContext()->Draw(4, 0);
+	//			//ゲージの位置やテクスチャー座標を反映
+	//			pw = pw * ((float)player[i].HP / PLAYER_HP_MAX);
 
-				// パックマン(HP)描画
-				{
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[0]);
-					SetSpriteColor(g_VertexBuffer, px - 80, py - 25, 80, 80, tx, ty, tw, th,
-				XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-					GetDeviceContext()->Draw(4, 0);
-				}
-			}
-		}
-	}
+	//			// １枚のポリゴンの頂点とテクスチャ座標を設定
+	//			SetSpriteColor(g_VertexBuffer, px, py, pw, ph, tx, ty, tw, th,
+	//			XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
+
+	//			// ポリゴン描画
+	//			GetDeviceContext()->Draw(4, 0);
+
+	//			// HP描画
+	//			{
+	//				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[0]);
+	//				SetSpriteColor(g_VertexBuffer, px - 80, py - 25, 80, 80, tx, ty, tw, th,
+	//			XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	//				GetDeviceContext()->Draw(4, 0);
+	//			}
+	//		}
+	//	}
+	//}
 
 
 

@@ -1,11 +1,11 @@
-newmtl pacman:lambert3SG
+newmtl PACMAN_change:pacman:lambert3SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd PACMAN_Body.png
 Ni 1.00
-newmtl pacman:lambert10SG
+newmtl PACMAN_change:pacman:lambert10SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00

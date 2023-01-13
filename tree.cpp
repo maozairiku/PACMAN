@@ -58,7 +58,7 @@ static char *g_TextureName[] =
 	"data/TEXTURE/warning.png",
 	"data/TEXTURE/warning2.png",
 	"data/TEXTURE/warning3.png",
-	"data/TEXTURE/tree005.png",
+	"data/TEXTURE/enemy2.png",
 };
 
 //=============================================================================
