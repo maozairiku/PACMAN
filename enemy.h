@@ -11,8 +11,9 @@
 // マクロ定義
 //*****************************************************************************
 #define MAX_ENEMY		(1)				// エネミーの数
+#define ORANGE_MAX		(20)
 
-#define	ENEMY_SIZE		(5.0f)				// 当たり判定の大きさ
+#define	ENEMY_SIZE		(10.0f)				// 当たり判定の大きさ
 
 
 //*****************************************************************************
@@ -29,7 +30,7 @@ struct ENEMY
 	bool				load;
 	DX11_MODEL			model;				// モデル情報
 	XMFLOAT4			diffuse[MODEL_MAX_MATERIAL];	// モデルの色
-	int					colorIdx;				// enemy color
+	int					colorIdx;			// enemy color
 
 	float				spd;				// 移動スピード
 	float				size;				// 当たり判定の大きさ
@@ -38,6 +39,8 @@ struct ENEMY
 	INTERPOLATION_DATA	*tbl_adr;			// アニメデータのテーブル先頭アドレス
 	int					tbl_size;			// 登録したテーブルのレコード総数
 	float				move_time;			// 実行時間
+
+	float				attackflame;		// attack flame
 
 };
 

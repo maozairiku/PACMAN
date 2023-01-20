@@ -12,15 +12,16 @@
 #include "input.h"
 #include "sound.h"
 #include "fade.h"
-#include "stage.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "dot.h"
+#include "explosion.h"
 
 #include "player.h"
 #include "enemy.h"
 #include "meshfield.h"
 #include "meshwall.h"
+#include "sky.h"
 #include "shadow.h"
 #include "tree.h"
 #include "bullet.h"
@@ -89,8 +90,8 @@ HRESULT InitGame(void)
 	InitMeshWall(XMFLOAT3(0.0f, 0.0f, MAP_DOWN), XMFLOAT3(0.0f, 0.0f, 0.0f),
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 0.25f), 16, 2, 80.0f, 80.0f);
 
-	// stage
-	InitStage();
+	// sky
+	InitSky();
 
 	// 木を生やす
 	InitTree();
@@ -103,6 +104,9 @@ HRESULT InitGame(void)
 
 	// スコアの初期化
 	InitScore();
+
+	// explosion
+	InitExplosion();
 
 	// パーティクルの初期化
 	InitParticle();
@@ -121,8 +125,8 @@ void UninitGame(void)
 	// パーティクルの終了処理
 	UninitParticle();
 
-	// ステージの終了処理
-	UninitStage();
+	// sky
+	UninitSky();
 
 	// スコアの終了処理
 	UninitScore();
@@ -144,6 +148,9 @@ void UninitGame(void)
 
 	// エネミーの終了処理
 	UninitEnemy();
+
+	// explosion
+	UninitExplosion();
 
 	// プレイヤーの終了処理
 	UninitPlayer();
@@ -179,14 +186,17 @@ void UpdateGame(void)
 	// 地面処理の更新
 	UpdateMeshField();
 
-	// ステージの更新
-	UpdateStage();
+	// sky
+	UpdateSky();
 
 	// プレイヤーの更新処理
 	UpdatePlayer();
 
 	// エネミーの更新処理
 	UpdateEnemy();
+
+	// explosion
+	UpdateExplosion();
 
 	// 壁処理の更新
 	UpdateMeshWall();
@@ -222,8 +232,8 @@ void DrawGame0(void)
 	// 地面の描画処理
 	DrawMeshField();
 
-	// ステージの描画処理
-	DrawStage();
+	// sky
+	DrawSky();
 
 	// 影の描画処理
 	DrawShadow();
@@ -233,6 +243,9 @@ void DrawGame0(void)
 
 	// プレイヤーの描画処理
 	DrawPlayer();
+
+	// explosion
+	DrawExplosion();
 
 	// 弾の描画処理
 	DrawBullet();
@@ -332,13 +345,21 @@ void DrawGame(void)
 void CheckHit(void)
 {
 	ENEMY *ghostred = GetGhostRed();		// エネミーのポインターを初期化
-	ENEMY* ghostorange = GetGhostOrange();	
-	ENEMY* ghostgreen = GetGhostGreen();	
-	ENEMY* ghostblue = GetGhostBlue();		
-	ENEMY* ghostpurple = GetGhostPurple();	
+	//ENEMY* ghostorange = GetGhostOrange();	
+	//ENEMY* ghostgreen = GetGhostGreen();	
+	//ENEMY* ghostblue = GetGhostBlue();		
+	//ENEMY* ghostpurple = GetGhostPurple();	
+
 	PLAYER *player = GetPlayer();			// プレイヤーのポインターを初期化
 	BULLET *bullet = GetBullet();			// 弾のポインターを初期化
-	DOT *dot = GetDot();
+
+	DOT *cookies = GetCookies();
+	DOT *hotdog = GetHotdog();
+	DOT *cherry = GetCherry();
+	DOT *bread = GetBread();
+	DOT *croissant = GetCroissant();
+
+	EXPLOSION *explosion = GetExplosion();
 
 	// 敵とプレイヤーキャラ
 	for (int i = 0; i < MAX_ENEMY; i++)
@@ -359,130 +380,196 @@ void CheckHit(void)
 		}
 
 
-		//敵の有効フラグをチェックする(orange)
-		if (ghostorange[i].use == false)
-			continue;
+		////敵の有効フラグをチェックする(orange)
+		//if (ghostorange[i].use == false)
+		//	continue;
 
-		//BCの当たり判定
-		if (CollisionBC(player->pos, ghostorange[i].pos, player->size, ghostorange[i].size))
-		{
-			// 敵キャラクターは倒される
-			ghostorange[i].use = false;
-			ReleaseShadow(ghostorange[i].shadowIdx);
+		////BCの当たり判定
+		//if (CollisionBC(player->pos, ghostorange[i].pos, player->size, ghostorange[i].size))
+		//{
+		//	// 敵キャラクターは倒される
+		//	ghostorange[i].use = false;
+		//	ReleaseShadow(ghostorange[i].shadowIdx);
 
-			// Game Over
-			SetFade(FADE_OUT, MODE_RESULT);
-		}
+		//	// Game Over
+		//	SetFade(FADE_OUT, MODE_RESULT);
+		//}
 
-		//敵の有効フラグをチェックする(green)
-		if (ghostgreen[i].use == false)
-			continue;
+		////敵の有効フラグをチェックする(green)
+		//if (ghostgreen[i].use == false)
+		//	continue;
 
-		//BCの当たり判定
-		if (CollisionBC(player->pos, ghostgreen[i].pos, player->size, ghostgreen[i].size))
-		{
-			// 敵キャラクターは倒される
-			ghostgreen[i].use = false;
-			ReleaseShadow(ghostgreen[i].shadowIdx);
+		////BCの当たり判定
+		//if (CollisionBC(player->pos, ghostgreen[i].pos, player->size, ghostgreen[i].size))
+		//{
+		//	// 敵キャラクターは倒される
+		//	ghostgreen[i].use = false;
+		//	ReleaseShadow(ghostgreen[i].shadowIdx);
 
-			// Game Over
-			SetFade(FADE_OUT, MODE_RESULT);
-		}
-
-
-		//敵の有効フラグをチェックする(blue)
-		if (ghostblue[i].use == false)
-			continue;
-
-		//BCの当たり判定
-		if (CollisionBC(player->pos, ghostblue[i].pos, player->size, ghostblue[i].size))
-		{
-			// 敵キャラクターは倒される
-			ghostblue[i].use = false;
-			ReleaseShadow(ghostblue[i].shadowIdx);
-
-			// Game Over
-			SetFade(FADE_OUT, MODE_RESULT);
-		}
+		//	// Game Over
+		//	SetFade(FADE_OUT, MODE_RESULT);
+		//}
 
 
-		//敵の有効フラグをチェックする(purple)
-		if (ghostpurple[i].use == false)
-			continue;
+		////敵の有効フラグをチェックする(blue)
+		//if (ghostblue[i].use == false)
+		//	continue;
 
-		//BCの当たり判定
-		if (CollisionBC(player->pos, ghostpurple[i].pos, player->size, ghostpurple[i].size))
-		{
-			// 敵キャラクターは倒される
-			ghostpurple[i].use = false;
-			ReleaseShadow(ghostpurple[i].shadowIdx);
+		////BCの当たり判定
+		//if (CollisionBC(player->pos, ghostblue[i].pos, player->size, ghostblue[i].size))
+		//{
+		//	// 敵キャラクターは倒される
+		//	ghostblue[i].use = false;
+		//	ReleaseShadow(ghostblue[i].shadowIdx);
 
-			// Game Over
-			SetFade(FADE_OUT, MODE_RESULT);
-		}
+		//	// Game Over
+		//	SetFade(FADE_OUT, MODE_RESULT);
+		//}
+
+
+		////敵の有効フラグをチェックする(purple)
+		//if (ghostpurple[i].use == false)
+		//	continue;
+
+		////BCの当たり判定
+		//if (CollisionBC(player->pos, ghostpurple[i].pos, player->size, ghostpurple[i].size))
+		//{
+		//	// 敵キャラクターは倒される
+		//	ghostpurple[i].use = false;
+		//	ReleaseShadow(ghostpurple[i].shadowIdx);
+
+		//	// Game Over
+		//	SetFade(FADE_OUT, MODE_RESULT);
+		//}
 
 	}
 
 	// プレイヤーとドット
 	for (int d = 0; d < MAX_DOT; d++)
 	{
-		if (dot[d].use == false)
+		// cookies
+		if (cookies[d].use == false)
 			continue;
 
 		//BCの当たり判定
-		if (CollisionBC(player->pos, dot[d].pos, player->size, dot[d].size))
+		if (CollisionBC(player->pos, cookies[d].pos, player->size, cookies[d].size))
 		{
 			// ドットは食べられる
-			dot[d].use = false;
-			ReleaseShadow(dot[d].shadowIdx);
+			cookies[d].use = false;
+			ReleaseShadow(cookies[d].shadowIdx);
 
 			//点数加算
-			AddScore(100);
+			AddScore(150);
+		}
+
+
+		// hotdog
+		if (hotdog[d].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, hotdog[d].pos, player->size, hotdog[d].size))
+		{
+			// ドットは食べられる
+			hotdog[d].use = false;
+			ReleaseShadow(hotdog[d].shadowIdx);
+
+			//点数加算
+			AddScore(150);
+		}
+
+
+		// cherry
+		if (cherry[d].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, cherry[d].pos, player->size, cherry[d].size))
+		{
+			// ドットは食べられる
+			cherry[d].use = false;
+			ReleaseShadow(cherry[d].shadowIdx);
+
+			//点数加算
+			AddScore(150);
+		}
+
+		// bread
+		if (bread[d].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, bread[d].pos, player->size, bread[d].size))
+		{
+			// ドットは食べられる
+			bread[d].use = false;
+			ReleaseShadow(bread[d].shadowIdx);
+
+			//点数加算
+			AddScore(150);
+		}
+
+		// croissant
+		if (croissant[d].use == false)
+			continue;
+
+		//BCの当たり判定
+		if (CollisionBC(player->pos, croissant[d].pos, player->size, croissant[d].size))
+		{
+			// ドットは食べられる
+			croissant[d].use = false;
+			ReleaseShadow(croissant[d].shadowIdx);
+
+			//点数加算
+			AddScore(150);
+
 		}
 	}
 
 	// プレイヤーの弾と敵
-	//for (int i = 0; i < MAX_BULLET; i++)
-	//{
-	//	//弾の有効フラグをチェックする
-	//	if (bullet[i].use == false)
-	//		continue;
+	for (int i = 0; i < MAX_BULLET; i++)
+	{
+		//弾の有効フラグをチェックする
+		if (bullet[i].use == false)
+			continue;
 
-	//	// 敵と当たってるか調べる
-	//	for (int j = 0; j < MAX_ENEMY; j++)
-	//	{
-	//		//敵の有効フラグをチェックする
-	//		if (ghostred[j].use == false)
-	//			continue;
+			//BCの当たり判定
+			if (CollisionBC(bullet[i].pos, player->pos, bullet[i].fWidth, player->size))
+			{
+				// 当たったから未使用に戻す
+				bullet[i].use = false;
+				ReleaseShadow(bullet[i].shadowIdx);
 
-	//		//BCの当たり判定
-	//		if (CollisionBC(bullet[i].pos, ghostred[j].pos, bullet[i].fWidth, ghostred[j].size))
-	//		{
-	//			// 当たったから未使用に戻す
-	//			bullet[i].use = false;
-	//			ReleaseShadow(bullet[i].shadowIdx);
+				// player die
+				player->use = false;
+				ReleaseShadow(player->shadowIdx);
 
-	//			// 敵キャラクターは倒される
-	//			ghostred[j].use = false;
-	//			ReleaseShadow(ghostred[j].shadowIdx);
+				// explosion
+				SetExplosion(XMFLOAT3(player->pos.x, -15.0f, player->pos.z), 50.0f, 50.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	//			// スコアを足す
-	//			AddScore(10);
-	//		}
-	//	}
+				// ANIM_WAIT = 24 flame
+				if (explosion[i].countAnim >= 24 && player->use == false)
+				{
+					explosion[i].bUse = false;
+				}
 
-	//}
+				// to result
+				//SetFade(FADE_OUT, MODE_RESULT);
+				
+			}
+	}
+
 
 
 	// dotが全部なくなったら状態遷移
 	int dot_count = 0;
 	for (int i = 0; i < MAX_DOT; i++)
 	{
-		if (dot[i].use == false) continue;
+		if (cookies[i].use == false) continue;
 		dot_count++;
 	}
 
-	// エネミーが０匹？
+	// dotが０匹？
 	if (dot_count == 0)
 	{
 		SetFade(FADE_OUT, MODE_RESULT);

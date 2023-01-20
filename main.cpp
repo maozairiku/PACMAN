@@ -18,7 +18,6 @@
 #include "title.h"
 #include "result.h"
 #include "debugproc.h"
-#include "stage.h"
 #include "tutorial.h"
 #include "ui.h"
 #include "dot.h"

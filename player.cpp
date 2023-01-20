@@ -15,7 +15,9 @@
 #include "bullet.h"
 #include "debugproc.h"
 #include "meshfield.h"
-#include "stage.h"
+#include "explosion.h"
+#include "collision.h"
+#include "enemy.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -141,8 +143,8 @@ HRESULT InitPlayer(void)
 
 	//	// 親子関係
 	//	g_Parts[i].parent = &g_Player;		// ← ここに親のアドレスを入れる
-	////	g_Parts[腕].parent= &g_Player;		// 腕だったら親は本体（プレイヤー）
-	////	g_Parts[手].parent= &g_Paerts[腕];	// 指が腕の子供だった場合の例
+	//	g_Parts[腕].parent= &g_Player;		// 腕だったら親は本体（プレイヤー）
+	//	g_Parts[手].parent= &g_Paerts[腕];	// 指が腕の子供だった場合の例
 
 	//	// 階層アニメーション用のメンバー変数の初期化
 	//	g_Parts[i].tbl_adr = move_tbl;	// 再生するアニメデータの先頭アドレスをセット
@@ -204,164 +206,167 @@ void UpdatePlayer(void)
 
 	g_Player.spd *= 0.9f;
 
-	// 移動処理
-	if (GetKeyboardPress(DIK_LEFT))
+	if (g_Player.use == true) 
 	{
-		g_Player.spd = VALUE_MOVE;
-		//g_Player.pos.x -= g_Player.spd;
-		roty = XM_PI / 2;
-	}
-	if (GetKeyboardPress(DIK_RIGHT))
-	{
-		g_Player.spd = VALUE_MOVE;
-		//g_Player.pos.x += g_Player.spd;
-		roty = -XM_PI / 2;
-	}
-	if (GetKeyboardPress(DIK_UP))
-	{
-		g_Player.spd = VALUE_MOVE;
-		//g_Player.pos.z += g_Player.spd;
-		roty = XM_PI;
-	}
-	if (GetKeyboardPress(DIK_DOWN))
-	{
-		g_Player.spd = VALUE_MOVE;
-		//g_Player.pos.z -= g_Player.spd;
-		roty = 0.0f;
-	}
-	
-	// ゲームパッド対応
-	else if (IsButtonTriggered(0, BUTTON_LEFT) )
-	{
-		g_Player.spd = VALUE_MOVE;
-		roty = XM_PI / 2;
-	}
-	else if (IsButtonTriggered(0, BUTTON_RIGHT))
-	{
-		g_Player.spd = VALUE_MOVE;
-		//g_Player.pos.x += g_Player.spd;
-		roty = -XM_PI / 2;
-	}
-	else if (IsButtonTriggered(0, BUTTON_UP))
-	{
-		g_Player.spd = VALUE_MOVE;
-		//g_Player.pos.z += g_Player.spd;
-		roty = XM_PI;
-	}
-	else if (IsButtonTriggered(0, BUTTON_DOWN))
-	{
-		g_Player.spd = VALUE_MOVE;
-		//g_Player.pos.z -= g_Player.spd;
-		roty = 0.0f;
-	}
+
+		// 移動処理
+		if (GetKeyboardPress(DIK_LEFT))
+		{
+			g_Player.spd = VALUE_MOVE;
+			//g_Player.pos.x -= g_Player.spd;
+			roty = XM_PI / 2;
+		}
+		if (GetKeyboardPress(DIK_RIGHT))
+		{
+			g_Player.spd = VALUE_MOVE;
+			//g_Player.pos.x += g_Player.spd;
+			roty = -XM_PI / 2;
+		}
+		if (GetKeyboardPress(DIK_UP))
+		{
+			g_Player.spd = VALUE_MOVE;
+			//g_Player.pos.z += g_Player.spd;
+			roty = XM_PI;
+		}
+		if (GetKeyboardPress(DIK_DOWN))
+		{
+			g_Player.spd = VALUE_MOVE;
+			//g_Player.pos.z -= g_Player.spd;
+			roty = 0.0f;
+		}
+
+		// ゲームパッド対応
+		else if (IsButtonTriggered(0, BUTTON_LEFT))
+		{
+			g_Player.spd = VALUE_MOVE;
+			roty = XM_PI / 2;
+		}
+		else if (IsButtonTriggered(0, BUTTON_RIGHT))
+		{
+			g_Player.spd = VALUE_MOVE;
+			//g_Player.pos.x += g_Player.spd;
+			roty = -XM_PI / 2;
+		}
+		else if (IsButtonTriggered(0, BUTTON_UP))
+		{
+			g_Player.spd = VALUE_MOVE;
+			//g_Player.pos.z += g_Player.spd;
+			roty = XM_PI;
+		}
+		else if (IsButtonTriggered(0, BUTTON_DOWN))
+		{
+			g_Player.spd = VALUE_MOVE;
+			//g_Player.pos.z -= g_Player.spd;
+			roty = 0.0f;
+		}
+
+
 
 
 
 #ifdef _DEBUG
-	if (GetKeyboardPress(DIK_R))
-	{
-		g_Player.pos.z = g_Player.pos.x = 0.0f;
-		g_Player.spd = 0.0f;
-		roty = 0.0f;
-	}
+		if (GetKeyboardPress(DIK_R))
+		{
+			g_Player.pos.z = g_Player.pos.x = 0.0f;
+			g_Player.spd = 0.0f;
+			roty = 0.0f;
+		}
 #endif
 
 
-	{	// 押した方向にプレイヤーを移動させる
-		// 押した方向にプレイヤーを向かせている所
-		g_Player.rot.y = roty + cam->rot.y;
+		{	// 押した方向にプレイヤーを移動させる
+			// 押した方向にプレイヤーを向かせている所
+			g_Player.rot.y = roty + cam->rot.y;
 
-		g_Player.pos.x -= sinf(g_Player.rot.y) * g_Player.spd;
-		g_Player.pos.z -= cosf(g_Player.rot.y) * g_Player.spd;
-	}
-
-
-	// レイキャストして足元の高さを求める
-	//XMFLOAT3 HitPosition;		// 交点
-	//XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-	//bool ans = RayHitField(g_Player.pos, &HitPosition, &Normal);
-	//if (ans)
-	//{
-	//	g_Player.pos.y = HitPosition.y + PLAYER_OFFSET_Y;
-	//}
-	//else
-	//{
-	//	g_Player.pos.y = PLAYER_OFFSET_Y;
-	//	Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	//}
+			g_Player.pos.x -= sinf(g_Player.rot.y) * g_Player.spd;
+			g_Player.pos.z -= cosf(g_Player.rot.y) * g_Player.spd;
+		}
 
 
-	// 弾発射処理
-	if (GetKeyboardTrigger(DIK_SPACE))
-	{
-		SetBullet(g_Player.pos, g_Player.rot);
-	}
+		// レイキャストして足元の高さを求める
+		//XMFLOAT3 HitPosition;		// 交点
+		//XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
+		//bool ans = RayHitField(g_Player.pos, &HitPosition, &Normal);
+		//if (ans)
+		//{
+		//	g_Player.pos.y = HitPosition.y + PLAYER_OFFSET_Y;
+		//}
+		//else
+		//{
+		//	g_Player.pos.y = PLAYER_OFFSET_Y;
+		//	Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		//}
 
 
-	// 影もプレイヤーの位置に合わせる
-	XMFLOAT3 pos = g_Player.pos;
-	pos.y -= (PLAYER_OFFSET_Y - 0.1f);
-	SetPositionShadow(g_Player.shadowIdx, pos);
-
-	//// 階層アニメーション
-	//for (int i = 0; i < PLAYER_PARTS_MAX; i++)
-	//{
-	//	// 使われているなら処理する
-	//	if (g_Parts[i].use == TRUE)
-	//	{
-	//		// 移動処理
-	//		int		index = (int)g_Parts[i].move_time;
-	//		float	time = g_Parts[i].move_time - index;
-	//		int		size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);
-
-	//		float dt = 1.0f / g_Parts[i].tbl_adr[index].frame;	// 1フレームで進める時間
-	//		g_Parts[i].move_time += dt;					// アニメーションの合計時間に足す
-
-	//		if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
-	//		{
-	//			g_Parts[i].move_time = 0.0f;
-	//			index = 0;
-	//		}
-
-	//		// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-	//		XMVECTOR p1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].pos);	// 次の場所
-	//		XMVECTOR p0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].pos);	// 現在の場所
-	//		XMVECTOR vec = p1 - p0;
-	//		XMStoreFloat3(&g_Parts[i].pos, p0 + vec * time);
-
-	//		// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
-	//		XMVECTOR r1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].rot);	// 次の角度
-	//		XMVECTOR r0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].rot);	// 現在の角度
-	//		XMVECTOR rot = r1 - r0;
-	//		XMStoreFloat3(&g_Parts[i].rot, r0 + rot * time);
-
-	//		// scaleを求める S = StartX + (EndX - StartX) * 今の時間
-	//		XMVECTOR s1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].scl);	// 次のScale
-	//		XMVECTOR s0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].scl);	// 現在のScale
-	//		XMVECTOR scl = s1 - s0;
-	//		XMStoreFloat3(&g_Parts[i].scl, s0 + scl * time);
-
-	//	}
-	
+		// 弾発射処理
+		//if (GetKeyboardTrigger(DIK_SPACE))
+		//{
+		//	SetBullet(g_Player.pos, g_Player.rot);
+		//}
 
 
-
-
-	// ポイントライトのテスト
-	{
-		LIGHT *light = GetLightData(1);
+		// 影もプレイヤーの位置に合わせる
 		XMFLOAT3 pos = g_Player.pos;
-		pos.y += 20.0f;
+		pos.y -= (PLAYER_OFFSET_Y - 0.1f);
+		SetPositionShadow(g_Player.shadowIdx, pos);
 
-		light->Position = pos;
-		light->Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		light->Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-		light->Type = LIGHT_TYPE_POINT;
-		light->Enable = TRUE;
-		SetLightData(1, light);
+		//// 階層アニメーション
+		//for (int i = 0; i < PLAYER_PARTS_MAX; i++)
+		//{
+		//	// 使われているなら処理する
+		//	if (g_Parts[i].use == TRUE)
+		//	{
+		//		// 移動処理
+		//		int		index = (int)g_Parts[i].move_time;
+		//		float	time = g_Parts[i].move_time - index;
+		//		int		size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);
+
+		//		float dt = 1.0f / g_Parts[i].tbl_adr[index].frame;	// 1フレームで進める時間
+		//		g_Parts[i].move_time += dt;					// アニメーションの合計時間に足す
+
+		//		if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
+		//		{
+		//			g_Parts[i].move_time = 0.0f;
+		//			index = 0;
+		//		}
+
+		//		// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
+		//		XMVECTOR p1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].pos);	// 次の場所
+		//		XMVECTOR p0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].pos);	// 現在の場所
+		//		XMVECTOR vec = p1 - p0;
+		//		XMStoreFloat3(&g_Parts[i].pos, p0 + vec * time);
+
+		//		// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
+		//		XMVECTOR r1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].rot);	// 次の角度
+		//		XMVECTOR r0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].rot);	// 現在の角度
+		//		XMVECTOR rot = r1 - r0;
+		//		XMStoreFloat3(&g_Parts[i].rot, r0 + rot * time);
+
+		//		// scaleを求める S = StartX + (EndX - StartX) * 今の時間
+		//		XMVECTOR s1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].scl);	// 次のScale
+		//		XMVECTOR s0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].scl);	// 現在のScale
+		//		XMVECTOR scl = s1 - s0;
+		//		XMStoreFloat3(&g_Parts[i].scl, s0 + scl * time);
+
+		//	}
+
+
+		// ポイントライトのテスト
+		{
+			LIGHT* light = GetLightData(1);
+			XMFLOAT3 pos = g_Player.pos;
+			pos.y += 20.0f;
+
+			light->Position = pos;
+			light->Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			light->Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			light->Type = LIGHT_TYPE_POINT;
+			light->Enable = TRUE;
+			SetLightData(1, light);
+		}
+
+
 	}
-
-
 
 	//////////////////////////////////////////////////////////////////////
 	// 姿勢制御
@@ -392,21 +397,20 @@ void UpdatePlayer(void)
 //	XMStoreFloat4(&g_Player.Quaternion, quat);
 
 
-	// Stgge 当たり判定
-	stage* Stage = GetStage();
-	bool ans;
-	XMFLOAT3 hitPos;
-	XMFLOAT3 hitNormal;
-	ans = RayHitModel(&Stage->model, Stage->mtxWorld, XMFLOAT3(g_Player.pos.x, 9.0f, g_Player.pos.z), 50.0f, XMFLOAT3(-sinf(g_Player.rot.y), 0.0f, -cosf(g_Player.rot.y)), &hitPos, &hitNormal);
-	if (ans)
-	{
-		g_Player.pos = oldPos;
-	}
+	// Stage 当たり判定
+	//STAGE* Stage = GetStage();
+	//bool ans;
+	//XMFLOAT3 hitPos;
+	//XMFLOAT3 hitNormal;
+	//ans = RayHitModel(&Stage->model, Stage->mtxWorld, XMFLOAT3(g_Player.pos.x, 9.0f, g_Player.pos.z), 50.0f, XMFLOAT3(-sinf(g_Player.rot.y), 0.0001f, -cosf(g_Player.rot.y)), &hitPos, &hitNormal);
+	//if (ans)
+	//{
+	//	g_Player.pos = oldPos;
+	//}
 
 #ifdef _DEBUG
 	// デバッグ表示
 	PrintDebugProc("Player X:%f Y:%f Z:%f\n", g_Player.pos.x, g_Player.pos.y, g_Player.pos.z);
-	PrintDebugProc("HitPos X%f Y%f Z%f\n", hitPos.x, hitPos.y, hitPos.z);
 #endif
 
 }
@@ -421,38 +425,43 @@ void DrawPlayer(void)
 	// カリング無効
 	SetCullingMode(CULL_MODE_NONE);
 
-	// ワールドマトリックスの初期化
-	mtxWorld = XMMatrixIdentity();
+	for (int u = 0; u < MAX_PLAYER; u++)
+	{
 
-	// スケールを反映
-	mtxScl = XMMatrixScaling(g_Player.scl.x, g_Player.scl.y, g_Player.scl.z);
-	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
+		if (g_Player.use == false) continue;
 
-	// 回転を反映
-	mtxRot = XMMatrixRotationRollPitchYaw(g_Player.rot.x, g_Player.rot.y + XM_PI, g_Player.rot.z);
-	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
+		// ワールドマトリックスの初期化
+		mtxWorld = XMMatrixIdentity();
 
-	// クォータニオンを反映
-	quatMatrix = XMMatrixRotationQuaternion(XMLoadFloat4(&g_Player.Quaternion));
-	mtxWorld = XMMatrixMultiply(mtxWorld, quatMatrix);
+		// スケールを反映
+		mtxScl = XMMatrixScaling(g_Player.scl.x, g_Player.scl.y, g_Player.scl.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
-	// 移動を反映
-	mtxTranslate = XMMatrixTranslation(g_Player.pos.x, g_Player.pos.y, g_Player.pos.z);
-	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
+		// 回転を反映
+		mtxRot = XMMatrixRotationRollPitchYaw(g_Player.rot.x, g_Player.rot.y + XM_PI, g_Player.rot.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
-	// ワールドマトリックスの設定
-	SetWorldMatrix(&mtxWorld);
+		// クォータニオンを反映
+		quatMatrix = XMMatrixRotationQuaternion(XMLoadFloat4(&g_Player.Quaternion));
+		mtxWorld = XMMatrixMultiply(mtxWorld, quatMatrix);
 
-	XMStoreFloat4x4(&g_Player.mtxWorld, mtxWorld);
+		// 移動を反映
+		mtxTranslate = XMMatrixTranslation(g_Player.pos.x, g_Player.pos.y, g_Player.pos.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
+		// ワールドマトリックスの設定
+		SetWorldMatrix(&mtxWorld);
 
-	// 縁取りの設定
-	SetFuchi(0);
-
-	// モデル描画
-	DrawModel(&g_Player.model);
+		XMStoreFloat4x4(&g_Player.mtxWorld, mtxWorld);
 
 
+		// 縁取りの設定
+		SetFuchi(0);
+
+		// モデル描画
+		DrawModel(&g_Player.model);
+
+	}
 
 	// 階層アニメーション
 	for (int i = 0; i < PLAYER_PARTS_MAX; i++)

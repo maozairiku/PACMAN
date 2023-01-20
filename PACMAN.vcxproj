@@ -151,6 +151,7 @@
     <ClCompile Include="debugproc.cpp" />
     <ClCompile Include="dot.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="explosion.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
@@ -165,9 +166,9 @@
     <ClCompile Include="result.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shadow.cpp" />
+    <ClCompile Include="sky.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
-    <ClCompile Include="stage.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tree.cpp" />
     <ClCompile Include="tutorial.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="debugproc.h" />
     <ClInclude Include="dot.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="explosion.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
@@ -194,9 +196,9 @@
     <ClInclude Include="result.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="shadow.h" />
+    <ClInclude Include="sky.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
-    <ClInclude Include="stage.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="tree.h" />
     <ClInclude Include="tutorial.h" />

@@ -40,7 +40,7 @@ HRESULT MakeVertexBullet(void);
 static ID3D11Buffer					*g_VertexBuffer = NULL;	// 頂点バッファ
 static ID3D11ShaderResourceView		*g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 
-static BULLET						g_Bullet[MAX_BULLET];	// 木ワーク
+static BULLET						g_Bullet[MAX_BULLET];	// バレットワーク
 static int							g_TexNo;				// テクスチャ番号
 static BOOL							g_Load = FALSE;
 

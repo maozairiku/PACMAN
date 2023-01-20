@@ -10,9 +10,9 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MAX_DOT			(6)				// エネミーの数
+#define MAX_DOT			(1)				// エネミーの数
 
-#define	DOT_SIZE		(5.0f)				// 当たり判定の大きさ
+#define	DOT_SIZE		(10.0f)				// 当たり判定の大きさ
 
 
 //*****************************************************************************
@@ -29,7 +29,7 @@ struct DOT
 	bool				load;
 	DX11_MODEL			model;				// モデル情報
 	XMFLOAT4			diffuse[MODEL_MAX_MATERIAL];	// モデルの色
-	int					colorIdx;				// dot color
+	int					colorIdx;			// dot color
 
 	float				spd;				// 移動スピード
 	float				size;				// 当たり判定の大きさ
@@ -49,5 +49,11 @@ void UninitDot(void);
 void UpdateDot(void);
 void DrawDot(void);
 
-DOT *GetDot(void);
+DOT *GetCookies(void);
+DOT *GetHotdog(void);
+DOT *GetCherry(void);
+DOT *GetBread(void);
+DOT *GetCroissant(void);
+
+
 
