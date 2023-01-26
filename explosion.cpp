@@ -16,12 +16,13 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define TEXTURE_MAX			(1)					// テクスチャの数
+#define TEXTURE_MAX				(2)				// テクスチャの数
 
 #define	EXPLOSION_WIDTH			(50.0f)			// 頂点サイズ
 #define	EXPLOSION_HEIGHT		(50.0f)			// 頂点サイズ
 
 #define ANIM_WAIT				(24)			// アニメーションの切り替わるWait値
+#define ANIM_WAIT2				(30)			//
 
 #define	MAX_EXPLOSION			(256)			// 爆発最大数
 
@@ -43,6 +44,7 @@ static bool					g_bAlpaTest;		// アルファテストON/OFF
 static char* g_TextureName[] =
 {
 	"data/TEXTURE/explosion.png",
+	"data/TEXTURE/explosion2.png",
 };
 
 //=============================================================================
@@ -63,8 +65,6 @@ HRESULT InitExplosion(void)
 			NULL);
 	}
 
-	g_TexNo = 0;
-
 	// 爆発ワークの初期化
 	for (int nCntExplosion = 0; nCntExplosion < MAX_EXPLOSION; nCntExplosion++)
 	{
@@ -78,6 +78,7 @@ HRESULT InitExplosion(void)
 		g_Explosion[nCntExplosion].bUse = false;
 		g_Explosion[nCntExplosion].countAnim = 0.0f;
 		g_Explosion[nCntExplosion].animFlame = 0.0f;
+		g_Explosion[nCntExplosion].type = DIE_EXPLO;
 	}
 
 	g_bAlpaTest = true;
@@ -110,50 +111,98 @@ void UninitExplosion(void)
 // 更新処理
 //=============================================================================
 void UpdateExplosion(void)
-{
-
+{	
 	for (int nCntExplosion = 0; nCntExplosion < MAX_EXPLOSION; nCntExplosion++)
 	{
 		if (g_Explosion[nCntExplosion].bUse == true)
 		{
-			g_Explosion[nCntExplosion].countAnim += 1.0f;
-			if ((int)g_Explosion[nCntExplosion].countAnim % 3 == 0)
-			{
-				g_Explosion[nCntExplosion].animFlame++;
-			}
-
-			// 頂点バッファに値をセットする
 			D3D11_MAPPED_SUBRESOURCE msr;
-			GetDeviceContext()->Map(g_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-
-			VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
-
-			float fWidth = 100.0f;
-			float fHeight = 100.0f;
-
-			// 頂点座標の設定
-			vertex[0].Position = XMFLOAT3(-fWidth / 2.0f, fHeight, 0.0f);
-			vertex[1].Position = XMFLOAT3(fWidth / 2.0f, fHeight, 0.0f);
-			vertex[2].Position = XMFLOAT3(-fWidth / 2.0f, 0.0f, 0.0f);
-			vertex[3].Position = XMFLOAT3(fWidth / 2.0f, 0.0f, 0.0f);
-
-			// 拡散光の設定
-			vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
-			// テクスチャ座標の設定
-			vertex[0].TexCoord = XMFLOAT2(g_Explosion[nCntExplosion].animFlame / 8, 0.0f);
-			vertex[1].TexCoord = XMFLOAT2((g_Explosion[nCntExplosion].animFlame + 1 ) / 8, 0.0f);
-			vertex[2].TexCoord = XMFLOAT2(g_Explosion[nCntExplosion].animFlame / 8, 1.0f);
-			vertex[3].TexCoord = XMFLOAT2((g_Explosion[nCntExplosion].animFlame + 1 ) / 8, 1.0f);
-
-			GetDeviceContext()->Unmap(g_VertexBuffer, 0);
-
-			if (g_Explosion[nCntExplosion].countAnim >= ANIM_WAIT)
+			VERTEX_3D* vertex;
+			
+			float fWidth = g_Explosion[nCntExplosion].fWidth;
+			float fHeight = g_Explosion[nCntExplosion].fHeight;
+			
+			switch (g_Explosion[nCntExplosion].type)
 			{
-				g_Explosion[nCntExplosion].countAnim = 0.0f;
+			case DIE_EXPLO:
+				g_Explosion[nCntExplosion].countAnim += 1.0f;
+				if ((int)g_Explosion[nCntExplosion].countAnim % 3 == 0)
+				{
+					g_Explosion[nCntExplosion].animFlame++;
+				}
+
+				// 頂点バッファに値をセットする
+				GetDeviceContext()->Map(g_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+				vertex = (VERTEX_3D*)msr.pData;
+
+				// 頂点座標の設定
+				vertex[0].Position = XMFLOAT3(-fWidth / 2.0f, fHeight, 0.0f);
+				vertex[1].Position = XMFLOAT3(fWidth / 2.0f, fHeight, 0.0f);
+				vertex[2].Position = XMFLOAT3(-fWidth / 2.0f, 0.0f, 0.0f);
+				vertex[3].Position = XMFLOAT3(fWidth / 2.0f, 0.0f, 0.0f);
+
+				// 拡散光の設定
+				vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				// テクスチャ座標の設定
+				vertex[0].TexCoord = XMFLOAT2(g_Explosion[nCntExplosion].animFlame / 8, 0.0f);
+				vertex[1].TexCoord = XMFLOAT2((g_Explosion[nCntExplosion].animFlame + 1) / 8, 0.0f);
+				vertex[2].TexCoord = XMFLOAT2(g_Explosion[nCntExplosion].animFlame / 8, 1.0f);
+				vertex[3].TexCoord = XMFLOAT2((g_Explosion[nCntExplosion].animFlame + 1) / 8, 1.0f);
+
+				GetDeviceContext()->Unmap(g_VertexBuffer, 0);
+
+				if (g_Explosion[nCntExplosion].countAnim >= ANIM_WAIT)
+				{
+					g_Explosion[nCntExplosion].bUse = false;
+					ReleaseShadow(g_Explosion[nCntExplosion].nIdxShadow);
+					g_Explosion[nCntExplosion].countAnim = 0.0f;
+				}
+				break;
+
+			case OFFGROUND_EXPLO:
+				g_Explosion[nCntExplosion].countAnim += 1.0f;
+				if ((int)g_Explosion[nCntExplosion].countAnim % 3 == 0)
+				{
+					g_Explosion[nCntExplosion].animFlame++;
+				}
+
+				// 頂点バッファに値をセットする
+				GetDeviceContext()->Map(g_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+				vertex = (VERTEX_3D*)msr.pData;
+
+				// 頂点座標の設定
+				vertex[0].Position = XMFLOAT3(-fWidth / 2.0f, fHeight, 0.0f);
+				vertex[1].Position = XMFLOAT3(fWidth / 2.0f, fHeight, 0.0f);
+				vertex[2].Position = XMFLOAT3(-fWidth / 2.0f, 0.0f, 0.0f);
+				vertex[3].Position = XMFLOAT3(fWidth / 2.0f, 0.0f, 0.0f);
+
+				// 拡散光の設定
+				vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				// テクスチャ座標の設定
+				vertex[0].TexCoord = XMFLOAT2(g_Explosion[nCntExplosion].animFlame / 10, 0.0f);
+				vertex[1].TexCoord = XMFLOAT2((g_Explosion[nCntExplosion].animFlame + 1) / 10, 0.0f);
+				vertex[2].TexCoord = XMFLOAT2(g_Explosion[nCntExplosion].animFlame / 10, 1.0f);
+				vertex[3].TexCoord = XMFLOAT2((g_Explosion[nCntExplosion].animFlame + 1) / 10, 1.0f);
+
+				GetDeviceContext()->Unmap(g_VertexBuffer, 0);
+
+				if (g_Explosion[nCntExplosion].countAnim >= ANIM_WAIT2)
+				{
+					g_Explosion[nCntExplosion].bUse = false;
+					ReleaseShadow(g_Explosion[nCntExplosion].nIdxShadow);
+					g_Explosion[nCntExplosion].countAnim = 0.0f;
+				}
+				break;
 			}
 		}
 	}
@@ -257,7 +306,7 @@ void DrawExplosion(void)
 			SetMaterial(g_Explosion[i].material);
 
 			// テクスチャ設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[i % TEXTURE_MAX]);
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[g_Explosion[i].type]);
 
 			// ポリゴンの描画
 			GetDeviceContext()->Draw(4, 0);
@@ -321,7 +370,7 @@ HRESULT MakeVertexExplosion(void)
 //=============================================================================
 // 爆発のパラメータをセット
 //=============================================================================
-int SetExplosion(XMFLOAT3 pos, float fWidth, float fHeight, XMFLOAT4 col)
+int SetExplosion(XMFLOAT3 pos, float fWidth, float fHeight, int Type)
 {
 	int nIdxExplosion = -1;
 
@@ -329,10 +378,18 @@ int SetExplosion(XMFLOAT3 pos, float fWidth, float fHeight, XMFLOAT4 col)
 	{
 		if (!g_Explosion[nCntExplosion].bUse)
 		{
-			g_Explosion[nCntExplosion].pos = pos;
+			if (Type == DIE_EXPLO)
+			{
+				g_Explosion[nCntExplosion].pos = pos;
+			}
+			else if(Type == OFFGROUND_EXPLO)
+			{
+				g_Explosion[nCntExplosion].pos = XMFLOAT3(pos.x, 0.0, pos.z);
+			}
 			g_Explosion[nCntExplosion].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 			g_Explosion[nCntExplosion].fWidth = fWidth;
 			g_Explosion[nCntExplosion].fHeight = fHeight;
+			g_Explosion[nCntExplosion].type = Type;
 			g_Explosion[nCntExplosion].bUse = true;
 
 			// 影の設定

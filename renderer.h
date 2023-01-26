@@ -119,3 +119,6 @@ void DebugTextOut(char* text, int x, int y);
 void SetFuchi(int flag);
 void SetShaderCamera(XMFLOAT3 pos);
 
+void SetDefaultShader(void);
+void SetTime(float time);
+

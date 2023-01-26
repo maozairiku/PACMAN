@@ -50,13 +50,19 @@ static int	g_ViewPortType_Game = TYPE_FULL_SCREEN;
 
 static bool	g_bPause = true;	// ポーズON/OFF
 
+static float g_Time;	// Time set (init->最初の時間　/　Update->時間加算　/　g_Time->ずっと加算していますので、initではなく、グローバル変数に設定します。)
+
 
 //=============================================================================
 // 初期化処理
 //=============================================================================
 HRESULT InitGame(void)
 {
+	g_Time = 0.0f;
+
 	g_ViewPortType_Game = TYPE_FULL_SCREEN;
+
+	g_bPause = true;
 
 	// フィールドの初期化
 	InitMeshField(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), 100, 100, 13.0f, 13.0f);
@@ -165,6 +171,10 @@ void UninitGame(void)
 //=============================================================================
 void UpdateGame(void)
 {
+	// Set time
+	SetTime(g_Time);		// g_time 未だは 0.0fとなっています
+	g_Time++;				// 加算開始
+
 #ifdef _DEBUG
 	if (GetKeyboardTrigger(DIK_V))
 	{
@@ -180,8 +190,12 @@ void UpdateGame(void)
 
 #endif
 
-	if(g_bPause == false)
+	if (g_bPause == false)
+	{
+	// explosion
+	UpdateExplosion();
 		return;
+	}
 
 	// 地面処理の更新
 	UpdateMeshField();
@@ -194,9 +208,6 @@ void UpdateGame(void)
 
 	// エネミーの更新処理
 	UpdateEnemy();
-
-	// explosion
-	UpdateExplosion();
 
 	// 壁処理の更新
 	UpdateMeshWall();
@@ -221,6 +232,9 @@ void UpdateGame(void)
 
 	// スコアの更新処理
 	UpdateScore();
+
+	// set explosion
+	UpdateExplosion();
 }
 
 //=============================================================================
@@ -345,7 +359,7 @@ void DrawGame(void)
 void CheckHit(void)
 {
 	ENEMY *ghostred = GetGhostRed();		// エネミーのポインターを初期化
-	//ENEMY* ghostorange = GetGhostOrange();	
+	ENEMY* ghostorange = GetGhostOrange();	
 	//ENEMY* ghostgreen = GetGhostGreen();	
 	//ENEMY* ghostblue = GetGhostBlue();		
 	//ENEMY* ghostpurple = GetGhostPurple();	
@@ -360,6 +374,7 @@ void CheckHit(void)
 	DOT *croissant = GetCroissant();
 
 	EXPLOSION *explosion = GetExplosion();
+	CAMERA *camera = GetCamera();
 
 	// 敵とプレイヤーキャラ
 	for (int i = 0; i < MAX_ENEMY; i++)
@@ -380,20 +395,20 @@ void CheckHit(void)
 		}
 
 
-		////敵の有効フラグをチェックする(orange)
-		//if (ghostorange[i].use == false)
-		//	continue;
+		//敵の有効フラグをチェックする(orange)
+		if (ghostorange[i].use == false)
+			continue;
 
-		////BCの当たり判定
-		//if (CollisionBC(player->pos, ghostorange[i].pos, player->size, ghostorange[i].size))
-		//{
-		//	// 敵キャラクターは倒される
-		//	ghostorange[i].use = false;
-		//	ReleaseShadow(ghostorange[i].shadowIdx);
+		//BCの当たり判定
+		if (CollisionBC(player->pos, ghostorange[i].pos, player->size, ghostorange[i].size))
+		{
+			// 敵キャラクターは倒される
+			ghostorange[i].use = false;
+			ReleaseShadow(ghostorange[i].shadowIdx);
 
-		//	// Game Over
-		//	SetFade(FADE_OUT, MODE_RESULT);
-		//}
+			// Game Over
+			SetFade(FADE_OUT, MODE_RESULT);
+		}
 
 		////敵の有効フラグをチェックする(green)
 		//if (ghostgreen[i].use == false)
@@ -522,7 +537,6 @@ void CheckHit(void)
 
 			//点数加算
 			AddScore(150);
-
 		}
 	}
 
@@ -544,18 +558,14 @@ void CheckHit(void)
 				player->use = false;
 				ReleaseShadow(player->shadowIdx);
 
-				// explosion
-				SetExplosion(XMFLOAT3(player->pos.x, -15.0f, player->pos.z), 50.0f, 50.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-
-				// ANIM_WAIT = 24 flame
-				if (explosion[i].countAnim >= 24 && player->use == false)
-				{
-					explosion[i].bUse = false;
-				}
-
-				// to result
-				//SetFade(FADE_OUT, MODE_RESULT);
+				// Set Pause
+				SetPause(false);
 				
+				// explosion
+				SetExplosion(XMFLOAT3(player->pos.x, -15.0f, player->pos.z), 50.0f, 50.0f, DIE_EXPLO);
+				
+				// to result
+				SetFade(FADE_OUT, MODE_RESULT);
 			}
 	}
 
@@ -565,7 +575,8 @@ void CheckHit(void)
 	int dot_count = 0;
 	for (int i = 0; i < MAX_DOT; i++)
 	{
-		if (cookies[i].use == false) continue;
+		if (cookies[i].use && hotdog[i].use && cherry[i].use && bread[i].use && croissant[i].use == false) continue;
+
 		dot_count++;
 	}
 
@@ -577,4 +588,11 @@ void CheckHit(void)
 
 }
 
+//=============================================================================
+// Set Pause
+//=============================================================================
+void SetPause(BOOL pause)
+{
+	g_bPause = pause;
+}
 

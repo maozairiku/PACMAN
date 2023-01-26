@@ -12,6 +12,7 @@
 #include "sky.h"
 #include "shadow.h"
 #include "meshfield.h"
+#include "player.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -44,7 +45,7 @@ HRESULT InitSky(void)
 
 		g_Sky[i].pos = XMFLOAT3(0.0f, 6.0f, 0.0f);
 		g_Sky[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_Sky[i].scl = XMFLOAT3(100.0f, 100.0f, 100.0f);
+		g_Sky[i].scl = XMFLOAT3(60.0f, 60.0f, 60.0f);
 
 		g_Sky[i].use = true;		
 
@@ -81,7 +82,9 @@ void UpdateSky(void)
 {
 	for (int i = 0; i < MAX_SKY; i++)
 	{
+		PLAYER *player = GetPlayer();
 
+		g_Sky[i].pos = player->pos;
 	}
 }
 

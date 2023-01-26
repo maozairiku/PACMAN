@@ -1,7 +1,7 @@
 //=============================================================================
 //
 // パーティクル処理 [particle.cpp]
-// Author : 王　ウ華
+// Author : 
 //
 //=============================================================================
 #include "main.h"
@@ -22,7 +22,7 @@
 #define	PARTICLE_SIZE_Y		(40.0f)		// 頂点サイズ
 #define	VALUE_MOVE_PARTICLE	(5.0f)		// 移動速度
 
-#define	MAX_PARTICLE		(512)		// パーティクル最大数
+#define	MAX_PARTICLE		(1024)		// パーティクル最大数
 
 #define	DISP_SHADOW						// 影の表示
 //#undef DISP_SHADOW
@@ -97,8 +97,8 @@ HRESULT InitParticle(void)
 	// パーティクルワークの初期化
 	for(int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
 	{
-		g_aParticle[nCntParticle].pos = XMFLOAT3(0.0f, 50.0f, 0.0f);
-		g_aParticle[nCntParticle].rot = XMFLOAT3(0.0f, -1.0f, 0.0f);
+		g_aParticle[nCntParticle].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_aParticle[nCntParticle].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_aParticle[nCntParticle].scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 		g_aParticle[nCntParticle].move = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -152,16 +152,19 @@ void UninitParticle(void)
 //=============================================================================
 void UpdateParticle(void)
 {
-	//PLAYER *pPlayer = GetPlayer();
-	//g_posBase = pPlayer->pos;
+	PLAYER *pPlayer = GetPlayer();
+	g_posBase = pPlayer->pos;
 
 	{
 		for(int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
 		{
 			if(g_aParticle[nCntParticle].bUse)
-			{	// 使用中
-				g_aParticle[nCntParticle].pos.x += g_aParticle[nCntParticle].move.x;
-				g_aParticle[nCntParticle].pos.z += g_aParticle[nCntParticle].move.z;
+			{// 使用中
+				g_aParticle[nCntParticle].pos.x += sinf(pPlayer->rot.y);
+				g_aParticle[nCntParticle].pos.z += cosf(pPlayer->rot.y);
+
+				//g_aParticle[nCntParticle].pos.x += g_aParticle[nCntParticle].move.x;
+				//g_aParticle[nCntParticle].pos.z += g_aParticle[nCntParticle].move.z;
 
 				g_aParticle[nCntParticle].pos.y += g_aParticle[nCntParticle].move.y;
 				if(g_aParticle[nCntParticle].pos.y <= g_aParticle[nCntParticle].fSizeY / 2)
@@ -197,12 +200,12 @@ void UpdateParticle(void)
 				}
 				else
 				{
-					if(g_aParticle[nCntParticle].nLife <= 80)
+					/*if(g_aParticle[nCntParticle].nLife <= 80)
 					{
 						g_aParticle[nCntParticle].material.Diffuse.x = 0.8f - (float)(80 - g_aParticle[nCntParticle].nLife) / 80 * 0.8f;
 						g_aParticle[nCntParticle].material.Diffuse.y = 0.7f - (float)(80 - g_aParticle[nCntParticle].nLife) / 80 * 0.7f;
 						g_aParticle[nCntParticle].material.Diffuse.z = 0.2f - (float)(80 - g_aParticle[nCntParticle].nLife) / 80 * 0.2f;
-					}
+					}*/
 
 					if(g_aParticle[nCntParticle].nLife <= 20)
 					{
@@ -233,14 +236,18 @@ void UpdateParticle(void)
 			move.y = rand() % 300 / 100.0f + g_fHeightBase;
 			move.z = cosf(fAngle) * fLength;
 
-			nLife = rand() % 100 + 150;  
+			nLife = 50;
 
-			fSize = (float)(rand() % 30 + 20);
+			//nLife = rand() % 100 + 150;  
+
+			fSize = 20;
+
+			//fSize = (float)(rand() % 30 + 20);
 
 			pos.y = fSize / 2;
 
 			// ビルボードの設定
-			SetParticle(pos, move, XMFLOAT4(0.8f, 0.7f, 0.2f, 0.85f), fSize, fSize, nLife);
+			//SetParticle(pPlayer->pos, XMFLOAT3(0.0f, 0.0f ,0.0f), XMFLOAT4(0.8f, 0.7f, 0.2f, 0.85f), fSize, fSize, nLife);
 		}
 	}
 }
@@ -333,7 +340,7 @@ void DrawParticle(void)
 	SetDepthEnable(true);
 
 	// フォグ有効
-	SetFogEnable(true);
+	SetFogEnable(false);
 
 }
 

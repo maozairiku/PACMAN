@@ -6,10 +6,17 @@
 //=============================================================================
 #pragma once
 
-
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
+enum EXPLOSION_TYPE
+{
+	DIE_EXPLO,
+	OFFGROUND_EXPLO,
+
+	EXPLOSION_TYPE_NUM,
+};
+
 struct EXPLOSION
 {
 	XMFLOAT3	pos;			// 位置
@@ -22,6 +29,7 @@ struct EXPLOSION
 	float		countAnim;		// animation count
 	float		animFlame;		// animation flame 
 
+	int			type;			// 爆発タイプ
 };
 
 //*****************************************************************************
@@ -34,6 +42,6 @@ void DrawExplosion(void);
 
 EXPLOSION* GetExplosion(void);
 
-int SetExplosion(XMFLOAT3 pos, float fWidth, float fHeight, XMFLOAT4 col);
+int SetExplosion(XMFLOAT3 pos, float fWidth, float fHeight, int type);
 
 

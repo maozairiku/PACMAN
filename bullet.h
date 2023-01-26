@@ -12,6 +12,14 @@
 //*****************************************************************************
 #define	MAX_BULLET		(256)	// 弾最大数
 
+enum TYPE
+{
+	LINE,
+	BEZIER,
+	
+	TYPE_NUM,
+};
+
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
@@ -28,6 +36,13 @@ typedef struct
 	int			shadowIdx;		// 影ID
 	bool		use;			// 使用しているかどうか
 
+	int			aniFrame;		// アニメーション用フレーム
+	int			aniDir;			// アニメーション用方向
+
+	int			moveType; // 移動タイプ
+	XMFLOAT3	beizerPos[4]; // ベジェ曲線用の座標
+	float		beizerTime; // ベジェ曲線用の時間
+
 
 } BULLET;
 
@@ -41,6 +56,7 @@ void UpdateBullet(void);
 void DrawBullet(void);
 
 int SetBullet(XMFLOAT3 pos, XMFLOAT3 rot);
+int SetBulletBezier(XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT3 targetPos);
 
 BULLET *GetBullet(void);
 

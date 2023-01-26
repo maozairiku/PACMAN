@@ -18,6 +18,7 @@
 #include "explosion.h"
 #include "collision.h"
 #include "enemy.h"
+#include "particle.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -204,6 +205,10 @@ void UpdatePlayer(void)
 
 	CAMERA *cam = GetCamera();
 
+	// for particle
+	int nLife = 50;
+	float fSize = 30.0f;
+
 	g_Player.spd *= 0.9f;
 
 	if (g_Player.use == true) 
@@ -215,24 +220,30 @@ void UpdatePlayer(void)
 			g_Player.spd = VALUE_MOVE;
 			//g_Player.pos.x -= g_Player.spd;
 			roty = XM_PI / 2;
+			SetParticle(g_Player.pos, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(0.8f, 0.7f, 0.2f, 0.85f), fSize, fSize, nLife);
+
 		}
 		if (GetKeyboardPress(DIK_RIGHT))
 		{
 			g_Player.spd = VALUE_MOVE;
 			//g_Player.pos.x += g_Player.spd;
 			roty = -XM_PI / 2;
+			SetParticle(g_Player.pos, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(0.8f, 0.7f, 0.2f, 0.85f), fSize, fSize, nLife);
+
 		}
 		if (GetKeyboardPress(DIK_UP))
 		{
 			g_Player.spd = VALUE_MOVE;
 			//g_Player.pos.z += g_Player.spd;
 			roty = XM_PI;
+			SetParticle(g_Player.pos, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(0.8f, 0.7f, 0.2f, 0.85f), fSize, fSize, nLife);
 		}
 		if (GetKeyboardPress(DIK_DOWN))
 		{
 			g_Player.spd = VALUE_MOVE;
 			//g_Player.pos.z -= g_Player.spd;
 			roty = 0.0f;
+			SetParticle(g_Player.pos, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(0.8f, 0.7f, 0.2f, 0.85f), fSize, fSize, nLife);
 		}
 
 		// ゲームパッド対応
@@ -261,8 +272,24 @@ void UpdatePlayer(void)
 		}
 
 
-
-
+		// player move limit
+		if (g_Player.pos.x >= 630.0f)
+		{
+			g_Player.pos.x = 630.0f;
+		}
+		if (g_Player.pos.x <= -630.0f)
+		{
+			g_Player.pos.x = -630.0f;
+		}
+		if (g_Player.pos.z >= 650.0f)
+		{
+			g_Player.pos.z = 650.0f;
+		}
+		if (g_Player.pos.z <= -650.0f)
+		{
+			g_Player.pos.z = -650.0f;
+		}
+	
 
 #ifdef _DEBUG
 		if (GetKeyboardPress(DIK_R))
@@ -353,19 +380,28 @@ void UpdatePlayer(void)
 
 		// ポイントライトのテスト
 		{
-			LIGHT* light = GetLightData(1);
-			XMFLOAT3 pos = g_Player.pos;
-			pos.y += 20.0f;
+			BULLET* bullet = GetBullet();
 
-			light->Position = pos;
-			light->Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			light->Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			light->Type = LIGHT_TYPE_POINT;
-			light->Enable = TRUE;
-			SetLightData(1, light);
+			for (int i = 0; i < MAX_BULLET; i++)
+			{
+				LIGHT* light = GetLightData(1);
+				XMFLOAT3 pos = g_Player.pos;
+				pos.y += 20.0f;
+
+				light->Position = pos;
+				light->Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				light->Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				light->Type = LIGHT_TYPE_POINT;
+				light->Enable = TRUE;
+				SetLightData(1, light);
+
+				if (CollisionBC(g_Player.pos, bullet[i].pos, 10.0f, 10.0f))
+				{
+					light->Diffuse = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+					light->Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+			}
 		}
-
-
 	}
 
 	//////////////////////////////////////////////////////////////////////
@@ -456,7 +492,7 @@ void DrawPlayer(void)
 
 
 		// 縁取りの設定
-		SetFuchi(0);
+		SetFuchi(1);
 
 		// モデル描画
 		DrawModel(&g_Player.model);

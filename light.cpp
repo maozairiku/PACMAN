@@ -39,7 +39,7 @@ void InitLight(void)
 	//ƒ‰ƒCƒg‰Šú‰»
 	for (int i = 0; i < LIGHT_MAX; i++)
 	{
-		g_Light[i].Position  = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+		g_Light[i].Position  = XMFLOAT3( 0.0f, 100.0f, 0.0f );
 		g_Light[i].Direction = XMFLOAT3( 0.0f, -1.0f, 0.0f );
 		g_Light[i].Diffuse   = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
 		g_Light[i].Ambient   = XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f );

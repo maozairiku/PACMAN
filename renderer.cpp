@@ -66,6 +66,11 @@ struct FUCHI
 	int			fill[3];
 };
 
+struct TIME
+{
+	XMFLOAT4 Time;
+};
+
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -97,6 +102,7 @@ static ID3D11Buffer*			g_LightBuffer = NULL;
 static ID3D11Buffer*			g_FogBuffer = NULL;
 static ID3D11Buffer*			g_FuchiBuffer = NULL;
 static ID3D11Buffer*			g_CameraBuffer = NULL;
+static ID3D11Buffer*			g_TimeBuffer = NULL;
 
 static ID3D11DepthStencilState* g_DepthStateEnable;
 static ID3D11DepthStencilState* g_DepthStateDisable;
@@ -118,6 +124,7 @@ static LIGHT_CBUFFER	g_Light;
 static FOG_CBUFFER		g_Fog;
 
 static FUCHI			g_Fuchi;
+static TIME				g_Time;
 
 
 ID3D11Device* GetDevice( void )
@@ -362,7 +369,19 @@ void SetShaderCamera(XMFLOAT3 pos)
 	GetDeviceContext()->UpdateSubresource(g_CameraBuffer, 0, NULL, &tmp, 0, 0);
 }
 
+// Set Default Shader
+void SetDefaultShader(void)
+{
+	g_ImmediateContext->VSSetShader(g_VertexShader, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShader, NULL, 0);
+}
 
+// Set Time
+void SetTime(float time)
+{
+	g_Time.Time.x = time;
+	GetDeviceContext()->UpdateSubresource(g_TimeBuffer, 0, NULL, &g_Time, 0, 0);
+}
 
 //=============================================================================
 // 初期化処理
@@ -619,7 +638,6 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	
 	pPSBlob->Release();
 
-
 	// 定数バッファ生成
 	D3D11_BUFFER_DESC hBufferDesc;
 	hBufferDesc.ByteWidth = sizeof(XMMATRIX);
@@ -674,11 +692,16 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	g_ImmediateContext->VSSetConstantBuffers(7, 1, &g_CameraBuffer);
 	g_ImmediateContext->PSSetConstantBuffers(7, 1, &g_CameraBuffer);
 
+	// time set　->　VSとPSの時にもtimeを使っていますので、VSSetConstantBuffersとPSSetConstantBuffersを書くべき
+	hBufferDesc.ByteWidth = sizeof(XMFLOAT4);
+	g_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &g_TimeBuffer);
+	g_ImmediateContext->VSSetConstantBuffers(8, 1, &g_TimeBuffer);
+	g_ImmediateContext->PSSetConstantBuffers(8, 1, &g_TimeBuffer);
 
 	// 入力レイアウト設定
 	g_ImmediateContext->IASetInputLayout( g_VertexLayout );
 
-	// シェーダ設定
+	// シェーダ設定(initで実行)
 	g_ImmediateContext->VSSetShader( g_VertexShader, NULL, 0 );
 	g_ImmediateContext->PSSetShader( g_PixelShader, NULL, 0 );
 

@@ -13,6 +13,8 @@
 #include "shadow.h"
 #include "meshfield.h"
 #include "bullet.h"
+#include "particle.h"
+#include "player.h"
 #include <time.h>
 
 //*****************************************************************************
@@ -41,9 +43,6 @@
 //*****************************************************************************
 static ENEMY			g_GhostRed[MAX_ENEMY];				// エネミー
 static ENEMY			g_GhostOrange[ORANGE_MAX];
-//static ENEMY			g_GhostGreen[MAX_ENEMY];
-//static ENEMY			g_GhostBlue[MAX_ENEMY];
-//static ENEMY			g_GhostPurple[MAX_ENEMY];
 
 static float g_angle = 0;
 
@@ -56,35 +55,10 @@ static float g_timer = -1;
 
 static INTERPOLATION_DATA move_tbl[] = {	// pos, rot, scl, frame
 	{ XMFLOAT3(608.5f, ENEMY_OFFSET_Y, 585.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
-	{ XMFLOAT3(608.5f, 50,  585.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
+	{ XMFLOAT3(608.5f, 50,  585.0f),			XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
 	{ XMFLOAT3(608.5f, ENEMY_OFFSET_Y, 585.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
 };
 
-//static INTERPOLATION_DATA move_tbl2[] = {	// pos, rot, scl, frame
-//	{ XMFLOAT3(-562.0f, ENEMY_OFFSET_Y, 612.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
-//	{ XMFLOAT3(-500.0f, ENEMY_OFFSET_Y, 550.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
-//	{ XMFLOAT3(-562.0f, ENEMY_OFFSET_Y, 612.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
-//};
-//
-//static INTERPOLATION_DATA move_tbl3[] = {	// pos, rot, scl, frame
-//	{ XMFLOAT3(-442.0f, ENEMY_OFFSET_Y,  -576.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
-//	{ XMFLOAT3(-566.0f, ENEMY_OFFSET_Y, -417.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
-//	{ XMFLOAT3(-442.0f, ENEMY_OFFSET_Y,  -576.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
-//
-//};
-//
-//static INTERPOLATION_DATA move_tbl4[] = {	// pos, rot, scl, frame
-//	{ XMFLOAT3(430.0f, ENEMY_OFFSET_Y,  310.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
-//	{ XMFLOAT3(-430.0f, ENEMY_OFFSET_Y,  310.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
-//	{ XMFLOAT3(-430.0f, ENEMY_OFFSET_Y, -310.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 0.5f },
-//	{ XMFLOAT3(430.0f, ENEMY_OFFSET_Y,  -310.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
-//};
-//
-//static INTERPOLATION_DATA move_tbl5[] = {	// pos, rot, scl, frame
-//	{ XMFLOAT3(-457.0f, ENEMY_OFFSET_Y,  17.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
-//	{ XMFLOAT3(537.0f, 50, -507.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
-//	{ XMFLOAT3(-457.0f, ENEMY_OFFSET_Y,  17.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
-//};
 
 
 //=============================================================================
@@ -101,7 +75,7 @@ HRESULT InitEnemy(void)
 		LoadModel(MODEL_ENEMY_GR, &g_GhostRed[i].model);
 		g_GhostRed[i].load = true;
 
-		g_GhostRed[i].pos = XMFLOAT3(608.5f, ENEMY_OFFSET_Y, 585.0f);
+		g_GhostRed[i].pos = XMFLOAT3(0.0f, 15.0f, 0.0f);
 		g_GhostRed[i].rot = XMFLOAT3(0.0f, 360.0f, 0.0f);
 		g_GhostRed[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -123,118 +97,12 @@ HRESULT InitEnemy(void)
 
 		g_GhostRed[i].use = true;			// true:生きてる
 
-
-	//	// Ghost_Orange
-	//	LoadModel(MODEL_ENEMY_GO, &g_GhostOrange[i].model);
-	//	g_GhostOrange[i].load = true;
-
-	//	g_GhostOrange[i].pos = XMFLOAT3(-562.0f, ENEMY_OFFSET_Y, 612.0f);
-	//	g_GhostOrange[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//	g_GhostOrange[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	//	g_GhostOrange[i].spd = 0.0f;			// 移動スピードクリア
-	//	g_GhostOrange[i].size = ENEMY_SIZE;		// 当たり判定の大きさ
-	//	g_GhostOrange[i].colorIdx = 2;
-	//	g_GhostOrange[i].attackflame = 0;
-
-	//	// モデルのディフューズを保存しておく。色変え対応の為。
-	//	GetModelDiffuse(&g_GhostOrange[0].model, &g_GhostOrange[0].diffuse[0]);
-
-	//	XMFLOAT3 opos = g_GhostOrange[i].pos;
-	//	opos.y -= (ENEMY_OFFSET_Y - 0.1f);
-	//	g_GhostOrange[i].shadowIdx = CreateShadow(opos, ENEMY_SHADOW_SIZE, ENEMY_SHADOW_SIZE);
-
-	//	g_GhostOrange[i].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-	//	g_GhostOrange[i].tbl_adr = NULL;		// 再生するアニメデータの先頭アドレスをセット
-	//	g_GhostOrange[i].tbl_size = 0;			// 再生するアニメデータのレコード数をセット
-
-	//	g_GhostOrange[i].use = true;			// true:生きてる
-
-
-	//	// Ghost_Green
-	//	LoadModel(MODEL_ENEMY_GG, &g_GhostGreen[i].model);
-	//	g_GhostGreen[i].load = true;
-
-	//	g_GhostGreen[i].pos = XMFLOAT3(-442.0f, ENEMY_OFFSET_Y, -576.0f);
-	//	g_GhostGreen[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//	g_GhostGreen[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	//	g_GhostGreen[i].spd = 0.0f;				// 移動スピードクリア
-	//	g_GhostGreen[i].size = ENEMY_SIZE;		// 当たり判定の大きさ
-	//	g_GhostGreen[i].colorIdx = 3;
-	//	g_GhostGreen[i].attackflame = 0;
-
-	//	// モデルのディフューズを保存しておく。色変え対応の為。
-	//	GetModelDiffuse(&g_GhostGreen[0].model, &g_GhostGreen[0].diffuse[0]);
-
-	//	XMFLOAT3 gpos = g_GhostOrange[i].pos;
-	//	gpos.y -= (ENEMY_OFFSET_Y - 0.1f);
-	//	g_GhostGreen[i].shadowIdx = CreateShadow(gpos, ENEMY_SHADOW_SIZE, ENEMY_SHADOW_SIZE);
-
-	//	g_GhostGreen[i].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-	//	g_GhostGreen[i].tbl_adr = NULL;			// 再生するアニメデータの先頭アドレスをセット
-	//	g_GhostGreen[i].tbl_size = 0;			// 再生するアニメデータのレコード数をセット
-
-	//	g_GhostGreen[i].use = true;				// true:生きてる
-
-
-	//	// Ghost_Blue
-	//	LoadModel(MODEL_ENEMY_GB, &g_GhostBlue[i].model);
-	//	g_GhostBlue[i].load = true;
-
-	//	g_GhostBlue[i].pos = XMFLOAT3(430.0f, ENEMY_OFFSET_Y, 310.0f);
-	//	g_GhostBlue[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//	g_GhostBlue[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	//	g_GhostBlue[i].spd = 0.0f;				// 移動スピードクリア
-	//	g_GhostBlue[i].size = ENEMY_SIZE;		// 当たり判定の大きさ
-	//	g_GhostBlue[i].colorIdx = 4;
-	//	g_GhostBlue[i].attackflame = 0;
-
-	//	// モデルのディフューズを保存しておく。色変え対応の為。
-	//	GetModelDiffuse(&g_GhostBlue[0].model, &g_GhostBlue[0].diffuse[0]);
-
-	//	XMFLOAT3 bpos = g_GhostBlue[i].pos;
-	//	bpos.y -= (ENEMY_OFFSET_Y - 0.1f);
-	//	g_GhostBlue[i].shadowIdx = CreateShadow(bpos, ENEMY_SHADOW_SIZE, ENEMY_SHADOW_SIZE);
-
-	//	g_GhostBlue[i].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-	//	g_GhostBlue[i].tbl_adr = NULL;			// 再生するアニメデータの先頭アドレスをセット
-	//	g_GhostBlue[i].tbl_size = 0;			// 再生するアニメデータのレコード数をセット
-
-	//	g_GhostBlue[i].use = true;				// true:生きてる
-
-
-	//	// Ghost_Purple
-	//	LoadModel(MODEL_ENEMY_GP, &g_GhostPurple[i].model);
-	//	g_GhostPurple[i].load = true;
-	//	g_GhostPurple[i].pos = XMFLOAT3(-457.0f, ENEMY_OFFSET_Y, 17.0f);
-	//	g_GhostPurple[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//	g_GhostPurple[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	//	g_GhostPurple[i].spd = 0.0f;			// 移動スピードクリア
-	//	g_GhostPurple[i].size = ENEMY_SIZE;		// 当たり判定の大きさ
-	//	g_GhostPurple[i].colorIdx = 5;
-	//	g_GhostPurple[i].attackflame = 0;
-
-
-	//	// モデルのディフューズを保存しておく。色変え対応の為。
-	//	GetModelDiffuse(&g_GhostPurple[0].model, &g_GhostPurple[0].diffuse[0]);
-
-	//	XMFLOAT3 ppos = g_GhostPurple[i].pos;
-	//	ppos.y -= (ENEMY_OFFSET_Y - 0.1f);
-	//	g_GhostPurple[i].shadowIdx = CreateShadow(ppos, ENEMY_SHADOW_SIZE, ENEMY_SHADOW_SIZE);
-
-	//	g_GhostPurple[i].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-	//	g_GhostPurple[i].tbl_adr = NULL;		// 再生するアニメデータの先頭アドレスをセット
-	//	g_GhostPurple[i].tbl_size = 0;			// 再生するアニメデータのレコード数をセット
-
-	//	g_GhostPurple[i].use = true;			// true:生きてる
-
 	}
 
+	// orange ghost
 	LoadModel(MODEL_ENEMY_GO, &g_GhostOrange[0].model);
 	g_GhostOrange[0].load = true;
+
 	for (int i = 0; i < ORANGE_MAX; i++)
 	{
 		g_GhostOrange[i].pos = XMFLOAT3(rand()%1300 - 650, ENEMY_OFFSET_Y, rand()%1300 - 650);
@@ -262,31 +130,10 @@ HRESULT InitEnemy(void)
 		orangeRadius[i] = rand() % 10;
 	}
 
-
 	// ghost red線形補間で動かしてみる
-	g_GhostRed[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
-	g_GhostRed[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
-	g_GhostRed[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);		// 再生するアニメデータのレコード数をセット
-
-	//// ghost orange線形補間で動かしてみる
-	//g_GhostOrange[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-	//g_GhostOrange[0].tbl_adr = move_tbl2;	// 再生するアニメデータの先頭アドレスをセット
-	//g_GhostOrange[0].tbl_size = sizeof(move_tbl2) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
-
-	//// ghost green線形補間で動かしてみる
-	//g_GhostGreen[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-	//g_GhostGreen[0].tbl_adr = move_tbl3;		// 再生するアニメデータの先頭アドレスをセット
-	//g_GhostGreen[0].tbl_size = sizeof(move_tbl3) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
-
-	//// ghost blue線形補間で動かしてみる
-	//g_GhostBlue[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-	//g_GhostBlue[0].tbl_adr = move_tbl4;		// 再生するアニメデータの先頭アドレスをセット
-	//g_GhostBlue[0].tbl_size = sizeof(move_tbl4) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
-
-	//// ghost purple線形補間で動かしてみる
-	//g_GhostPurple[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-	//g_GhostPurple[0].tbl_adr = move_tbl5;	// 再生するアニメデータの先頭アドレスをセット
-	//g_GhostPurple[0].tbl_size = sizeof(move_tbl5) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+	//g_GhostRed[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
+	//g_GhostRed[0].tbl_adr = move_tbl;			// 再生するアニメデータの先頭アドレスをセット
+	//g_GhostRed[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);		// 再生するアニメデータのレコード数をセット
 
 	g_Load = TRUE;
 	return S_OK;
@@ -306,27 +153,6 @@ void UninitEnemy(void)
 			UnloadModel(&g_GhostRed[i].model);
 			g_GhostRed[i].load = false;
 		}
-		//if (g_GhostOrange[i].load)
-		//{
-		//	UnloadModel(&g_GhostOrange[i].model);
-		//	g_GhostOrange[i].load = false;
-		//}
-		//if (g_GhostGreen[i].load)
-		//{
-		//	UnloadModel(&g_GhostGreen[i].model);
-		//	g_GhostGreen[i].load = false;
-		//}
-		//if (g_GhostBlue[i].load)
-		//{
-		//	UnloadModel(&g_GhostBlue[i].model);
-		//	g_GhostBlue[i].load = false;
-		//}
-		//if (g_GhostPurple[i].load)
-		//{
-		//	UnloadModel(&g_GhostPurple[i].model);
-		//	g_GhostPurple[i].load = false;
-		//}
-
 	}
 
 	if (g_GhostOrange[0].load)
@@ -344,11 +170,18 @@ void UninitEnemy(void)
 //=============================================================================
 void UpdateEnemy(void)
 {
+	// move time
 	g_timer++;
+
+	// for particle
+	int nLife = 150;
+	float fSize = 50.0f;
+
 	// エネミーを動かく場合は、影も合わせて動かす事を忘れないようにね！
 	for (int i = 0; i < MAX_ENEMY; i++)
 	{
 		BULLET* bullet = GetBullet();
+		PLAYER* player = GetPlayer();
 
 		// Ghost_Red
 		if (g_GhostRed[i].use == true)			// このエネミーが使われている？
@@ -389,311 +222,39 @@ void UpdateEnemy(void)
 
 			}
 
-			// レイキャストして足元の高さを求める
-			XMFLOAT3 HitPosition;		// 交点
-			XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-			bool ans = RayHitField(g_GhostRed[i].pos, &HitPosition, &Normal);
-			if (ans)
-			{
-				g_GhostRed[i].pos.y = HitPosition.y + ENEMY_OFFSET_Y;
-			}
-			else
-			{
-				g_GhostRed[i].pos.y = ENEMY_OFFSET_Y;
-				Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-			}
+			//// レイキャストして足元の高さを求める
+			//XMFLOAT3 HitPosition;		// 交点
+			//XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
+			//bool ans = RayHitField(g_GhostRed[i].pos, &HitPosition, &Normal);
+			//if (ans)
+			//{
+			//	g_GhostRed[i].pos.y = HitPosition.y + ENEMY_OFFSET_Y;
+			//}
+			//else
+			//{
+			//	g_GhostRed[i].pos.y = ENEMY_OFFSET_Y;
+			//	Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			//}
 
 			// 影もエネミーの位置に合わせる
 			XMFLOAT3 pos = g_GhostRed[i].pos;
 			pos.y -= (ENEMY_OFFSET_Y - 0.1f);
 			SetPositionShadow(g_GhostRed[i].shadowIdx, pos);
-		}
 
-		if (g_GhostRed[i].use == true)
-		{
+			// enemy attack frame count
 			g_GhostRed[i].attackflame++;
-			if ((int)g_GhostRed[i].attackflame % 3 == 0)
+
+			if ((int)g_timer % 50 == 0)
 			{
-				SetBullet(g_GhostRed[i].pos, g_GhostRed[i].rot);
+				SetBulletBezier(g_GhostRed[i].pos, g_GhostRed[i].rot, player->pos);
 			}
+
+			// particle
+			SetParticle(g_GhostRed[i].pos, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), fSize, fSize, nLife);
 		}
-
-		//	// Ghost_Orange
-		//	if (g_GhostOrange[i].use == true)			// このエネミーが使われている？
-		//	{											// Yes
-		//		if (g_GhostOrange[i].tbl_adr != NULL)	// 線形補間を実行する？
-		//		{										// 線形補間の処理
-		//			// 移動処理
-		//			int		index = (int)g_GhostOrange[i].move_time;
-		//			float	time = g_GhostOrange[i].move_time - index;
-		//			int		size = g_GhostOrange[i].tbl_size;
-
-		//			float dt = 1.0f / g_GhostOrange[i].tbl_adr[index].frame;	// 1フレームで進める時間
-		//			g_GhostOrange[i].move_time += dt;							// アニメーションの合計時間に足す
-
-		//			if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
-		//			{
-		//				g_GhostOrange[i].move_time = 0.0f;
-		//				index = 0;
-		//			}
-
-		//			// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR p1 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 1].pos);	// 次の場所
-		//			XMVECTOR p0 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 0].pos);	// 現在の場所
-		//			XMVECTOR vec = p1 - p0;
-		//			XMStoreFloat3(&g_GhostOrange[i].pos, p0 + vec * time);
-
-		//			// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR r1 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 1].rot);	// 次の角度
-		//			XMVECTOR r0 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 0].rot);	// 現在の角度
-		//			XMVECTOR rot = r1 - r0;
-		//			XMStoreFloat3(&g_GhostOrange[i].rot, r0 + rot * time);
-
-		//			// scaleを求める S = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR s1 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 1].scl);	// 次のScale
-		//			XMVECTOR s0 = XMLoadFloat3(&g_GhostOrange[i].tbl_adr[index + 0].scl);	// 現在のScale
-		//			XMVECTOR scl = s1 - s0;
-		//			XMStoreFloat3(&g_GhostOrange[i].scl, s0 + scl * time);
-
-		//		}
-
-		//		// レイキャストして足元の高さを求める
-		//		XMFLOAT3 HitPosition;		// 交点
-		//		XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-		//		bool ans = RayHitField(g_GhostOrange[i].pos, &HitPosition, &Normal);
-		//		if (ans)
-		//		{
-		//			g_GhostOrange[i].pos.y = HitPosition.y + ENEMY_OFFSET_Y;
-		//		}
-		//		else
-		//		{
-		//			g_GhostOrange[i].pos.y = ENEMY_OFFSET_Y;
-		//			Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		//		}
-
-		//		// 影もエネミーの位置に合わせる
-		//		XMFLOAT3 pos = g_GhostOrange[i].pos;
-		//		pos.y -= (ENEMY_OFFSET_Y - 0.1f);
-		//		SetPositionShadow(g_GhostOrange[i].shadowIdx, pos);
-		//	}
-
-		//	if (g_GhostOrange[i].use == true)
-		//	{
-		//		g_GhostOrange[i].attackflame++;
-		//		if ((int)g_GhostOrange[i].attackflame % 4 == 0)
-		//		{
-		//			SetBullet(g_GhostOrange[i].pos, g_GhostOrange[i].rot);
-		//		}
-		//	}
-
-
-		//	// Ghost_Green
-		//	if (g_GhostGreen[i].use == true)			// このエネミーが使われている？
-		//	{											// Yes
-		//		if (g_GhostGreen[i].tbl_adr != NULL)	// 線形補間を実行する？
-		//		{										// 線形補間の処理
-		//			// 移動処理
-		//			int		index = (int)g_GhostGreen[i].move_time;
-		//			float	time = g_GhostGreen[i].move_time - index;
-		//			int		size = g_GhostGreen[i].tbl_size;
-
-		//			float dt = 1.0f / g_GhostGreen[i].tbl_adr[index].frame;		// 1フレームで進める時間
-		//			g_GhostGreen[i].move_time += dt;							// アニメーションの合計時間に足す
-
-		//			if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
-		//			{
-		//				g_GhostGreen[i].move_time = 0.0f;
-		//				index = 0;
-		//			}
-
-		//			// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR p1 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 1].pos);	// 次の場所
-		//			XMVECTOR p0 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 0].pos);	// 現在の場所
-		//			XMVECTOR vec = p1 - p0;
-		//			XMStoreFloat3(&g_GhostGreen[i].pos, p0 + vec * time);
-
-		//			// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR r1 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 1].rot);	// 次の角度
-		//			XMVECTOR r0 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 0].rot);	// 現在の角度
-		//			XMVECTOR rot = r1 - r0;
-		//			XMStoreFloat3(&g_GhostGreen[i].rot, r0 + rot * time);
-
-		//			// scaleを求める S = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR s1 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 1].scl);	// 次のScale
-		//			XMVECTOR s0 = XMLoadFloat3(&g_GhostGreen[i].tbl_adr[index + 0].scl);	// 現在のScale
-		//			XMVECTOR scl = s1 - s0;
-		//			XMStoreFloat3(&g_GhostGreen[i].scl, s0 + scl * time);
-
-		//		}
-
-		//		// レイキャストして足元の高さを求める
-		//		XMFLOAT3 HitPosition;		// 交点
-		//		XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-		//		bool ans = RayHitField(g_GhostGreen[i].pos, &HitPosition, &Normal);
-		//		if (ans)
-		//		{
-		//			g_GhostGreen[i].pos.y = HitPosition.y + ENEMY_OFFSET_Y;
-		//		}
-		//		else
-		//		{
-		//			g_GhostGreen[i].pos.y = ENEMY_OFFSET_Y;
-		//			Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		//		}
-
-		//		// 影もエネミーの位置に合わせる
-		//		XMFLOAT3 pos = g_GhostGreen[i].pos;
-		//		pos.y -= (ENEMY_OFFSET_Y - 0.1f);
-		//		SetPositionShadow(g_GhostGreen[i].shadowIdx, pos);
-		//	}
-
-		//	if (g_GhostGreen[i].use == true)
-		//	{
-		//		g_GhostGreen[i].attackflame++;
-		//		if ((int)g_GhostGreen[i].attackflame % 3 == 0)
-		//		{
-		//			SetBullet(g_GhostGreen[i].pos, g_GhostGreen[i].rot);
-		//		}
-		//	}
-
-		//	// Ghost_Blue
-		//	if (g_GhostBlue[i].use == true)			// このエネミーが使われている？
-		//	{										// Yes
-		//		if (g_GhostBlue[i].tbl_adr != NULL)	// 線形補間を実行する？
-		//		{									// 線形補間の処理
-		//			// 移動処理
-		//			int		index = (int)g_GhostBlue[i].move_time;
-		//			float	time = g_GhostBlue[i].move_time - index;
-		//			int		size = g_GhostBlue[i].tbl_size;
-
-		//			float dt = 1.0f / g_GhostBlue[i].tbl_adr[index].frame;	// 1フレームで進める時間
-		//			g_GhostBlue[i].move_time += dt;							// アニメーションの合計時間に足す
-
-		//			if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
-		//			{
-		//				g_GhostBlue[i].move_time = 0.0f;
-		//				index = 0;
-		//			}
-
-		//			// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR p1 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 1].pos);	// 次の場所
-		//			XMVECTOR p0 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 0].pos);	// 現在の場所
-		//			XMVECTOR vec = p1 - p0;
-		//			XMStoreFloat3(&g_GhostBlue[i].pos, p0 + vec * time);
-
-		//			// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR r1 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 1].rot);	// 次の角度
-		//			XMVECTOR r0 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 0].rot);	// 現在の角度
-		//			XMVECTOR rot = r1 - r0;
-		//			XMStoreFloat3(&g_GhostBlue[i].rot, r0 + rot * time);
-
-		//			// scaleを求める S = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR s1 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 1].scl);	// 次のScale
-		//			XMVECTOR s0 = XMLoadFloat3(&g_GhostBlue[i].tbl_adr[index + 0].scl);	// 現在のScale
-		//			XMVECTOR scl = s1 - s0;
-		//			XMStoreFloat3(&g_GhostBlue[i].scl, s0 + scl * time);
-
-		//		}
-
-		//		// レイキャストして足元の高さを求める
-		//		XMFLOAT3 HitPosition;		// 交点
-		//		XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-		//		bool ans = RayHitField(g_GhostBlue[i].pos, &HitPosition, &Normal);
-		//		if (ans)
-		//		{
-		//			g_GhostBlue[i].pos.y = HitPosition.y + ENEMY_OFFSET_Y;
-		//		}
-		//		else
-		//		{
-		//			g_GhostBlue[i].pos.y = ENEMY_OFFSET_Y;
-		//			Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		//		}
-
-		//		// 影もエネミーの位置に合わせる
-		//		XMFLOAT3 pos = g_GhostBlue[i].pos;
-		//		pos.y -= (ENEMY_OFFSET_Y - 0.1f);
-		//		SetPositionShadow(g_GhostBlue[i].shadowIdx, pos);
-		//	}
-
-		//	if (g_GhostBlue[i].use == true)
-		//	{
-		//		g_GhostBlue[i].attackflame++;
-		//		if ((int)g_GhostBlue[i].attackflame % 5 == 0)
-		//		{
-		//			SetBullet(g_GhostBlue[i].pos, g_GhostBlue[i].rot);
-		//		}
-		//	}
-
-
-		//	// Ghost_Purple
-		//	if (g_GhostPurple[i].use == true)			// このエネミーが使われている？
-		//	{											// Yes
-		//		if (g_GhostPurple[i].tbl_adr != NULL)	// 線形補間を実行する？
-		//		{										// 線形補間の処理
-		//			// 移動処理
-		//			int		index = (int)g_GhostPurple[i].move_time;
-		//			float	time = g_GhostPurple[i].move_time - index;
-		//			int		size = g_GhostPurple[i].tbl_size;
-
-		//			float dt = 1.0f / g_GhostPurple[i].tbl_adr[index].frame;	// 1フレームで進める時間
-		//			g_GhostPurple[i].move_time += dt;							// アニメーションの合計時間に足す
-
-		//			if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
-		//			{
-		//				g_GhostPurple[i].move_time = 0.0f;
-		//				index = 0;
-		//			}
-
-		//			// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR p1 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 1].pos);	// 次の場所
-		//			XMVECTOR p0 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 0].pos);	// 現在の場所
-		//			XMVECTOR vec = p1 - p0;
-		//			XMStoreFloat3(&g_GhostPurple[i].pos, p0 + vec * time);
-
-		//			// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR r1 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 1].rot);	// 次の角度
-		//			XMVECTOR r0 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 0].rot);	// 現在の角度
-		//			XMVECTOR rot = r1 - r0;
-		//			XMStoreFloat3(&g_GhostPurple[i].rot, r0 + rot * time);
-
-		//			// scaleを求める S = StartX + (EndX - StartX) * 今の時間
-		//			XMVECTOR s1 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 1].scl);	// 次のScale
-		//			XMVECTOR s0 = XMLoadFloat3(&g_GhostPurple[i].tbl_adr[index + 0].scl);	// 現在のScale
-		//			XMVECTOR scl = s1 - s0;
-		//			XMStoreFloat3(&g_GhostPurple[i].scl, s0 + scl * time);
-
-		//		}
-
-		//		// レイキャストして足元の高さを求める
-		//		XMFLOAT3 HitPosition;		// 交点
-		//		XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-		//		bool ans = RayHitField(g_GhostPurple[i].pos, &HitPosition, &Normal);
-		//		if (ans)
-		//		{
-		//			g_GhostPurple[i].pos.y = HitPosition.y + ENEMY_OFFSET_Y;
-		//		}
-		//		else
-		//		{
-		//			g_GhostPurple[i].pos.y = ENEMY_OFFSET_Y;
-		//			Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		//		}
-
-		//		// 影もエネミーの位置に合わせる
-		//		XMFLOAT3 pos = g_GhostPurple[i].pos;
-		//		pos.y -= (ENEMY_OFFSET_Y - 0.1f);
-		//		SetPositionShadow(g_GhostPurple[i].shadowIdx, pos);
-		//	}
-
-		//	if (g_GhostPurple[i].use == true)
-		//	{
-		//		g_GhostPurple[i].attackflame++;
-		//		if ((int)g_GhostPurple[i].attackflame % 4 == 0)
-		//		{
-		//			SetBullet(g_GhostPurple[i].pos, g_GhostPurple[i].rot);
-		//		}
-
-		//	}
 	}
 
+	// enemy cercle move
 	float radian = XMConvertToRadians(g_angle);
 	if (radian >= XM_2PI)
 	{
@@ -703,14 +264,22 @@ void UpdateEnemy(void)
 
 	for (int i = 0; i < ORANGE_MAX; i++)
 	{
-		g_GhostOrange[i].pos.x += orangeRadius[i] * cosf(radian);
-		g_GhostOrange[i].pos.z += orangeRadius[i] * sinf(radian);
-		g_GhostOrange[i].rot.y += 0.1f;
-		if ((int)g_timer % 60 == 0)
+		if (g_GhostOrange[i].use == true)
 		{
-			SetBullet(g_GhostOrange[i].pos, g_GhostOrange[i].rot);
+			g_GhostOrange[i].pos.x += orangeRadius[i] * cosf(radian);
+			g_GhostOrange[i].pos.z += orangeRadius[i] * sinf(radian);
+			g_GhostOrange[i].rot.y += 0.1f;
+
+			if ((int)g_timer % 60 == 0)
+			{
+				SetBullet(g_GhostOrange[i].pos, g_GhostOrange[i].rot);
+			}
+
+			// orange ghost move particle
+			SetParticle(g_GhostOrange[i].pos, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 0.85f), fSize, fSize, nLife);
 		}
 	}
+
 	g_angle++;
 }
 
@@ -751,115 +320,6 @@ void DrawEnemy(void)
 
 		// モデル描画
 		DrawModel(&g_GhostRed[0].model);
-
-
-	//	// Ghost Orange
-	//	if (g_GhostOrange[i].use == false) continue;
-
-	//	// ワールドマトリックスの初期化
-	//	mtxWorld = XMMatrixIdentity();
-
-	//	// スケールを反映
-	//	mtxScl = XMMatrixScaling(g_GhostOrange[i].scl.x, g_GhostOrange[i].scl.y, g_GhostOrange[i].scl.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-	//	// 回転を反映
-	//	mtxRot = XMMatrixRotationRollPitchYaw(g_GhostOrange[i].rot.x, g_GhostOrange[i].rot.y + XM_PI, g_GhostOrange[i].rot.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-	//	// 移動を反映
-	//	mtxTranslate = XMMatrixTranslation(g_GhostOrange[i].pos.x, g_GhostOrange[i].pos.y, g_GhostOrange[i].pos.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-	//	// ワールドマトリックスの設定
-	//	SetWorldMatrix(&mtxWorld);
-
-	//	XMStoreFloat4x4(&g_GhostOrange[i].mtxWorld, mtxWorld);
-
-	//	// モデル描画
-	//	DrawModel(&g_GhostOrange[i].model);
-
-
-	//	// Ghost Green
-	//	if (g_GhostGreen[i].use == false) continue;
-
-	//	// ワールドマトリックスの初期化
-	//	mtxWorld = XMMatrixIdentity();
-
-	//	// スケールを反映
-	//	mtxScl = XMMatrixScaling(g_GhostGreen[i].scl.x, g_GhostGreen[i].scl.y, g_GhostGreen[i].scl.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-	//	// 回転を反映
-	//	mtxRot = XMMatrixRotationRollPitchYaw(g_GhostGreen[i].rot.x, g_GhostGreen[i].rot.y + XM_PI, g_GhostGreen[i].rot.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-	//	// 移動を反映
-	//	mtxTranslate = XMMatrixTranslation(g_GhostGreen[i].pos.x, g_GhostGreen[i].pos.y, g_GhostGreen[i].pos.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-	//	// ワールドマトリックスの設定
-	//	SetWorldMatrix(&mtxWorld);
-
-	//	XMStoreFloat4x4(&g_GhostGreen[i].mtxWorld, mtxWorld);
-
-	//	// モデル描画
-	//	DrawModel(&g_GhostGreen[i].model);
-
-
-	//	// Ghost Blue
-	//	if (g_GhostBlue[i].use == false) continue;
-
-	//	// ワールドマトリックスの初期化
-	//	mtxWorld = XMMatrixIdentity();
-
-	//	// スケールを反映
-	//	mtxScl = XMMatrixScaling(g_GhostBlue[i].scl.x, g_GhostBlue[i].scl.y, g_GhostBlue[i].scl.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-	//	// 回転を反映
-	//	mtxRot = XMMatrixRotationRollPitchYaw(g_GhostBlue[i].rot.x, g_GhostBlue[i].rot.y + XM_PI, g_GhostBlue[i].rot.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-	//	// 移動を反映
-	//	mtxTranslate = XMMatrixTranslation(g_GhostBlue[i].pos.x, g_GhostBlue[i].pos.y, g_GhostBlue[i].pos.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-	//	// ワールドマトリックスの設定
-	//	SetWorldMatrix(&mtxWorld);
-
-	//	XMStoreFloat4x4(&g_GhostBlue[i].mtxWorld, mtxWorld);
-
-	//	// モデル描画
-	//	DrawModel(&g_GhostBlue[i].model);
-
-
-	//	// Ghost Purple
-	//	if (g_GhostPurple[i].use == false) continue;
-
-	//	// ワールドマトリックスの初期化
-	//	mtxWorld = XMMatrixIdentity();
-
-	//	// スケールを反映
-	//	mtxScl = XMMatrixScaling(g_GhostPurple[i].scl.x, g_GhostPurple[i].scl.y, g_GhostPurple[i].scl.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-	//	// 回転を反映
-	//	mtxRot = XMMatrixRotationRollPitchYaw(g_GhostPurple[i].rot.x, g_GhostPurple[i].rot.y + XM_PI, g_GhostPurple[i].rot.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
-
-	//	// 移動を反映
-	//	mtxTranslate = XMMatrixTranslation(g_GhostPurple[i].pos.x, g_GhostPurple[i].pos.y, g_GhostPurple[i].pos.z);
-	//	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
-
-	//	// ワールドマトリックスの設定
-	//	SetWorldMatrix(&mtxWorld);
-
-	//	XMStoreFloat4x4(&g_GhostPurple[i].mtxWorld, mtxWorld);
-
-	//	// モデル描画
-	//	DrawModel(&g_GhostPurple[i].model);
-
 	}
 
 	for (int i = 0; i < ORANGE_MAX; i++)
@@ -901,20 +361,8 @@ ENEMY *GetGhostRed()
 {
 	return &g_GhostRed[0];
 }
-//ENEMY* GetGhostOrange()
-//{
-//	return &g_GhostOrange[0];
-//}
-//ENEMY* GetGhostGreen()
-//{
-//	return &g_GhostGreen[0];
-//}
-//ENEMY* GetGhostBlue()
-//{
-//	return &g_GhostBlue[0];
-//}
-//ENEMY* GetGhostPurple()
-//{
-//	return &g_GhostPurple[0];
-//}
+ENEMY* GetGhostOrange()
+{
+	return &g_GhostOrange[0];
+}
 

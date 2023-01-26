@@ -64,9 +64,9 @@ BOOL CollisionBB(XMFLOAT3 mpos, float mw, float mh,
 //=============================================================================
 BOOL CollisionBC(XMFLOAT3 pos1, XMFLOAT3 pos2, float r1, float r2)
 {
-	BOOL ans = FALSE;						// 外れをセットしておく
+	BOOL ans = FALSE;							// 外れをセットしておく
 
-	float len = (r1 + r2) * (r1 + r2);		// 半径を2乗した物
+	float len = (r1 + r2) * (r1 + r2);			// 半径を2乗した物
 	XMVECTOR temp = XMLoadFloat3(&pos1) - XMLoadFloat3(&pos2);
 	temp = XMVector3LengthSq(temp);			// 2点間の距離（2乗した物）
 	float lenSq = 0.0f;

@@ -9,11 +9,15 @@
 #include "meshfield.h"
 #include "renderer.h"
 #include "collision.h"
+#include <math.h>
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define TEXTURE_MAX		(1)				// テクスチャの数
+#define TEXTURE_MAX				(1)				// テクスチャの数
+#define TEXTURE_FLOOR_WIDTH		(960)
+#define TEXTURE_FLOOR_HEIGHT	(960)
+//#define DEBUG_SHADER
 
 //*****************************************************************************
 // グローバル変数
@@ -33,13 +37,14 @@ static int			g_nNumVertexIndexField;					// 総インデックス数
 static int			g_nNumPolygonField;						// 総ポリゴン数
 static float		g_fBlockSizeXField, g_fBlockSizeZField;	// ブロックサイズ
 
+
 static char* g_TextureName[TEXTURE_MAX] = {
-	"data/TEXTURE/field.png",
+	//"data/TEXTURE/field.jpg",
+	"data/TEXTURE/rainbow.jpeg",
+
 };
 
-
 // 波の処理
-
 static VERTEX_3D	*g_Vertex = NULL;
 
 // 波の高さ = sin( -経過時間 * 周波数 + 距離 * 距離補正 ) * 振幅
@@ -50,6 +55,14 @@ static float		g_wave_correction = 0.02f;	// 波の距離補正
 static float		g_wave_amplitude  = 20.0f;	// 波の振幅
 
 static BOOL			g_Load = FALSE;
+
+// 地面頂点シェーダ
+static ID3D11VertexShader* g_GroundVertexShader = NULL;
+static ID3D11InputLayout* g_GroundVertexLayOut = NULL;
+
+// reflection
+static ID3D11PixelShader* g_ReflectionPixelShader = NULL;
+
 
 //=============================================================================
 // 初期化処理
@@ -208,6 +221,61 @@ HRESULT InitMeshField(XMFLOAT3 pos, XMFLOAT3 rot,
 		GetDeviceContext()->Unmap(g_IndexBuffer, 0);
 	}
 
+
+	// 頂点シェーダコンパイル・生成
+	ID3DBlob* pErrorBlob;
+	ID3DBlob* pVSBlob = NULL;
+	DWORD shFlag = D3DCOMPILE_ENABLE_STRICTNESS;
+
+	HRESULT hr;
+
+
+#if defined(_DEBUG) && defined(DEBUG_SHADER)
+	shFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+	hr = D3DX11CompileFromFile("ground.hlsl", NULL, NULL, "GroundVS", "vs_4_0", shFlag, 0, NULL, &pVSBlob, &pErrorBlob, NULL);
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "VS", MB_OK | MB_ICONERROR);
+	}
+
+	GetDevice()->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, &g_GroundVertexShader);
+
+	// 入力レイアウト生成
+	D3D11_INPUT_ELEMENT_DESC layout[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,			0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+	UINT numElements = ARRAYSIZE(layout);
+
+	GetDevice()->CreateInputLayout(layout,
+		numElements,
+		pVSBlob->GetBufferPointer(),
+		pVSBlob->GetBufferSize(),
+		&g_GroundVertexLayOut);
+
+	pVSBlob->Release();
+
+
+	// 反射ピクセルシェーダ
+	{
+		ID3DBlob* pPSBlob = NULL;
+
+		hr = D3DX11CompileFromFile("ground.hlsl", NULL, NULL, "ReflectionPS", "ps_4_0", shFlag, 0, NULL, &pPSBlob, &pErrorBlob, NULL);
+		if (FAILED(hr))
+		{
+			MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "PS", MB_OK | MB_ICONERROR);
+		}
+
+		GetDevice()->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_ReflectionPixelShader);
+
+		pPSBlob->Release();
+	}
+
 	g_Load = TRUE;
 	return S_OK;
 }
@@ -295,6 +363,12 @@ void UpdateMeshField(void)
 //=============================================================================
 void DrawMeshField(void)
 {
+	// Vertex Shader Set
+	GetDeviceContext()->VSSetShader(g_GroundVertexShader, NULL, 0);
+
+	// reflection shader set
+	GetDeviceContext()->PSSetShader(g_ReflectionPixelShader, NULL, 0);
+
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
@@ -332,11 +406,12 @@ void DrawMeshField(void)
 	// ワールドマトリックスの設定
 	SetWorldMatrix(&mtxWorld);
 
-
 	// ポリゴンの描画
 	GetDeviceContext()->DrawIndexed(g_nNumVertexIndexField, 0, 0);
-}
 
+	// Set Default Shader
+	SetDefaultShader();
+}
 
 
 bool RayHitField(XMFLOAT3 pos, XMFLOAT3 *HitPosition, XMFLOAT3 *Normal)
@@ -404,3 +479,4 @@ bool RayHitField(XMFLOAT3 pos, XMFLOAT3 *HitPosition, XMFLOAT3 *Normal)
 
 	return false;
 }
+
