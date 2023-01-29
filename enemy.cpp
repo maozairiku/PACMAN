@@ -53,13 +53,24 @@ static float orangeRadius[ORANGE_MAX];
 static float g_timer = -1;
 
 
+// red_ghost達の線形補間
 static INTERPOLATION_DATA move_tbl[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(608.5f, ENEMY_OFFSET_Y, 585.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
-	{ XMFLOAT3(608.5f, 50,  585.0f),			XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
-	{ XMFLOAT3(608.5f, ENEMY_OFFSET_Y, 585.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1 },
+	{ XMFLOAT3(576.0f, ENEMY_OFFSET_Y, 565.0f), XMFLOAT3(0.0f, XMConvertToRadians(180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1},
+	{ XMFLOAT3(576.0f, ENEMY_OFFSET_Y, 565.0f), XMFLOAT3(0.0f, XMConvertToRadians(0), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1},
+	{ XMFLOAT3(576.0f, ENEMY_OFFSET_Y, 565.0f), XMFLOAT3(0.0f, XMConvertToRadians(-180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1},
 };
 
+static INTERPOLATION_DATA move_tbl2[] = {
+	{ XMFLOAT3(580.0f, ENEMY_OFFSET_Y, -580.0f), XMFLOAT3(0.0f, XMConvertToRadians(180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
+	{ XMFLOAT3(580.0f, ENEMY_OFFSET_Y, -580.0f), XMFLOAT3(0.0f, XMConvertToRadians(0), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
+	{ XMFLOAT3(580.0f, ENEMY_OFFSET_Y, -580.0f), XMFLOAT3(0.0f, XMConvertToRadians(-180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
+};
 
+static INTERPOLATION_DATA move_tbl3[] = {
+	{ XMFLOAT3(-490.0f, ENEMY_OFFSET_Y, -475.0f), XMFLOAT3(0.0f, XMConvertToRadians(180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
+	{ XMFLOAT3(-490.0f, ENEMY_OFFSET_Y, -475.0f), XMFLOAT3(0.0f, XMConvertToRadians(0), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
+	{ XMFLOAT3(-490.0f, ENEMY_OFFSET_Y, -475.0f), XMFLOAT3(0.0f, XMConvertToRadians(-180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
+};
 
 //=============================================================================
 // 初期化処理
@@ -75,7 +86,10 @@ HRESULT InitEnemy(void)
 		LoadModel(MODEL_ENEMY_GR, &g_GhostRed[i].model);
 		g_GhostRed[i].load = true;
 
-		g_GhostRed[i].pos = XMFLOAT3(0.0f, 15.0f, 0.0f);
+		g_GhostRed[0].pos = XMFLOAT3(576.0f, ENEMY_OFFSET_Y, 565.0f);
+		g_GhostRed[1].pos = XMFLOAT3(580.0f, ENEMY_OFFSET_Y, -580.0f);
+		g_GhostRed[2].pos = XMFLOAT3(-490.0f, ENEMY_OFFSET_Y, -475.0f);
+
 		g_GhostRed[i].rot = XMFLOAT3(0.0f, 360.0f, 0.0f);
 		g_GhostRed[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
@@ -130,10 +144,19 @@ HRESULT InitEnemy(void)
 		orangeRadius[i] = rand() % 10;
 	}
 
-	// ghost red線形補間で動かしてみる
-	//g_GhostRed[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
-	//g_GhostRed[0].tbl_adr = move_tbl;			// 再生するアニメデータの先頭アドレスをセット
-	//g_GhostRed[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);		// 再生するアニメデータのレコード数をセット
+	// ghost red達は線形補間で動かしてみる
+	g_GhostRed[0].move_time = 0.0f;				// 線形補間用のタイマーをクリア
+	g_GhostRed[0].tbl_adr = move_tbl;			// 再生するアニメデータの先頭アドレスをセット
+	g_GhostRed[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);		// 再生するアニメデータのレコード数をセット
+
+	g_GhostRed[1].move_time = 0.0f;				// 線形補間用のタイマーをクリア
+	g_GhostRed[1].tbl_adr = move_tbl2;			// 再生するアニメデータの先頭アドレスをセット
+	g_GhostRed[1].tbl_size = sizeof(move_tbl2) / sizeof(INTERPOLATION_DATA);		// 再生するアニメデータのレコード数をセット
+
+	g_GhostRed[2].move_time = 0.0f;				// 線形補間用のタイマーをクリア
+	g_GhostRed[2].tbl_adr = move_tbl3;			// 再生するアニメデータの先頭アドレスをセット
+	g_GhostRed[2].tbl_size = sizeof(move_tbl3) / sizeof(INTERPOLATION_DATA);		// 再生するアニメデータのレコード数をセット
+
 
 	g_Load = TRUE;
 	return S_OK;
@@ -250,7 +273,7 @@ void UpdateEnemy(void)
 			}
 
 			// particle
-			SetParticle(g_GhostRed[i].pos, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), fSize, fSize, nLife);
+			//SetParticle(g_GhostRed[i].pos, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), fSize, fSize, nLife);
 		}
 	}
 

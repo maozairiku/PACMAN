@@ -49,30 +49,34 @@ static BOOL			g_Load = FALSE;
 
 
 static INTERPOLATION_DATA move_tbl[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(0.0f, DOT_OFFSET_Y, 0.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
-
+	{ XMFLOAT3(0.0f, DOT_OFFSET_Y, 0.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
+	{ XMFLOAT3(0.0f, DOT_OFFSET_Y, 0.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
+	{ XMFLOAT3(0.0f, DOT_OFFSET_Y, 0.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 };
 
 static INTERPOLATION_DATA move_tbl2[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(-300.0f, DOT_OFFSET_Y, 280.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
-
+	{ XMFLOAT3(-580.0f, DOT_OFFSET_Y, -575.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(0)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5 },
+	{ XMFLOAT3(-580.0f, 25.0f, -575.0f), XMFLOAT3(XMConvertToRadians(90), XMConvertToRadians(0), XMConvertToRadians(60)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5 },
+	{ XMFLOAT3(-580.0f, DOT_OFFSET_Y, -575.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(0)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5 },
 };
 
 static INTERPOLATION_DATA move_tbl3[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(-400.0f, DOT_OFFSET_Y, -333.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
-
+	{ XMFLOAT3(-536.0f, DOT_OFFSET_Y, 518.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ XMFLOAT3(-536.0f, DOT_OFFSET_Y, 518.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ XMFLOAT3(-536.0f, DOT_OFFSET_Y, 518.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
 };
 
 static INTERPOLATION_DATA move_tbl4[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(200.0f, DOT_OFFSET_Y, -363.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
-
+	{ XMFLOAT3(503.0f, DOT_OFFSET_Y, 480.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 * 2 },
+	{ XMFLOAT3(503.0f, DOT_OFFSET_Y, 480.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 * 2 },
+	{ XMFLOAT3(503.0f, DOT_OFFSET_Y, 480.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 * 2 },
 };
 
 static INTERPOLATION_DATA move_tbl5[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(538.0f, DOT_OFFSET_Y, 434.0f), XMFLOAT3(0.0f, 360.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
-
+	{ XMFLOAT3(216.0f, DOT_OFFSET_Y, -570.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(216.0f, DOT_OFFSET_Y, -570.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ XMFLOAT3(216.0f, DOT_OFFSET_Y, -570.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
 };
-
 
 
 //=============================================================================
@@ -112,13 +116,13 @@ HRESULT InitDot(void)
 		LoadModel(MODEL_HOTDOG, &g_Hotdog[i].model);
 		g_Hotdog[i].load = true;
 
-		g_Hotdog[i].pos = XMFLOAT3(-300.0f, DOT_OFFSET_Y, 280.0f);
+		g_Hotdog[i].pos = XMFLOAT3(-580.0f, DOT_OFFSET_Y, -575.0f);
 
 		g_Hotdog[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_Hotdog[i].scl = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-		g_Hotdog[i].spd = 0.0f;			// 移動スピードクリア
-		g_Hotdog[i].size = DOT_SIZE;	// 当たり判定の大きさ
+		g_Hotdog[i].spd = 0.0f;				// 移動スピードクリア
+		g_Hotdog[i].size = DOT_SIZE;		// 当たり判定の大きさ
 
 		// モデルのディフューズを保存しておく。色変え対応の為。
 		GetModelDiffuse(&g_Hotdog[0].model, &g_Hotdog[0].diffuse[0]);
@@ -138,13 +142,13 @@ HRESULT InitDot(void)
 		LoadModel(MODEL_CHERRY, &g_Cherry[i].model);
 		g_Cherry[i].load = true;
 
-		g_Cherry[0].pos = XMFLOAT3(-400.0f, DOT_OFFSET_Y, -333.0f);
+		g_Cherry[0].pos = XMFLOAT3(-536.0f, DOT_OFFSET_Y, 518.0f);
 
 		g_Cherry[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_Cherry[i].scl = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-		g_Cherry[i].spd = 0.0f;			// 移動スピードクリア
-		g_Cherry[i].size = DOT_SIZE;	// 当たり判定の大きさ
+		g_Cherry[i].spd = 0.0f;				// 移動スピードクリア
+		g_Cherry[i].size = DOT_SIZE;		// 当たり判定の大きさ
 
 		// モデルのディフューズを保存しておく。色変え対応の為。
 		GetModelDiffuse(&g_Cherry[0].model, &g_Cherry[0].diffuse[0]);
@@ -164,13 +168,13 @@ HRESULT InitDot(void)
 		LoadModel(MODEL_BREAD, &g_Bread[i].model);
 		g_Bread[i].load = true;
 
-		g_Bread[i].pos = XMFLOAT3(200.0f, DOT_OFFSET_Y, -363.0f);
+		g_Bread[i].pos = XMFLOAT3(503.0f, DOT_OFFSET_Y, 480.0f);
 
 		g_Bread[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_Bread[i].scl = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-		g_Bread[i].spd = 0.0f;			// 移動スピードクリア
-		g_Bread[i].size = DOT_SIZE;	// 当たり判定の大きさ
+		g_Bread[i].spd = 0.0f;				// 移動スピードクリア
+		g_Bread[i].size = DOT_SIZE;			// 当たり判定の大きさ
 
 		// モデルのディフューズを保存しておく。色変え対応の為。
 		GetModelDiffuse(&g_Bread[0].model, &g_Bread[0].diffuse[0]);
@@ -180,23 +184,23 @@ HRESULT InitDot(void)
 		g_Bread[i].shadowIdx = CreateShadow(bpos, DOT_SHADOW_SIZE, DOT_SHADOW_SIZE);
 
 		g_Bread[i].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-		g_Bread[i].tbl_adr = NULL;		// 再生するアニメデータの先頭アドレスをセット
+		g_Bread[i].tbl_adr = NULL;			// 再生するアニメデータの先頭アドレスをセット
 		g_Bread[i].tbl_size = 0;			// 再生するアニメデータのレコード数をセット
 
-		g_Bread[i].use = true;			// true:生きてる
+		g_Bread[i].use = true;				// true:生きてる
 
 
 		// CROISSANT	
 		LoadModel(MODEL_CROISSANT, &g_Croissant[i].model);
 		g_Croissant[i].load = true;
 
-		g_Croissant[i].pos = XMFLOAT3(538.0f, DOT_OFFSET_Y, 434.0f);
+		g_Croissant[i].pos = XMFLOAT3(216.0f, DOT_OFFSET_Y, -570.0f);
 
 		g_Croissant[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_Croissant[i].scl = XMFLOAT3(0.5f, 0.5f, 0.5f);
 
-		g_Croissant[i].spd = 0.0f;			// 移動スピードクリア
-		g_Croissant[i].size = DOT_SIZE;	// 当たり判定の大きさ
+		g_Croissant[i].spd = 0.0f;				// 移動スピードクリア
+		g_Croissant[i].size = DOT_SIZE;			// 当たり判定の大きさ
 
 		// モデルのディフューズを保存しておく。色変え対応の為。
 		GetModelDiffuse(&g_Croissant[0].model, &g_Croissant[0].diffuse[0]);
@@ -212,30 +216,30 @@ HRESULT InitDot(void)
 		g_Croissant[i].use = true;				// true:生きてる
 
 
-		//// cookies
-		//g_Cookies[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-		//g_Cookies[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
-		//g_Cookies[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+		// cookies
+		g_Cookies[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
+		g_Cookies[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
+		g_Cookies[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
 
-		//// hotdog
-		//g_Hotdog[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-		//g_Hotdog[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
-		//g_Hotdog[0].tbl_size = sizeof(move_tbl2) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+		// hotdog
+		g_Hotdog[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
+		g_Hotdog[0].tbl_adr = move_tbl2;		// 再生するアニメデータの先頭アドレスをセット
+		g_Hotdog[0].tbl_size = sizeof(move_tbl2) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
 
-		//// cherry
-		//g_Cherry[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-		//g_Cherry[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
-		//g_Cherry[0].tbl_size = sizeof(move_tbl3) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+		// cherry
+		g_Cherry[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
+		g_Cherry[0].tbl_adr = move_tbl3;		// 再生するアニメデータの先頭アドレスをセット
+		g_Cherry[0].tbl_size = sizeof(move_tbl3) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
 
-		//// bread
-		//g_Bread[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-		//g_Bread[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
-		//g_Bread[0].tbl_size = sizeof(move_tbl4) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+		// bread
+		g_Bread[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
+		g_Bread[0].tbl_adr = move_tbl4;			// 再生するアニメデータの先頭アドレスをセット
+		g_Bread[0].tbl_size = sizeof(move_tbl4) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
 
-		//// croissant
-		//g_Croissant[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
-		//g_Croissant[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
-		//g_Croissant[0].tbl_size = sizeof(move_tbl5) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+		// croissant
+		g_Croissant[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
+		g_Croissant[0].tbl_adr = move_tbl5;		// 再生するアニメデータの先頭アドレスをセット
+		g_Croissant[0].tbl_size = sizeof(move_tbl5) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
 
 	}
 

@@ -123,8 +123,11 @@ PS_IN GroundVS(GV_IN input)
     wvp = mul(World, View);
     wvp = mul(wvp, Projection);
     
-    float4 Xbias = 0.1 * sin(Time.x);        // float4 time なので、xのみ数値があります。
-    input.Position.x += Xbias;
+    if (input.Position.z >= 0)
+    {
+        float4 Xbias = 50 * sin( 0.1 * Time.x); // float4 time なので、xのみ数値があります。
+        input.Position.x += Xbias;
+    }
     
     output.pos = mul(input.Position, wvp);
 
@@ -138,7 +141,6 @@ PS_IN GroundVS(GV_IN input)
     
     return output;
 }
-
 
 
 //=============================================================================

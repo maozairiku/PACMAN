@@ -1,15 +1,17 @@
 //=============================================================================
 //
-// メッシュ地面の処理 [meshfield.h]
+// 地面処理 [field.h]
 // Author : 
 //
 //=============================================================================
 #pragma once
 
+#include "renderer.h"
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-struct FIELD
+struct UPFIELD
 {
 	XMFLOAT3		pos;		// ポリゴンの位置
 	XMFLOAT3		rot;		// ポリゴンの向き(回転)
@@ -18,17 +20,11 @@ struct FIELD
 	XMFLOAT4X4		mtxWorld;	// ワールドマトリックス
 };
 
-
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitMeshField(XMFLOAT3 pos, XMFLOAT3 rot,
-							int nNumBlockX, int nNumBlockZ, float nBlockSizeX, float nBlockSizeZ);
-void UninitMeshField(void);
-void UpdateMeshField(void);
-void DrawMeshField(void);
-
-bool RayHitField(XMFLOAT3 pos, XMFLOAT3 *HitPosition, XMFLOAT3 *Normal);
-
-FIELD* GetMeshField(void);
+HRESULT InitField(void);
+void UninitField(void);
+void UpdateField(void);
+void DrawField(void);
 

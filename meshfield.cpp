@@ -22,6 +22,8 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
+static FIELD	g_MeshField;
+
 static ID3D11Buffer					*g_VertexBuffer = NULL;	// 頂点バッファ
 static ID3D11Buffer					*g_IndexBuffer = NULL;	// インデックスバッファ
 
@@ -478,5 +480,13 @@ bool RayHitField(XMFLOAT3 pos, XMFLOAT3 *HitPosition, XMFLOAT3 *Normal)
 
 
 	return false;
+}
+
+//=============================================================================
+// meshfield情報を取得
+//=============================================================================
+FIELD* GetMeshField(void)
+{
+	return &g_MeshField;
 }
 

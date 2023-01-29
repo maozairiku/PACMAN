@@ -16,6 +16,7 @@
 #include "ui.h"
 #include "dot.h"
 #include "explosion.h"
+#include "field.h"
 
 #include "player.h"
 #include "enemy.h"
@@ -67,6 +68,9 @@ HRESULT InitGame(void)
 	// フィールドの初期化
 	InitMeshField(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), 100, 100, 13.0f, 13.0f);
 
+	// 第二層fieldの初期化
+	InitField();
+
 	// ライトを有効化	// 影の初期化処理
 	InitShadow();
 
@@ -99,11 +103,11 @@ HRESULT InitGame(void)
 	// sky
 	InitSky();
 
-	// 木を生やす
-	InitTree();
-
 	// ドットの初期化
 	InitDot();
+
+	// 木を生やす
+	InitTree();
 
 	// 弾の初期化
 	InitBullet();
@@ -151,6 +155,9 @@ void UninitGame(void)
 
 	// 地面の終了処理
 	UninitMeshField();
+
+	// 第二層fieldの終了処理
+	UninitField();
 
 	// エネミーの終了処理
 	UninitEnemy();
@@ -200,6 +207,9 @@ void UpdateGame(void)
 	// 地面処理の更新
 	UpdateMeshField();
 
+	// 第二層fieldの更新
+	UpdateField();
+
 	// sky
 	UpdateSky();
 
@@ -228,7 +238,7 @@ void UpdateGame(void)
 	UpdateShadow();
 
 	// 当たり判定処理
-	CheckHit();
+	//CheckHit();
 
 	// スコアの更新処理
 	UpdateScore();
@@ -244,7 +254,10 @@ void DrawGame0(void)
 {
 	// 3Dの物を描画する処理
 	// 地面の描画処理
-	DrawMeshField();
+	//DrawMeshField();
+
+	// 第二層fieldの描画処理
+	DrawField();
 
 	// sky
 	DrawSky();

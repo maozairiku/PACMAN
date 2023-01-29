@@ -21,6 +21,7 @@
 #include "tutorial.h"
 #include "ui.h"
 #include "dot.h"
+#include "field.h"
 
 
 //*****************************************************************************
