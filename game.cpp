@@ -16,6 +16,7 @@
 #include "ui.h"
 #include "dot.h"
 #include "explosion.h"
+#include "pexplosion.h"
 #include "field.h"
 
 #include "player.h"
@@ -71,6 +72,9 @@ HRESULT InitGame(void)
 	// 第二層fieldの初期化
 	InitField();
 
+	// camera work init
+	InitCamera();
+
 	// ライトを有効化	// 影の初期化処理
 	InitShadow();
 
@@ -121,6 +125,9 @@ HRESULT InitGame(void)
 	// パーティクルの初期化
 	InitParticle();
 
+	// 爆発パーティクルの初期化
+	InitPExplosion();
+
 	// BGM再生
 	PlaySound(SOUND_LABEL_BGM_GAMEMODE);
 
@@ -165,6 +172,9 @@ void UninitGame(void)
 	// explosion
 	UninitExplosion();
 
+	// particle explosion
+	UninitPExplosion();
+
 	// プレイヤーの終了処理
 	UninitPlayer();
 
@@ -199,8 +209,12 @@ void UpdateGame(void)
 
 	if (g_bPause == false)
 	{
-	// explosion
-	UpdateExplosion();
+		// explosion
+		//UpdateExplosion();
+
+		// particle explosion
+		UpdatePExplosion();
+
 		return;
 	}
 
@@ -238,13 +252,17 @@ void UpdateGame(void)
 	UpdateShadow();
 
 	// 当たり判定処理
-	//CheckHit();
+	CheckHit();
 
 	// スコアの更新処理
 	UpdateScore();
 
 	// set explosion
 	UpdateExplosion();
+
+	// particle explosion
+	UpdatePExplosion();
+
 }
 
 //=============================================================================
@@ -254,7 +272,7 @@ void DrawGame0(void)
 {
 	// 3Dの物を描画する処理
 	// 地面の描画処理
-	//DrawMeshField();
+	DrawMeshField();
 
 	// 第二層fieldの描画処理
 	DrawField();
@@ -272,7 +290,7 @@ void DrawGame0(void)
 	DrawPlayer();
 
 	// explosion
-	DrawExplosion();
+	//DrawExplosion();
 
 	// 弾の描画処理
 	DrawBullet();
@@ -287,8 +305,10 @@ void DrawGame0(void)
 	DrawTree();
 
 	// パーティクルの描画処理
-	DrawParticle();
+	//DrawParticle();
 
+	// particle explosion
+	DrawPExplosion();
 
 	// 2Dの物を描画する処理
 	// Z比較なし
@@ -373,9 +393,6 @@ void CheckHit(void)
 {
 	ENEMY *ghostred = GetGhostRed();		// エネミーのポインターを初期化
 	ENEMY* ghostorange = GetGhostOrange();	
-	//ENEMY* ghostgreen = GetGhostGreen();	
-	//ENEMY* ghostblue = GetGhostBlue();		
-	//ENEMY* ghostpurple = GetGhostPurple();	
 
 	PLAYER *player = GetPlayer();			// プレイヤーのポインターを初期化
 	BULLET *bullet = GetBullet();			// 弾のポインターを初期化
@@ -573,9 +590,13 @@ void CheckHit(void)
 
 				// Set Pause
 				SetPause(false);
+
+				// camera shake
+				SetShake();
 				
 				// explosion
-				SetExplosion(XMFLOAT3(player->pos.x, -15.0f, player->pos.z), 50.0f, 50.0f, DIE_EXPLO);
+				SetExplosionParticle();
+				//SetExplosion(XMFLOAT3(player->pos.x, -15.0f, player->pos.z), 50.0f, 50.0f, DIE_EXPLO);
 				
 				// to result
 				SetFade(FADE_OUT, MODE_RESULT);

@@ -23,9 +23,9 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define	MODEL_PLAYER			"data/MODEL/eatman.obj"			// 読み込むモデル名
-#define	MODEL_PLAYER_LPARTS		"data/MODEL/leftwing.obj"		// 読み込むモデル名
-#define	MODEL_PLAYER_RPARTS		"data/MODEL/rightwing.obj"		// 読み込むモデル名
+#define	MODEL_PLAYER			"data/MODEL/duck.obj"			// 読み込むモデル名
+//#define	MODEL_PLAYER_LPARTS		"data/MODEL/leftwing.obj"		// 読み込むモデル名
+//#define	MODEL_PLAYER_RPARTS		"data/MODEL/rightwing.obj"		// 読み込むモデル名
 
 #define	VALUE_MOVE				(2.0f)							// 移動量
 #define	VALUE_ROTATE			(D3DX_PI * 0.02f)				// 回転量
@@ -57,59 +57,59 @@ static LIGHT		g_Light;
 
 
 
-// プレイヤーの階層アニメーションデータ
-// プレイヤーの頭を左右に動かしているアニメデータ
-static INTERPOLATION_DATA move_tbl[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),      XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(20.0f, 10.0f, 0.0f), XMFLOAT3(XM_PI/2, 0.0f, 0.0f),   XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
-	{ XMFLOAT3(20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),      XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-
-};
-
-static INTERPOLATION_DATA move_tbl2[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(-20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),         XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(-20.0f, 10.0f, 0.0f), XMFLOAT3(XM_PI / 2, 0.0f, 0.0f),    XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
-	{ XMFLOAT3(-20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),         XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(-20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-
-};
-
-
-// プレイヤーの歩いているアニメデータ
-static INTERPOLATION_DATA walk_tbl[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, -XM_PI / 2, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, XM_PI / 2, 0.0f),  XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-
-};
-
-static INTERPOLATION_DATA walk_tbl2[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, -XM_PI / 2, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, XM_PI / 2, 0.0f),  XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-
-};
-
-
-// プレイヤーの走っているアニメデータ
-static INTERPOLATION_DATA run_tbl[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, -XM_PI / 2, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, XM_PI / 2, 0.0f),  XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-
-};
-
-static INTERPOLATION_DATA run_tbl2[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, -XM_PI / 2, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, XM_PI / 2, 0.0f),  XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
-
-};
+//// プレイヤーの階層アニメーションデータ
+//// プレイヤーの頭を左右に動かしているアニメデータ
+//static INTERPOLATION_DATA move_tbl[] = {	// pos, rot, scl, frame
+//	{ XMFLOAT3(20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),      XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(20.0f, 10.0f, 0.0f), XMFLOAT3(XM_PI/2, 0.0f, 0.0f),   XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
+//	{ XMFLOAT3(20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),      XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//
+//};
+//
+//static INTERPOLATION_DATA move_tbl2[] = {	// pos, rot, scl, frame
+//	{ XMFLOAT3(-20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),         XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(-20.0f, 10.0f, 0.0f), XMFLOAT3(XM_PI / 2, 0.0f, 0.0f),    XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
+//	{ XMFLOAT3(-20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),         XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(-20.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//
+//};
+//
+//
+//// プレイヤーの歩いているアニメデータ
+//static INTERPOLATION_DATA walk_tbl[] = {	// pos, rot, scl, frame
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, -XM_PI / 2, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, XM_PI / 2, 0.0f),  XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//
+//};
+//
+//static INTERPOLATION_DATA walk_tbl2[] = {	// pos, rot, scl, frame
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, -XM_PI / 2, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, XM_PI / 2, 0.0f),  XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//
+//};
+//
+//
+//// プレイヤーの走っているアニメデータ
+//static INTERPOLATION_DATA run_tbl[] = {	// pos, rot, scl, frame
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, -XM_PI / 2, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, XM_PI / 2, 0.0f),  XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//
+//};
+//
+//static INTERPOLATION_DATA run_tbl2[] = {	// pos, rot, scl, frame
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, -XM_PI / 2, 0.0f), XMFLOAT3(5.0f, 5.0f, 5.0f), 240 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, XM_PI / 2, 0.0f),  XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//	{ XMFLOAT3(0.0f, 10.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f),	     XMFLOAT3(5.0f, 5.0f, 5.0f), 120 },
+//
+//};
 
 
 
@@ -143,39 +143,39 @@ HRESULT InitPlayer(void)
 	g_Player.parent = NULL;			// 本体（親）なのでNULLを入れる
 
 
-	// 階層アニメーションの初期化
-	for (int i = 0; i < PLAYER_PARTS_MAX; i++)
-	{
-		g_Parts[i].use = TRUE;
+	//// 階層アニメーションの初期化
+	//for (int i = 0; i < PLAYER_PARTS_MAX; i++)
+	//{
+	//	g_Parts[i].use = TRUE;
 
-		// 位置・回転・スケールの初期設定
-		g_Parts[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_Parts[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_Parts[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//	// 位置・回転・スケールの初期設定
+	//	g_Parts[i].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	//	g_Parts[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	//	g_Parts[i].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
-		// 親子関係
-		g_Parts[i].parent = &g_Player;			// ← ここに親のアドレスを入れる
-		//g_Parts[腕].parent= &g_Player;		// 腕だったら親は本体（プレイヤー）
-		//g_Parts[手].parent= &g_Paerts[腕];	// 指が腕の子供だった場合の例
+	//	// 親子関係
+	//	g_Parts[i].parent = &g_Player;			// ← ここに親のアドレスを入れる
+	//	//g_Parts[腕].parent= &g_Player;		// 腕だったら親は本体（プレイヤー）
+	//	//g_Parts[手].parent= &g_Paerts[腕];	// 指が腕の子供だった場合の例
 
-		// 階層アニメーション用のメンバー変数の初期化
-		g_Parts[i].tbl_adr = move_tbl;	// 再生するアニメデータの先頭アドレスをセット
-		g_Parts[i].move_time = 0.0f;	// 実行時間をクリア
+	//	// 階層アニメーション用のメンバー変数の初期化
+	//	g_Parts[i].tbl_adr = move_tbl;	// 再生するアニメデータの先頭アドレスをセット
+	//	g_Parts[i].move_time = 0.0f;	// 実行時間をクリア
 
-		// パーツの読み込み
-		g_Parts[i].load = TRUE;
-		LoadModel(MODEL_PLAYER_LPARTS, &g_Parts[i].model);
+	//	// パーツの読み込み
+	//	g_Parts[i].load = TRUE;
+	//	LoadModel(MODEL_PLAYER_LPARTS, &g_Parts[i].model);
 
-		g_Parts[i].load = TRUE;
-		LoadModel(MODEL_PLAYER_RPARTS, &g_Parts[i].model);
+	//	g_Parts[i].load = TRUE;
+	//	LoadModel(MODEL_PLAYER_RPARTS, &g_Parts[i].model);
 
-	}
+	//}
 
-	g_Parts[0].parent = &g_Player;		// 
-	g_Parts[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
-	
-	g_Parts[1].parent = &g_Player;		// 
-	g_Parts[1].tbl_adr = move_tbl2;		// 再生するアニメデータの先頭アドレスをセット
+	//g_Parts[0].parent = &g_Player;		// 
+	//g_Parts[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
+	//
+	//g_Parts[1].parent = &g_Player;		// 
+	//g_Parts[1].tbl_adr = move_tbl2;		// 再生するアニメデータの先頭アドレスをセット
 
 
 	// クォータニオンの初期化
@@ -324,18 +324,18 @@ void UpdatePlayer(void)
 
 
 		// レイキャストして足元の高さを求める
-		//XMFLOAT3 HitPosition;		// 交点
-		//XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-		//bool ans = RayHitField(g_Player.pos, &HitPosition, &Normal);
-		//if (ans)
-		//{
-		//	g_Player.pos.y = HitPosition.y + PLAYER_OFFSET_Y;
-		//}
-		//else
-		//{
-		//	g_Player.pos.y = PLAYER_OFFSET_Y;
-		//	Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-		//}
+		XMFLOAT3 HitPosition;		// 交点
+		XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
+		bool ans = RayHitField(g_Player.pos, &HitPosition, &Normal);
+		if (ans)
+		{
+			g_Player.pos.y = HitPosition.y + PLAYER_OFFSET_Y;
+		}
+		else
+		{
+			g_Player.pos.y = PLAYER_OFFSET_Y;
+			Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
+		}
 
 
 		// 弾発射処理
@@ -350,45 +350,45 @@ void UpdatePlayer(void)
 		pos.y -= (PLAYER_OFFSET_Y - 0.1f);
 		SetPositionShadow(g_Player.shadowIdx, pos);
 
-		// 階層アニメーション
-		for (int i = 0; i < PLAYER_PARTS_MAX; i++)
-		{
-			// 使われているなら処理する
-			if (g_Parts[i].use == TRUE)
-			{
-				// 移動処理
-				int		index = (int)g_Parts[i].move_time;
-				float	time = g_Parts[i].move_time - index;
-				int		size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);
+		//// 階層アニメーション
+		//for (int i = 0; i < PLAYER_PARTS_MAX; i++)
+		//{
+		//	// 使われているなら処理する
+		//	if (g_Parts[i].use == TRUE)
+		//	{
+		//		// 移動処理
+		//		int		index = (int)g_Parts[i].move_time;
+		//		float	time = g_Parts[i].move_time - index;
+		//		int		size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);
 
-				float dt = 1.0f / g_Parts[i].tbl_adr[index].frame;	// 1フレームで進める時間
-				g_Parts[i].move_time += dt;					// アニメーションの合計時間に足す
+		//		float dt = 1.0f / g_Parts[i].tbl_adr[index].frame;	// 1フレームで進める時間
+		//		g_Parts[i].move_time += dt;					// アニメーションの合計時間に足す
 
-				if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
-				{
-					g_Parts[i].move_time = 0.0f;
-					index = 0;
-				}
+		//		if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
+		//		{
+		//			g_Parts[i].move_time = 0.0f;
+		//			index = 0;
+		//		}
 
-				// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR p1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].pos);	// 次の場所
-				XMVECTOR p0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].pos);	// 現在の場所
-				XMVECTOR vec = p1 - p0;
-				XMStoreFloat3(&g_Parts[i].pos, p0 + vec * time);
+		//		// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
+		//		XMVECTOR p1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].pos);	// 次の場所
+		//		XMVECTOR p0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].pos);	// 現在の場所
+		//		XMVECTOR vec = p1 - p0;
+		//		XMStoreFloat3(&g_Parts[i].pos, p0 + vec * time);
 
-				// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR r1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].rot);	// 次の角度
-				XMVECTOR r0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].rot);	// 現在の角度
-				XMVECTOR rot = r1 - r0;
-				XMStoreFloat3(&g_Parts[i].rot, r0 + rot * time);
+		//		// 回転を求める	R = StartX + (EndX - StartX) * 今の時間
+		//		XMVECTOR r1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].rot);	// 次の角度
+		//		XMVECTOR r0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].rot);	// 現在の角度
+		//		XMVECTOR rot = r1 - r0;
+		//		XMStoreFloat3(&g_Parts[i].rot, r0 + rot * time);
 
-				// scaleを求める S = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR s1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].scl);	// 次のScale
-				XMVECTOR s0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].scl);	// 現在のScale
-				XMVECTOR scl = s1 - s0;
-				XMStoreFloat3(&g_Parts[i].scl, s0 + scl * time);
+		//		// scaleを求める S = StartX + (EndX - StartX) * 今の時間
+		//		XMVECTOR s1 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 1].scl);	// 次のScale
+		//		XMVECTOR s0 = XMLoadFloat3(&g_Parts[i].tbl_adr[index + 0].scl);	// 現在のScale
+		//		XMVECTOR scl = s1 - s0;
+		//		XMStoreFloat3(&g_Parts[i].scl, s0 + scl * time);
 
-			}
+		//	}
 
 			// ポイントライトのテスト
 			{
@@ -415,7 +415,7 @@ void UpdatePlayer(void)
 				}
 			}
 		}
-	}
+	
 	//////////////////////////////////////////////////////////////////////
 	//// 姿勢制御
 	//////////////////////////////////////////////////////////////////////

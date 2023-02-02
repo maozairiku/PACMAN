@@ -35,13 +35,21 @@ struct CAMERA
 
 
 enum {
+
+	// screen work
 	TYPE_FULL_SCREEN,
 	TYPE_LEFT_HALF_SCREEN,
 	TYPE_RIGHT_HALF_SCREEN,
 	TYPE_UP_HALF_SCREEN,
 	TYPE_DOWN_HALF_SCREEN,
 	TYPE_NONE,
+};
 
+enum {
+
+	// camera work
+	NORMAL_TYPE,
+	DIED_TYPE,
 };
 
 
@@ -59,3 +67,4 @@ void SetViewPort(int type);
 int GetViewPortType(void);
 
 void SetCameraAT(XMFLOAT3 pos);
+void SetShake(void);

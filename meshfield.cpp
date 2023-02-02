@@ -42,7 +42,8 @@ static float		g_fBlockSizeXField, g_fBlockSizeZField;	// ブロックサイズ
 
 static char* g_TextureName[TEXTURE_MAX] = {
 	//"data/TEXTURE/field.jpg",
-	"data/TEXTURE/rainbow.jpeg",
+	//"data/TEXTURE/rainbow.jpeg",
+	"data/TEXTURE/suke.png",
 
 };
 
@@ -52,7 +53,7 @@ static VERTEX_3D	*g_Vertex = NULL;
 // 波の高さ = sin( -経過時間 * 周波数 + 距離 * 距離補正 ) * 振幅
 static XMFLOAT3		g_Center;					// 波の発生場所
 static float		g_Time = 0.0f;				// 波の経過時間
-static float		g_wave_frequency  = 2.0f;	// 波の周波数
+static float		g_wave_frequency  = 1.0f;	// 波の周波数
 static float		g_wave_correction = 0.02f;	// 波の距離補正
 static float		g_wave_amplitude  = 20.0f;	// 波の振幅
 
@@ -340,7 +341,7 @@ void UpdateMeshField(void)
 
 			// 波の高さを、sin関数で得る
 			// 波の高さ　= sin( -経過時間 * 周波数 + 距離 * 距離補正 ) * 振幅
-			//g_Vertex[z * (g_nNumBlockXField + 1) + x].Position.y = sinf(-g_Time * g_wave_frequency + len * g_wave_correction) * g_wave_amplitude;
+			g_Vertex[z * (g_nNumBlockXField + 1) + x].Position.y =  0.1 * sinf(-g_Time * g_wave_frequency + len * g_wave_correction) * g_wave_amplitude;
 		//	g_Vertex[z * (g_nNumBlockXField + 1) + x].Position.y = 0.0f;
 		}
 
@@ -366,10 +367,10 @@ void UpdateMeshField(void)
 void DrawMeshField(void)
 {
 	// Vertex Shader Set
-	GetDeviceContext()->VSSetShader(g_GroundVertexShader, NULL, 0);
+	//GetDeviceContext()->VSSetShader(g_GroundVertexShader, NULL, 0);
 
 	// reflection shader set
-	GetDeviceContext()->PSSetShader(g_ReflectionPixelShader, NULL, 0);
+	//GetDeviceContext()->PSSetShader(g_ReflectionPixelShader, NULL, 0);
 
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);

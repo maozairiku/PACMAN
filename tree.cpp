@@ -253,6 +253,11 @@ void UninitTree(void)
 //=============================================================================
 void UpdateTree(void)
 {
+	DOT* cookies = GetCookies();
+	DOT* hotdog = GetHotdog();
+	DOT* cherry = GetCherry();
+	DOT* bread = GetBread();
+	DOT* croissant = GetCroissant();
 
 	for(int nCntTree = 0; nCntTree < MAX_TREE; nCntTree++)
 	{
@@ -261,7 +266,7 @@ void UpdateTree(void)
 			// 影の位置設定
 			SetPositionShadow(g_cookiesign[nCntTree].nIdxShadow, XMFLOAT3(g_cookiesign[nCntTree].pos.x, 0.1f, g_cookiesign[nCntTree].pos.z));
 
-			if (g_cookiesign->tbl_adr != NULL)	// 線形補間を実行する？
+			if (cookies->use && g_cookiesign->tbl_adr != NULL)	// 線形補間を実行する？
 			{									// 線形補間の処理
 				// 移動処理
 				int		index = (int)g_cookiesign->move_time;
@@ -296,7 +301,7 @@ void UpdateTree(void)
 				XMStoreFloat3(&g_cookiesign->scl, s0 + scl * time);
 			}
 		}
-		if (g_hotdogsign[nCntTree].bUse)
+		if (hotdog->use && g_hotdogsign[nCntTree].bUse)
 		{
 			// 影の位置設定
 			SetPositionShadow(g_hotdogsign[nCntTree].nIdxShadow, XMFLOAT3(g_hotdogsign[nCntTree].pos.x, 0.1f, g_hotdogsign[nCntTree].pos.z));
@@ -336,7 +341,7 @@ void UpdateTree(void)
 				XMStoreFloat3(&g_hotdogsign->scl, s0 + scl * time);
 			}
 		}
-		if (g_cherrysign[nCntTree].bUse)
+		if (cherry->use && g_cherrysign[nCntTree].bUse)
 		{
 			// 影の位置設定
 			SetPositionShadow(g_cherrysign[nCntTree].nIdxShadow, XMFLOAT3(g_cherrysign[nCntTree].pos.x, 0.1f, g_cherrysign[nCntTree].pos.z));
@@ -376,7 +381,7 @@ void UpdateTree(void)
 				XMStoreFloat3(&g_cherrysign->scl, s0 + scl * time);
 			}
 		}
-		if (g_breadsign[nCntTree].bUse)
+		if (bread->use && g_breadsign[nCntTree].bUse)
 		{
 			// 影の位置設定
 			SetPositionShadow(g_breadsign[nCntTree].nIdxShadow, XMFLOAT3(g_breadsign[nCntTree].pos.x, 0.1f, g_breadsign[nCntTree].pos.z));
@@ -416,7 +421,7 @@ void UpdateTree(void)
 				XMStoreFloat3(&g_breadsign->scl, s0 + scl * time);
 			}
 		}
-		if (g_croissantsign[nCntTree].bUse)
+		if (croissant->use && g_croissantsign[nCntTree].bUse)
 		{
 			// 影の位置設定
 			SetPositionShadow(g_croissantsign[nCntTree].nIdxShadow, XMFLOAT3(g_croissantsign[nCntTree].pos.x, 0.1f, g_croissantsign[nCntTree].pos.z));
@@ -494,6 +499,12 @@ void UpdateTree(void)
 //=============================================================================
 void DrawTree(void)
 {
+	DOT* cookies = GetCookies();
+	DOT* hotdog = GetHotdog();
+	DOT* cherry = GetCherry();
+	DOT* bread = GetBread();
+	DOT* croissant = GetCroissant();
+
 	// αテスト設定
 	if (g_bAlpaTest == true)
 	{
@@ -517,7 +528,7 @@ void DrawTree(void)
 
 	for(int i = 0; i < MAX_TREE; i++)
 	{
-		if(g_cookiesign[i].bUse)
+		if(cookies->use && g_cookiesign[i].bUse)
 		{
 			// ワールドマトリックスの初期化
 			mtxWorld = XMMatrixIdentity();
@@ -564,7 +575,7 @@ void DrawTree(void)
 			GetDeviceContext()->Draw(4, 0);
 		}
 
-		if (g_hotdogsign[i].bUse)
+		if (hotdog->use && g_hotdogsign[i].bUse)
 		{
 			// ワールドマトリックスの初期化
 			mtxWorld = XMMatrixIdentity();
@@ -611,7 +622,7 @@ void DrawTree(void)
 			GetDeviceContext()->Draw(4, 0);
 		}
 
-		if (g_cherrysign[i].bUse)
+		if (cherry->use && g_cherrysign[i].bUse)
 		{
 			// ワールドマトリックスの初期化
 			mtxWorld = XMMatrixIdentity();
@@ -658,7 +669,7 @@ void DrawTree(void)
 			GetDeviceContext()->Draw(4, 0);
 		}
 
-		if (g_breadsign[i].bUse)
+		if (bread->use && g_breadsign[i].bUse)
 		{
 			// ワールドマトリックスの初期化
 			mtxWorld = XMMatrixIdentity();
@@ -705,7 +716,7 @@ void DrawTree(void)
 			GetDeviceContext()->Draw(4, 0);
 		}
 
-		if (g_croissantsign[i].bUse)
+		if (croissant->use && g_croissantsign[i].bUse)
 		{
 			// ワールドマトリックスの初期化
 			mtxWorld = XMMatrixIdentity();

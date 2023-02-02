@@ -30,7 +30,7 @@
 #define	VALUE_ROTATE		(XM_PI * 0.02f)					// 回転量
 
 #define ENEMY_SHADOW_SIZE	(0.4f)							// 影の大きさ
-#define ENEMY_OFFSET_Y		(20.0f)							// エネミーの足元をあわせる
+#define ENEMY_OFFSET_Y		(23.0f)							// エネミーの足元をあわせる
 
 
 //*****************************************************************************

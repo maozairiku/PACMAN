@@ -162,6 +162,7 @@
     <ClCompile Include="meshwall.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="particle.cpp" />
+    <ClCompile Include="pexplosion.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="meshwall.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="particle.h" />
+    <ClInclude Include="pexplosion.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />

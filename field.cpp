@@ -43,7 +43,8 @@ int wavemove;
 
 
 static char* g_TextureName[] = {
-	"data/TEXTURE/stainless.jpg",
+	//"data/TEXTURE/stainless.jpg",
+	"data/TEXTURE/ocean.jpg"
 };
 
 
@@ -192,7 +193,7 @@ void DrawField(void)
 
 	for (int i = pz; i > pz - TEXTURE_FLOOR_SIZE; i--)
 	{
-		float wave = 10 * sinf(0.05 * (i + wavemove));	
+		float wave = 5 * sinf(0.05 * (i + wavemove));	
 
 
 		D3D11_MAPPED_SUBRESOURCE msr;

@@ -73,11 +73,11 @@ void InitLight(void)
 //=============================================================================
 void UpdateLight(void)
 {
-	// ê¢äEÇÃåı
-	g_Light[0].Direction.x = -cosf(g_time);
-	g_Light[0].Direction.y = -sinf(g_time);
-	SetLight(0, &g_Light[0]);
-	g_time += 0.01f;
+	//// ê¢äEÇÃåı
+	//g_Light[0].Direction.x = -cosf(g_time);
+	//g_Light[0].Direction.y = -sinf(g_time);
+	//SetLight(0, &g_Light[0]);
+	//g_time += 0.01f;
 }
 
 

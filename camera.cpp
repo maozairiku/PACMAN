@@ -34,9 +34,13 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static CAMERA			g_Camera;		// カメラデータ
+static CAMERA		g_Camera;		// カメラデータ
 
-static int				g_ViewPortType = TYPE_FULL_SCREEN;
+static int			g_ViewPortType = TYPE_FULL_SCREEN;
+
+static int			g_CameraWork = NORMAL_TYPE;
+static bool			g_Shake;
+
 
 //=============================================================================
 // 初期化処理
@@ -56,6 +60,10 @@ void InitCamera(void)
 	
 	// ビューポートタイプの初期化
 	g_ViewPortType = TYPE_FULL_SCREEN;
+
+	// カメラタイプの初期化
+	g_CameraWork = NORMAL_TYPE;
+	g_Shake = false;
 }
 
 
@@ -73,89 +81,103 @@ void UninitCamera(void)
 //=============================================================================
 void UpdateCamera(void)
 {
+	PLAYER* player = GetPlayer();
 
-	if (GetKeyboardPress(DIK_Z))
-	{// 視点旋回「左」
-		g_Camera.rot.y += VALUE_ROTATE_CAMERA;
-		if (g_Camera.rot.y > XM_PI)
-		{
-			g_Camera.rot.y -= XM_PI * 2.0f;
+	switch (g_CameraWork)
+	{
+	case NORMAL_TYPE:
+		if (GetKeyboardPress(DIK_Z))
+		{// 視点旋回「左」
+			g_Camera.rot.y += VALUE_ROTATE_CAMERA;
+			if (g_Camera.rot.y > XM_PI)
+			{
+				g_Camera.rot.y -= XM_PI * 2.0f;
+			}
+
+			g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
+			g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
 		}
 
-		g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
-		g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
-	}
+		if (GetKeyboardPress(DIK_C))
+		{// 視点旋回「右」
+			g_Camera.rot.y -= VALUE_ROTATE_CAMERA;
+			if (g_Camera.rot.y < -XM_PI)
+			{
+				g_Camera.rot.y += XM_PI * 2.0f;
+			}
 
-	if (GetKeyboardPress(DIK_C))
-	{// 視点旋回「右」
-		g_Camera.rot.y -= VALUE_ROTATE_CAMERA;
-		if (g_Camera.rot.y < -XM_PI)
-		{
-			g_Camera.rot.y += XM_PI * 2.0f;
+			g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
+			g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
 		}
 
-		g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
-		g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
-	}
-
-	if (GetKeyboardPress(DIK_Y))
-	{// 視点移動「上」
-		g_Camera.pos.y += VALUE_MOVE_CAMERA;
-	}
-
-	if (GetKeyboardPress(DIK_N))
-	{// 視点移動「下」
-		g_Camera.pos.y -= VALUE_MOVE_CAMERA;
-	}
-
-	if (GetKeyboardPress(DIK_Q))
-	{// 注視点旋回「左」
-		g_Camera.rot.y -= VALUE_ROTATE_CAMERA;
-		if (g_Camera.rot.y < -XM_PI)
-		{
-			g_Camera.rot.y += XM_PI * 2.0f;
+		if (GetKeyboardPress(DIK_Y))
+		{// 視点移動「上」
+			g_Camera.pos.y += VALUE_MOVE_CAMERA;
 		}
 
-		g_Camera.at.x = g_Camera.pos.x + sinf(g_Camera.rot.y) * g_Camera.len;
-		g_Camera.at.z = g_Camera.pos.z + cosf(g_Camera.rot.y) * g_Camera.len;
-	}
-
-	if (GetKeyboardPress(DIK_E))
-	{// 注視点旋回「右」
-		g_Camera.rot.y += VALUE_ROTATE_CAMERA;
-		if (g_Camera.rot.y > XM_PI)
-		{
-			g_Camera.rot.y -= XM_PI * 2.0f;
+		if (GetKeyboardPress(DIK_N))
+		{// 視点移動「下」
+			g_Camera.pos.y -= VALUE_MOVE_CAMERA;
 		}
 
-		g_Camera.at.x = g_Camera.pos.x + sinf(g_Camera.rot.y) * g_Camera.len;
-		g_Camera.at.z = g_Camera.pos.z + cosf(g_Camera.rot.y) * g_Camera.len;
-	}
+		if (GetKeyboardPress(DIK_Q))
+		{// 注視点旋回「左」
+			g_Camera.rot.y -= VALUE_ROTATE_CAMERA;
+			if (g_Camera.rot.y < -XM_PI)
+			{
+				g_Camera.rot.y += XM_PI * 2.0f;
+			}
 
-	if (GetKeyboardPress(DIK_T))
-	{// 注視点移動「上」
-		g_Camera.at.y += VALUE_MOVE_CAMERA;
-	}
+			g_Camera.at.x = g_Camera.pos.x + sinf(g_Camera.rot.y) * g_Camera.len;
+			g_Camera.at.z = g_Camera.pos.z + cosf(g_Camera.rot.y) * g_Camera.len;
+		}
 
-	if (GetKeyboardPress(DIK_B))
-	{// 注視点移動「下」
-		g_Camera.at.y -= VALUE_MOVE_CAMERA;
-	}
+		if (GetKeyboardPress(DIK_E))
+		{// 注視点旋回「右」
+			g_Camera.rot.y += VALUE_ROTATE_CAMERA;
+			if (g_Camera.rot.y > XM_PI)
+			{
+				g_Camera.rot.y -= XM_PI * 2.0f;
+			}
 
-	if (GetKeyboardPress(DIK_U))
-	{// 近づく
-		g_Camera.len -= VALUE_MOVE_CAMERA;
-		g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
-		g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
-	}
+			g_Camera.at.x = g_Camera.pos.x + sinf(g_Camera.rot.y) * g_Camera.len;
+			g_Camera.at.z = g_Camera.pos.z + cosf(g_Camera.rot.y) * g_Camera.len;
+		}
 
-	if (GetKeyboardPress(DIK_M))
-	{// 離れる
+		if (GetKeyboardPress(DIK_T))
+		{// 注視点移動「上」
+			g_Camera.at.y += VALUE_MOVE_CAMERA;
+		}
+
+		if (GetKeyboardPress(DIK_B))
+		{// 注視点移動「下」
+			g_Camera.at.y -= VALUE_MOVE_CAMERA;
+		}
+
+		if (GetKeyboardPress(DIK_U))
+		{// 近づく
+			g_Camera.len -= VALUE_MOVE_CAMERA;
+			g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
+			g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
+		}
+
+		if (GetKeyboardPress(DIK_M))
+		{// 離れる
+			g_Camera.len += VALUE_MOVE_CAMERA;
+			g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
+			g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
+		}
+
+		break;
+
+	case DIED_TYPE:	
+		// shake
 		g_Camera.len += VALUE_MOVE_CAMERA;
-		g_Camera.pos.x = g_Camera.at.x - sinf(g_Camera.rot.y) * g_Camera.len;
-		g_Camera.pos.z = g_Camera.at.z - cosf(g_Camera.rot.y) * g_Camera.len;
-	}
+		g_Camera.pos.x = g_Camera.at.x + 10 * sinf(g_Camera.rot.y) * g_Camera.len;
+		g_Camera.pos.z = g_Camera.at.z + 10 * cosf(g_Camera.rot.y) * g_Camera.len;
 
+		break;
+	}
 
 #ifdef _DEBUG
 	// カメラを初期に戻す
@@ -201,32 +223,6 @@ void SetCamera(void)
 	
 }
 
-//=============================================================================
-// カメラの更新(shake)
-//=============================================================================
-void SetCameraShake(void)
-{
-	// ビューマトリックス設定
-	XMMATRIX mtxViewDie;
-	mtxViewDie = XMMatrixLookAtLH(XMLoadFloat3(&g_Camera.pos), XMLoadFloat3(&g_Camera.at), XMLoadFloat3(&g_Camera.up));
-	SetViewMatrix(&mtxViewDie);
-	XMStoreFloat4x4(&g_Camera.mtxView, mtxViewDie);
-
-	XMMATRIX mtxInvViewDie;
-	mtxInvViewDie = XMMatrixInverse(nullptr, mtxViewDie);
-	XMStoreFloat4x4(&g_Camera.mtxInvView, mtxInvViewDie);
-
-
-	// プロジェクションマトリックス設定
-	XMMATRIX mtxProjectionDie;
-	mtxProjectionDie = XMMatrixPerspectiveFovLH(VIEW_ANGLE, VIEW_ASPECT, VIEW_NEAR_Z, VIEW_FAR_Z);
-
-	SetProjectionMatrix(&mtxProjectionDie);
-	XMStoreFloat4x4(&g_Camera.mtxProjection, mtxProjectionDie);
-
-	SetShaderCamera(g_Camera.pos);
-
-}
 
 //=============================================================================
 // カメラの取得
@@ -320,3 +316,8 @@ void SetCameraAT(XMFLOAT3 pos)
 
 }
 
+void SetShake(void)
+{
+	g_Shake = true;
+	g_CameraWork = DIED_TYPE;
+}

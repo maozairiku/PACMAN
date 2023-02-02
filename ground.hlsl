@@ -163,14 +163,41 @@ float4 ReflectionPS(PS_IN input) : SV_Target
     color *= input.Diffuse;
     color = color * Material.Diffuse;
     
-    l = normalize(Light.Position[0].xyz - input.posw.xyz);
-    n = normalize(input.norw.xyz);
-    r = 2.0 * n * dot(n, 1) - 1;
-    v = normalize(Camera.xyz - input.posw.xyz);
-    i = pow(saturate(dot(r, v)), Material.Diffuse.w);
+    //l = normalize(Light.Position[0].xyz - input.posw.xyz);
+    //n = normalize(input.norw.xyz);
+    //r = 2.0 * n * dot(n, 1) - 1;
+    //v = normalize(Camera.xyz - input.posw.xyz);
+    //i = pow(saturate(dot(r, v)), Material.Diffuse.w);
+    
+    float t = dot(input.norw, Light.Direction[0]);
+    t *= -1.0f;
+    if (t < 0.0f)
+    {
+        t = 0.0f;
+    }
+    
+    float3 diffuseLig = color.xyz * t;
+    
+    float refVec = reflect(Light.Direction[0], input.norw);
+    float3 toEye = Camera.xyz - input.posw.xyz;
+    toEye = normalize(toEye);
+    
+    t = dot(refVec, toEye);
+    
+    if (t < 0.0f)
+    {
+        t = 0.0f;
+    }
+    
+    t = pow(t, 5.0f);
+    
+    float3 specLig = color.xyz * t;
+    
+    
     
     //return color;
-    return float4 (i * color.xyz * Light.Diffuse[0].xyz, 1.0);
+    //return float4 (i * color.xyz * Light.Diffuse[0].xyz, 1.0);
+    return float4(diffuseLig + specLig, 1.0f);
     
 }
 

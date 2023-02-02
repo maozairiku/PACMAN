@@ -45,7 +45,7 @@ HRESULT InitSky(void)
 
 		g_Sky[i].pos = XMFLOAT3(0.0f, 6.0f, 0.0f);
 		g_Sky[i].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_Sky[i].scl = XMFLOAT3(60.0f, 60.0f, 60.0f);
+		g_Sky[i].scl = XMFLOAT3(200.0f, 200.0f, 200.0f);
 
 		g_Sky[i].use = true;		
 
