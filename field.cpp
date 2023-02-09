@@ -227,38 +227,8 @@ void DrawField(void)
 		// ƒ|ƒŠƒSƒ“•`‰æ
 		GetDeviceContext()->Draw(4, 0);
 	}
-
-	//D3D11_MAPPED_SUBRESOURCE msr;
-	//GetDeviceContext()->Map(g_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-
-	//VERTEX_3D *vertex = (VERTEX_3D*)msr.pData;
-
-	//// ¶ã‚ðŒ´“_‚Æ‚µ‚ÄÝ’è‚·‚éƒvƒƒOƒ‰ƒ€
-	//vertex[0].Position = XMFLOAT3(px, 0.0f, pz);
-	//vertex[0].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//vertex[0].TexCoord = XMFLOAT2(0.0f, 0.0f);
-	//vertex[0].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-	//vertex[1].Position = XMFLOAT3(px + pw, 0.0f, pz);
-	//vertex[1].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//vertex[1].TexCoord = XMFLOAT2(1.0f, 0.0f);
-	//vertex[1].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-	//vertex[2].Position = XMFLOAT3(px, 0.0f, pz - ph);
-	//vertex[2].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//vertex[2].TexCoord = XMFLOAT2(0.0f, 1.0f);
-	//vertex[2].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-	//vertex[3].Position = XMFLOAT3(px + pw, 0.0f, pz - ph);
-	//vertex[3].Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//vertex[3].TexCoord = XMFLOAT2(1.0f, 1.0f);
-	//vertex[3].Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-	//GetDeviceContext()->Unmap(g_VertexBuffer, 0);
 	
 	wavemove++;
-
-	
 
 	// Set Default Shader
 	SetDefaultShader();

@@ -290,7 +290,7 @@ void DrawGame0(void)
 	DrawPlayer();
 
 	// explosion
-	//DrawExplosion();
+	DrawExplosion();
 
 	// 弾の描画処理
 	DrawBullet();
@@ -305,7 +305,7 @@ void DrawGame0(void)
 	DrawTree();
 
 	// パーティクルの描画処理
-	//DrawParticle();
+	DrawParticle();
 
 	// particle explosion
 	DrawPExplosion();
@@ -439,69 +439,19 @@ void CheckHit(void)
 			// Game Over
 			SetFade(FADE_OUT, MODE_RESULT);
 		}
-
-		////敵の有効フラグをチェックする(green)
-		//if (ghostgreen[i].use == false)
-		//	continue;
-
-		////BCの当たり判定
-		//if (CollisionBC(player->pos, ghostgreen[i].pos, player->size, ghostgreen[i].size))
-		//{
-		//	// 敵キャラクターは倒される
-		//	ghostgreen[i].use = false;
-		//	ReleaseShadow(ghostgreen[i].shadowIdx);
-
-		//	// Game Over
-		//	SetFade(FADE_OUT, MODE_RESULT);
-		//}
-
-
-		////敵の有効フラグをチェックする(blue)
-		//if (ghostblue[i].use == false)
-		//	continue;
-
-		////BCの当たり判定
-		//if (CollisionBC(player->pos, ghostblue[i].pos, player->size, ghostblue[i].size))
-		//{
-		//	// 敵キャラクターは倒される
-		//	ghostblue[i].use = false;
-		//	ReleaseShadow(ghostblue[i].shadowIdx);
-
-		//	// Game Over
-		//	SetFade(FADE_OUT, MODE_RESULT);
-		//}
-
-
-		////敵の有効フラグをチェックする(purple)
-		//if (ghostpurple[i].use == false)
-		//	continue;
-
-		////BCの当たり判定
-		//if (CollisionBC(player->pos, ghostpurple[i].pos, player->size, ghostpurple[i].size))
-		//{
-		//	// 敵キャラクターは倒される
-		//	ghostpurple[i].use = false;
-		//	ReleaseShadow(ghostpurple[i].shadowIdx);
-
-		//	// Game Over
-		//	SetFade(FADE_OUT, MODE_RESULT);
-		//}
-
 	}
 
 	// プレイヤーとドット
 	for (int d = 0; d < MAX_DOT; d++)
 	{
 		// cookies
-		if (cookies[d].use == false)
-			continue;
-
 		//BCの当たり判定
 		if (CollisionBC(player->pos, cookies[d].pos, player->size, cookies[d].size))
 		{
-			// ドットは食べられる
-			cookies[d].use = false;
-			ReleaseShadow(cookies[d].shadowIdx);
+			// 食べられた後、座標リセット
+			//cookies[d].use = false;
+			//ReleaseShadow(cookies[d].shadowIdx);
+			cookies[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算
 			AddScore(150);
@@ -509,15 +459,13 @@ void CheckHit(void)
 
 
 		// hotdog
-		if (hotdog[d].use == false)
-			continue;
-
 		//BCの当たり判定
 		if (CollisionBC(player->pos, hotdog[d].pos, player->size, hotdog[d].size))
 		{
-			// ドットは食べられる
-			hotdog[d].use = false;
-			ReleaseShadow(hotdog[d].shadowIdx);
+			// 食べられた後、座標リセット
+			//hotdog[d].use = false;
+			//ReleaseShadow(hotdog[d].shadowIdx);
+			hotdog[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算
 			AddScore(150);
@@ -525,45 +473,39 @@ void CheckHit(void)
 
 
 		// cherry
-		if (cherry[d].use == false)
-			continue;
-
 		//BCの当たり判定
 		if (CollisionBC(player->pos, cherry[d].pos, player->size, cherry[d].size))
 		{
-			// ドットは食べられる
-			cherry[d].use = false;
-			ReleaseShadow(cherry[d].shadowIdx);
+			// 食べられた後、座標リセット
+			//cherry[d].use = false;
+			//ReleaseShadow(cherry[d].shadowIdx);
+			cherry[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算
 			AddScore(150);
 		}
 
 		// bread
-		if (bread[d].use == false)
-			continue;
-
 		//BCの当たり判定
 		if (CollisionBC(player->pos, bread[d].pos, player->size, bread[d].size))
 		{
-			// ドットは食べられる
-			bread[d].use = false;
-			ReleaseShadow(bread[d].shadowIdx);
+			// 食べられた後、座標リセット
+			//bread[d].use = false;
+			//ReleaseShadow(bread[d].shadowIdx);
+			bread[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算
 			AddScore(150);
 		}
 
 		// croissant
-		if (croissant[d].use == false)
-			continue;
-
 		//BCの当たり判定
 		if (CollisionBC(player->pos, croissant[d].pos, player->size, croissant[d].size))
 		{
-			// ドットは食べられる
-			croissant[d].use = false;
-			ReleaseShadow(croissant[d].shadowIdx);
+			// 食べられた後、座標リセット
+			//croissant[d].use = false;
+			//ReleaseShadow(croissant[d].shadowIdx);
+			croissant[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算
 			AddScore(150);
@@ -594,32 +536,13 @@ void CheckHit(void)
 				// camera shake
 				SetShake();
 				
-				// explosion
+				// particle explosion
 				SetExplosionParticle();
-				//SetExplosion(XMFLOAT3(player->pos.x, -15.0f, player->pos.z), 50.0f, 50.0f, DIE_EXPLO);
 				
 				// to result
 				SetFade(FADE_OUT, MODE_RESULT);
 			}
 	}
-
-
-
-	// dotが全部なくなったら状態遷移
-	int dot_count = 0;
-	for (int i = 0; i < MAX_DOT; i++)
-	{
-		if (cookies[i].use && hotdog[i].use && cherry[i].use && bread[i].use && croissant[i].use == false) continue;
-
-		dot_count++;
-	}
-
-	// dotが０匹？
-	if (dot_count == 0)
-	{
-		SetFade(FADE_OUT, MODE_RESULT);
-	}
-
 }
 
 //=============================================================================

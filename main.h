@@ -1,7 +1,7 @@
 //=============================================================================
 //
 // メイン処理 [main.h]
-// Author : 
+// Author : 王　ウ華
 //
 //=============================================================================
 #pragma once
@@ -59,10 +59,19 @@ using namespace DirectX;
 #define	MAP_LEFT		(-MAP_W/2)
 #define	MAP_RIGHT		(MAP_W/2)
 
-// 補間用のデータ構造体を定義
+// 補間用のデータ構造体を定義(静)
 struct INTERPOLATION_DATA
 {
-	XMFLOAT3	pos;		// 頂点座標
+	XMFLOAT3	*pos;		// 頂点座標
+	XMFLOAT3	rot;		// 回転
+	XMFLOAT3	scl;		// 拡大縮小
+	float		frame;		// 実行フレーム数 ( dt = 1.0f/frame )
+};
+
+// 補間用のデータ構造体を定義(動)
+struct INTERPOLATION_MOVE
+{
+	XMFLOAT3    pos;		// 頂点座標
 	XMFLOAT3	rot;		// 回転
 	XMFLOAT3	scl;		// 拡大縮小
 	float		frame;		// 実行フレーム数 ( dt = 1.0f/frame )

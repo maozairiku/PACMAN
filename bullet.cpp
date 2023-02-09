@@ -250,11 +250,6 @@ void DrawBullet(void)
 			// ビューマトリックスを取得
 			mtxView = XMLoadFloat4x4(&cam->mtxView);
 
-			//mtxWorld = XMMatrixInverse(nullptr, mtxView);
-			//mtxWorld.r[3].m128_f32[0] = 0.0f;
-			//mtxWorld.r[3].m128_f32[1] = 0.0f;
-			//mtxWorld.r[3].m128_f32[2] = 0.0f;
-
 			mtxWorld.r[0].m128_f32[0] = mtxView.r[0].m128_f32[0];
 			mtxWorld.r[0].m128_f32[1] = mtxView.r[1].m128_f32[0];
 			mtxWorld.r[0].m128_f32[2] = mtxView.r[2].m128_f32[0];
@@ -270,10 +265,6 @@ void DrawBullet(void)
 			// スケールを反映
 			mtxScl = XMMatrixScaling(g_Bullet[i].scl.x, g_Bullet[i].scl.y, g_Bullet[i].scl.z);
 			mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
-
-			//// 回転を反映
-			//mtxRot = XMMatrixRotationRollPitchYaw(g_Bullet[i].rot.x, g_Bullet[i].rot.y + XM_PI, g_Bullet[i].rot.z);
-			//mtxWorld = XMMatrixMultiply(mtxWorld, mtxRot);
 
 			// 移動を反映
 			mtxTranslate = XMMatrixTranslation(g_Bullet[i].pos.x, g_Bullet[i].pos.y, g_Bullet[i].pos.z);

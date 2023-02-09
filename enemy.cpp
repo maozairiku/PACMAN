@@ -22,9 +22,6 @@
 //*****************************************************************************
 #define	MODEL_ENEMY_GR		"data/MODEL/ghostred.obj"		// Ghost_Red
 #define	MODEL_ENEMY_GO		"data/MODEL/orange.obj"			// Ghost_Orange
-#define	MODEL_ENEMY_GG		"data/MODEL/ghostgreen.obj"		// Ghost_Green
-#define	MODEL_ENEMY_GB		"data/MODEL/ghostblue.obj"		// Ghost_Blue
-#define	MODEL_ENEMY_GP		"data/MODEL/ghostpurple.obj"	// Ghost_Purple
 
 #define	VALUE_MOVE			(5.0f)							// ˆÚ“®—Ê
 #define	VALUE_ROTATE		(XM_PI * 0.02f)					// ‰ñ“]—Ê
@@ -55,21 +52,21 @@ static float g_timer = -1;
 
 // red_ghost’B‚ÌüŒ`•âŠÔ
 static INTERPOLATION_DATA move_tbl[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(576.0f, ENEMY_OFFSET_Y, 565.0f), XMFLOAT3(0.0f, XMConvertToRadians(180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1},
-	{ XMFLOAT3(576.0f, ENEMY_OFFSET_Y, 565.0f), XMFLOAT3(0.0f, XMConvertToRadians(0), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1},
-	{ XMFLOAT3(576.0f, ENEMY_OFFSET_Y, 565.0f), XMFLOAT3(0.0f, XMConvertToRadians(-180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1},
+	{ &g_GhostRed[0].pos, XMFLOAT3(0.0f, XMConvertToRadians(180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1},
+	{ &g_GhostRed[0].pos, XMFLOAT3(0.0f, XMConvertToRadians(0), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1},
+	{ &g_GhostRed[0].pos, XMFLOAT3(0.0f, XMConvertToRadians(-180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1},
 };
 
 static INTERPOLATION_DATA move_tbl2[] = {
-	{ XMFLOAT3(580.0f, ENEMY_OFFSET_Y, -580.0f), XMFLOAT3(0.0f, XMConvertToRadians(180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
-	{ XMFLOAT3(580.0f, ENEMY_OFFSET_Y, -580.0f), XMFLOAT3(0.0f, XMConvertToRadians(0), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
-	{ XMFLOAT3(580.0f, ENEMY_OFFSET_Y, -580.0f), XMFLOAT3(0.0f, XMConvertToRadians(-180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
+	{ &g_GhostRed[1].pos, XMFLOAT3(0.0f, XMConvertToRadians(180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
+	{ &g_GhostRed[1].pos, XMFLOAT3(0.0f, XMConvertToRadians(0), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
+	{ &g_GhostRed[1].pos, XMFLOAT3(0.0f, XMConvertToRadians(-180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
 };
 
 static INTERPOLATION_DATA move_tbl3[] = {
-	{ XMFLOAT3(-490.0f, ENEMY_OFFSET_Y, -475.0f), XMFLOAT3(0.0f, XMConvertToRadians(180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
-	{ XMFLOAT3(-490.0f, ENEMY_OFFSET_Y, -475.0f), XMFLOAT3(0.0f, XMConvertToRadians(0), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
-	{ XMFLOAT3(-490.0f, ENEMY_OFFSET_Y, -475.0f), XMFLOAT3(0.0f, XMConvertToRadians(-180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
+	{ &g_GhostRed[2].pos, XMFLOAT3(0.0f, XMConvertToRadians(180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
+	{ &g_GhostRed[2].pos, XMFLOAT3(0.0f, XMConvertToRadians(0), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
+	{ &g_GhostRed[2].pos, XMFLOAT3(0.0f, XMConvertToRadians(-180), 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
 };
 
 //=============================================================================
@@ -226,8 +223,8 @@ void UpdateEnemy(void)
 				}
 
 				// À•W‚ð‹‚ß‚é	X = StartX + (EndX - StartX) * ¡‚ÌŽžŠÔ
-				XMVECTOR p1 = XMLoadFloat3(&g_GhostRed[i].tbl_adr[index + 1].pos);	// ŽŸ‚ÌêŠ
-				XMVECTOR p0 = XMLoadFloat3(&g_GhostRed[i].tbl_adr[index + 0].pos);	// Œ»Ý‚ÌêŠ
+				XMVECTOR p1 = XMLoadFloat3(g_GhostRed[i].tbl_adr[index + 1].pos);	// ŽŸ‚ÌêŠ
+				XMVECTOR p0 = XMLoadFloat3(g_GhostRed[i].tbl_adr[index + 0].pos);	// Œ»Ý‚ÌêŠ
 				XMVECTOR vec = p1 - p0;
 				XMStoreFloat3(&g_GhostRed[i].pos, p0 + vec * time);
 
@@ -271,9 +268,6 @@ void UpdateEnemy(void)
 			{
 				SetBulletBezier(g_GhostRed[i].pos, g_GhostRed[i].rot, player->pos);
 			}
-
-			// particle
-			//SetParticle(g_GhostRed[i].pos, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), fSize, fSize, nLife);
 		}
 	}
 

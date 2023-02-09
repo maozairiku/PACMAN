@@ -149,11 +149,6 @@ void UpdateTitle(void)
 		PostQuitMessage(WM_CLOSE);
 	}
 
-	// ゲームパッドで入力処理
-	//else if (IsButtonTriggered(0, BUTTON_START))
-	//{
-	//	SetFade(FADE_OUT, MODE_GAME);
-	//}
 	else if (IsButtonTriggered(0, BUTTON_A) && ui[0].pos.y == 380)
 	{
 		player[0].select = GetMode();
@@ -288,30 +283,6 @@ void DrawTitle(void)
 		GetDeviceContext()->Draw(4, 0);
 	}
 }
-
-//	// 加減算のテスト
-//	SetBlendState(BLEND_MODE_ADD);		// 加算合成
-//	SetBlendState(BLEND_MODE_SUBTRACT);	// 減算合成
-//	for(int i=0; i<30; i++)
-//	{
-//		// テクスチャ設定
-//		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[2]);
-//
-//		// １枚のポリゴンの頂点とテクスチャ座標を設定
-//		float dx = 100.0f;
-//		float dy = 100.0f;
-//		float sx = (float)(rand() % 100);
-//		float sy = (float)(rand() % 100);
-//
-//
-//		SetSpriteColor(g_VertexBuffer, dx+sx, dy+sy, 50, 50, 0.0f, 0.0f, 1.0f, 1.0f,
-//			XMFLOAT4(0.3f, 0.3f, 1.0f, 0.5f));
-//
-//		// ポリゴン描画
-//		GetDeviceContext()->Draw(4, 0);
-//	}
-// 
-//	SetBlendState(BLEND_MODE_ALPHABLEND);	// 半透明処理を元に戻す
 
 
 

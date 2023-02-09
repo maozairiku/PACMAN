@@ -261,11 +261,6 @@ void DrawPExplosion(void)
 			// ビューマトリックスを取得
 			mtxView = XMLoadFloat4x4(&cam->mtxView);
 
-			//mtxWorld = XMMatrixInverse(nullptr, mtxView);
-			//mtxWorld.r[3].m128_f32[0] = 0.0f;
-			//mtxWorld.r[3].m128_f32[1] = 0.0f;
-			//mtxWorld.r[3].m128_f32[2] = 0.0f;
-
 			// 処理が速いしお勧め
 			mtxWorld.r[0].m128_f32[0] = mtxView.r[0].m128_f32[0];
 			mtxWorld.r[0].m128_f32[1] = mtxView.r[1].m128_f32[0];

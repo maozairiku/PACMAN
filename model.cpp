@@ -192,17 +192,6 @@ void DrawModel(DX11_MODEL* Model)
 
 void DrawInstanceModel(DX11_MODEL* Model, int InsanceNum, ID3D11Buffer* instanceBuffer, int shaderMode)
 {
-	//switch (shaderMode)
-	//{
-	//case SHADER_MODE_INSTANCING:
-	//	SetShaderMode(SHADER_MODE_INSTANCING);
-	//	break;
-
-	//case SHADER_MODE_SHADOW_MAP_INST:
-	//	SetShaderMode(SHADER_MODE_SHADOW_MAP_INST);
-	//	break;
-	//}
-
 	// 頂点バッファ設定
 	UINT strides[2];
 	UINT offsets[2];

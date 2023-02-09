@@ -366,12 +366,6 @@ void UpdateMeshField(void)
 //=============================================================================
 void DrawMeshField(void)
 {
-	// Vertex Shader Set
-	//GetDeviceContext()->VSSetShader(g_GroundVertexShader, NULL, 0);
-
-	// reflection shader set
-	//GetDeviceContext()->PSSetShader(g_ReflectionPixelShader, NULL, 0);
-
 	// 頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;

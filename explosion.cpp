@@ -32,7 +32,7 @@ HRESULT MakeVertexExplosion(void);
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static ID3D11Buffer* g_VertexBuffer = NULL;	// 頂点バッファ
+static ID3D11Buffer* g_VertexBuffer = NULL;		// 頂点バッファ
 static ID3D11ShaderResourceView* g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 
 static EXPLOSION					g_Explosion[MAX_EXPLOSION];	// 爆発ワーク
@@ -212,24 +212,6 @@ void UpdateExplosion(void)
 	{
 		g_bAlpaTest = g_bAlpaTest ? false : true;
 	}
-
-	//// アルファテストの閾値変更
-	//if(GetKeyboardPress(DIK_I))
-	//{
-	//	g_nAlpha--;
-	//	if(g_nAlpha < 0)
-	//	{
-	//		g_nAlpha = 0;
-	//	}
-	//}
-	//if(GetKeyboardPress(DIK_K))
-	//{
-	//	g_nAlpha++;
-	//	if(g_nAlpha > 255)
-	//	{
-	//		g_nAlpha = 255;
-	//	}
-	//}
 #endif
 
 }
@@ -270,11 +252,6 @@ void DrawExplosion(void)
 
 			// ビューマトリックスを取得
 			mtxView = XMLoadFloat4x4(&cam->mtxView);
-
-			//mtxWorld = XMMatrixInverse(nullptr, mtxView);
-			//mtxWorld.r[3].m128_f32[0] = 0.0f;
-			//mtxWorld.r[3].m128_f32[1] = 0.0f;
-			//mtxWorld.r[3].m128_f32[2] = 0.0f;
 
 			mtxWorld.r[0].m128_f32[0] = mtxView.r[0].m128_f32[0];
 			mtxWorld.r[0].m128_f32[1] = mtxView.r[1].m128_f32[0];

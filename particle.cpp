@@ -200,13 +200,6 @@ void UpdateParticle(void)
 				}
 				else
 				{
-					/*if(g_aParticle[nCntParticle].nLife <= 80)
-					{
-						g_aParticle[nCntParticle].material.Diffuse.x = 0.8f - (float)(80 - g_aParticle[nCntParticle].nLife) / 80 * 0.8f;
-						g_aParticle[nCntParticle].material.Diffuse.y = 0.7f - (float)(80 - g_aParticle[nCntParticle].nLife) / 80 * 0.7f;
-						g_aParticle[nCntParticle].material.Diffuse.z = 0.2f - (float)(80 - g_aParticle[nCntParticle].nLife) / 80 * 0.2f;
-					}*/
-
 					if(g_aParticle[nCntParticle].nLife <= 20)
 					{
 						// α値設定
@@ -237,17 +230,9 @@ void UpdateParticle(void)
 			move.z = cosf(fAngle) * fLength;
 
 			nLife = 50;
-
-			//nLife = rand() % 100 + 150;  
-
 			fSize = 20;
-
-			//fSize = (float)(rand() % 30 + 20);
-
 			pos.y = fSize / 2;
 
-			// ビルボードの設定
-			//SetParticle(pPlayer->pos, XMFLOAT3(0.0f, 0.0f ,0.0f), XMFLOAT4(0.8f, 0.7f, 0.2f, 0.85f), fSize, fSize, nLife);
 		}
 	}
 }
@@ -292,11 +277,6 @@ void DrawParticle(void)
 
 			// ビューマトリックスを取得
 			mtxView = XMLoadFloat4x4(&cam->mtxView);
-
-			//mtxWorld = XMMatrixInverse(nullptr, mtxView);
-			//mtxWorld.r[3].m128_f32[0] = 0.0f;
-			//mtxWorld.r[3].m128_f32[1] = 0.0f;
-			//mtxWorld.r[3].m128_f32[2] = 0.0f;
 
 			// 処理が速いしお勧め
 			mtxWorld.r[0].m128_f32[0] = mtxView.r[0].m128_f32[0];

@@ -210,8 +210,6 @@ void DrawResult(void)
 
 	}
 
-
-
 }
 
 

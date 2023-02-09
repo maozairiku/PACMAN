@@ -50,33 +50,33 @@ static BOOL			g_Load = FALSE;
 
 
 static INTERPOLATION_DATA move_tbl[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(0.0f, DOT_OFFSET_Y, 0.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
-	{ XMFLOAT3(0.0f, DOT_OFFSET_Y, 0.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
-	{ XMFLOAT3(0.0f, DOT_OFFSET_Y, 0.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
+	{ &g_Cookies[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60},
+	{ &g_Cookies[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
+	{ &g_Cookies[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 };
 
 static INTERPOLATION_DATA move_tbl2[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(-580.0f, DOT_OFFSET_Y, -575.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(0)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5 },
-	{ XMFLOAT3(-580.0f, 25.0f, -575.0f), XMFLOAT3(XMConvertToRadians(90), XMConvertToRadians(0), XMConvertToRadians(60)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5 },
-	{ XMFLOAT3(-580.0f, DOT_OFFSET_Y, -575.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(0)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5 },
+	{ &g_Hotdog[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(0)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5},
+	{ &g_Hotdog[0].pos, XMFLOAT3(XMConvertToRadians(90), XMConvertToRadians(0), XMConvertToRadians(60)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5 },
+	{ &g_Hotdog[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(0)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 1.5 },
 };
 
 static INTERPOLATION_DATA move_tbl3[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(-536.0f, DOT_OFFSET_Y, 518.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
-	{ XMFLOAT3(-536.0f, DOT_OFFSET_Y, 518.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
-	{ XMFLOAT3(-536.0f, DOT_OFFSET_Y, 518.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ &g_Cherry[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2},
+	{ &g_Cherry[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ &g_Cherry[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
 };
 
 static INTERPOLATION_DATA move_tbl4[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(503.0f, DOT_OFFSET_Y, 480.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 * 2 },
-	{ XMFLOAT3(503.0f, DOT_OFFSET_Y, 480.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 * 2 },
-	{ XMFLOAT3(503.0f, DOT_OFFSET_Y, 480.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 * 2 },
+	{ &g_Bread[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 * 2},
+	{ &g_Bread[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 * 2 },
+	{ &g_Bread[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 * 2 },
 };
 
 static INTERPOLATION_DATA move_tbl5[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(216.0f, DOT_OFFSET_Y, -570.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
-	{ XMFLOAT3(216.0f, DOT_OFFSET_Y, -570.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
-	{ XMFLOAT3(216.0f, DOT_OFFSET_Y, -570.0f), XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ &g_Croissant[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2},
+	{ &g_Croissant[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(0), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
+	{ &g_Croissant[0].pos, XMFLOAT3(XMConvertToRadians(45), XMConvertToRadians(-180), XMConvertToRadians(45)), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 * 2 },
 };
 
 
@@ -316,8 +316,8 @@ void UpdateDot(void)
 				}
 
 				// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR p1 = XMLoadFloat3(&g_Cookies[i].tbl_adr[index + 1].pos);	// 次の場所
-				XMVECTOR p0 = XMLoadFloat3(&g_Cookies[i].tbl_adr[index + 0].pos);	// 現在の場所
+				XMVECTOR p1 = XMLoadFloat3(g_Cookies[i].tbl_adr[index + 1].pos);	// 次の場所
+				XMVECTOR p0 = XMLoadFloat3(g_Cookies[i].tbl_adr[index + 0].pos);	// 現在の場所
 				XMVECTOR vec = p1 - p0;
 				XMStoreFloat3(&g_Cookies[i].pos, p0 + vec * time);
 
@@ -376,8 +376,8 @@ void UpdateDot(void)
 				}
 
 				// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR p1 = XMLoadFloat3(&g_Hotdog[i].tbl_adr[index + 1].pos);	// 次の場所
-				XMVECTOR p0 = XMLoadFloat3(&g_Hotdog[i].tbl_adr[index + 0].pos);	// 現在の場所
+				XMVECTOR p1 = XMLoadFloat3(g_Hotdog[i].tbl_adr[index + 1].pos);	// 次の場所
+				XMVECTOR p0 = XMLoadFloat3(g_Hotdog[i].tbl_adr[index + 0].pos);	// 現在の場所
 				XMVECTOR vec = p1 - p0;
 				XMStoreFloat3(&g_Hotdog[i].pos, p0 + vec * time);
 
@@ -436,8 +436,8 @@ void UpdateDot(void)
 				}
 
 				// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR p1 = XMLoadFloat3(&g_Cherry[i].tbl_adr[index + 1].pos);	// 次の場所
-				XMVECTOR p0 = XMLoadFloat3(&g_Cherry[i].tbl_adr[index + 0].pos);	// 現在の場所
+				XMVECTOR p1 = XMLoadFloat3(g_Cherry[i].tbl_adr[index + 1].pos);	// 次の場所
+				XMVECTOR p0 = XMLoadFloat3(g_Cherry[i].tbl_adr[index + 0].pos);	// 現在の場所
 				XMVECTOR vec = p1 - p0;
 				XMStoreFloat3(&g_Cherry[i].pos, p0 + vec * time);
 
@@ -496,8 +496,8 @@ void UpdateDot(void)
 				}
 
 				// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR p1 = XMLoadFloat3(&g_Bread[i].tbl_adr[index + 1].pos);	// 次の場所
-				XMVECTOR p0 = XMLoadFloat3(&g_Bread[i].tbl_adr[index + 0].pos);	// 現在の場所
+				XMVECTOR p1 = XMLoadFloat3(g_Bread[i].tbl_adr[index + 1].pos);	// 次の場所
+				XMVECTOR p0 = XMLoadFloat3(g_Bread[i].tbl_adr[index + 0].pos);	// 現在の場所
 				XMVECTOR vec = p1 - p0;
 				XMStoreFloat3(&g_Bread[i].pos, p0 + vec * time);
 
@@ -556,8 +556,8 @@ void UpdateDot(void)
 				}
 
 				// 座標を求める	X = StartX + (EndX - StartX) * 今の時間
-				XMVECTOR p1 = XMLoadFloat3(&g_Croissant[i].tbl_adr[index + 1].pos);	// 次の場所
-				XMVECTOR p0 = XMLoadFloat3(&g_Croissant[i].tbl_adr[index + 0].pos);	// 現在の場所
+				XMVECTOR p1 = XMLoadFloat3(g_Croissant[i].tbl_adr[index + 1].pos);	// 次の場所
+				XMVECTOR p0 = XMLoadFloat3(g_Croissant[i].tbl_adr[index + 0].pos);	// 現在の場所
 				XMVECTOR vec = p1 - p0;
 				XMStoreFloat3(&g_Croissant[i].pos, p0 + vec * time);
 

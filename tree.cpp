@@ -53,31 +53,31 @@ static char *g_TextureName[] =
 
 // 線形補間
 
-static INTERPOLATION_DATA move_tbl[] = {	// pos, rot, scl, frame
+static INTERPOLATION_MOVE move_tbl[] = {	// pos, rot, scl, frame
 	{ XMFLOAT3(g_cookiesign->pos.x, (g_cookiesign->pos.y + 60.0f), g_cookiesign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 	{ XMFLOAT3(g_cookiesign->pos.x, (g_cookiesign->pos.y + 40.0f), g_cookiesign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 	{ XMFLOAT3(g_cookiesign->pos.x, (g_cookiesign->pos.y + 60.0f), g_cookiesign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 };
 
-static INTERPOLATION_DATA move_tbl2[] = {	// pos, rot, scl, frame
+static INTERPOLATION_MOVE move_tbl2[] = {	// pos, rot, scl, frame
 	{ XMFLOAT3(g_hotdogsign->pos.x, (g_hotdogsign->pos.y + 30.0f), g_hotdogsign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 	{ XMFLOAT3(g_hotdogsign->pos.x, (g_hotdogsign->pos.y + 10.0f), g_hotdogsign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 	{ XMFLOAT3(g_hotdogsign->pos.x, (g_hotdogsign->pos.y + 30.0f), g_hotdogsign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 };
 
-static INTERPOLATION_DATA move_tbl3[] = {	// pos, rot, scl, frame
+static INTERPOLATION_MOVE move_tbl3[] = {	// pos, rot, scl, frame
 	{ XMFLOAT3(g_cherrysign->pos.x, (g_cherrysign->pos.y + 30.0f), g_cherrysign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 },
 	{ XMFLOAT3(g_cherrysign->pos.x, (g_cherrysign->pos.y + 10.0f), g_cherrysign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 },
 	{ XMFLOAT3(g_cherrysign->pos.x, (g_cherrysign->pos.y + 30.0f), g_cherrysign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 },
 };
 
-static INTERPOLATION_DATA move_tbl4[] = {	// pos, rot, scl, frame
+static INTERPOLATION_MOVE move_tbl4[] = {	// pos, rot, scl, frame
 	{ XMFLOAT3(g_breadsign->pos.x, (g_breadsign->pos.y + 30.0f), g_breadsign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 },
 	{ XMFLOAT3(g_breadsign->pos.x, (g_breadsign->pos.y + 10.0f), g_breadsign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 },
 	{ XMFLOAT3(g_breadsign->pos.x, (g_breadsign->pos.y + 30.0f), g_breadsign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, 0.5f), 60 },
 };
 
-static INTERPOLATION_DATA move_tbl5[] = {	// pos, rot, scl, frame
+static INTERPOLATION_MOVE move_tbl5[] = {	// pos, rot, scl, frame
 	{ XMFLOAT3(g_croissantsign->pos.x, (g_croissantsign->pos.y + 30.0f), g_croissantsign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 	{ XMFLOAT3(g_croissantsign->pos.x, (g_croissantsign->pos.y + 10.0f), g_croissantsign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
 	{ XMFLOAT3(g_croissantsign->pos.x, (g_croissantsign->pos.y + 30.0f), g_croissantsign->pos.z), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), 60 },
@@ -151,6 +151,7 @@ HRESULT InitTree(void)
 		g_breadsign[nCntTree].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_breadsign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
 		g_breadsign[nCntTree].fWidth = TREE_WIDTH;
+		g_breadsign[nCntTree].fWidth = TREE_WIDTH;
 		g_breadsign[nCntTree].fHeight = TREE_HEIGHT;
 		g_breadsign[nCntTree].bUse = false;
 
@@ -201,28 +202,28 @@ HRESULT InitTree(void)
 
 	// cookies
 	g_cookiesign[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
-	g_cookiesign[0].tbl_adr = move_tbl;		// 再生するアニメデータの先頭アドレスをセット
-	g_cookiesign[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+	g_cookiesign[0].tbl_adr = move_tbl;			// 再生するアニメデータの先頭アドレスをセット
+	g_cookiesign[0].tbl_size = sizeof(move_tbl) / sizeof(INTERPOLATION_MOVE);		// 再生するアニメデータのレコード数をセット
 
 	// hotdog
 	g_hotdogsign[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
 	g_hotdogsign[0].tbl_adr = move_tbl2;		// 再生するアニメデータの先頭アドレスをセット
-	g_hotdogsign[0].tbl_size = sizeof(move_tbl2) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+	g_hotdogsign[0].tbl_size = sizeof(move_tbl2) / sizeof(INTERPOLATION_MOVE);		// 再生するアニメデータのレコード数をセット
 
 	// cherry
 	g_cherrysign[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
 	g_cherrysign[0].tbl_adr = move_tbl3;		// 再生するアニメデータの先頭アドレスをセット
-	g_cherrysign[0].tbl_size = sizeof(move_tbl3) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+	g_cherrysign[0].tbl_size = sizeof(move_tbl3) / sizeof(INTERPOLATION_MOVE);		// 再生するアニメデータのレコード数をセット
 
 	// bread
 	g_breadsign[0].move_time = 0.0f;			// 線形補間用のタイマーをクリア
 	g_breadsign[0].tbl_adr = move_tbl4;			// 再生するアニメデータの先頭アドレスをセット
-	g_breadsign[0].tbl_size = sizeof(move_tbl4) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+	g_breadsign[0].tbl_size = sizeof(move_tbl4) / sizeof(INTERPOLATION_MOVE);		// 再生するアニメデータのレコード数をセット
 
 	// croissant
 	g_croissantsign[0].move_time = 0.0f;		// 線形補間用のタイマーをクリア
 	g_croissantsign[0].tbl_adr = move_tbl5;		// 再生するアニメデータの先頭アドレスをセット
-	g_croissantsign[0].tbl_size = sizeof(move_tbl5) / sizeof(INTERPOLATION_DATA);	// 再生するアニメデータのレコード数をセット
+	g_croissantsign[0].tbl_size = sizeof(move_tbl5) / sizeof(INTERPOLATION_MOVE);	// 再生するアニメデータのレコード数をセット
 
 	return S_OK;
 }
@@ -259,6 +260,23 @@ void UpdateTree(void)
 	DOT* bread = GetBread();
 	DOT* croissant = GetCroissant();
 
+	// 各位置を記憶
+	for (int f = 0; f < 3; f++)
+	{
+		move_tbl[f].pos.x = cookies->pos.x;
+		move_tbl2[f].pos.x = hotdog->pos.x;
+		move_tbl3[f].pos.x = cherry->pos.x;
+		move_tbl4[f].pos.x = bread->pos.x;
+		move_tbl5[f].pos.x = croissant->pos.x;
+
+		move_tbl[f].pos.z = cookies->pos.z;
+		move_tbl2[f].pos.z = hotdog->pos.z;
+		move_tbl3[f].pos.z = cherry->pos.z;
+		move_tbl4[f].pos.z = bread->pos.z;
+		move_tbl5[f].pos.z = croissant->pos.z;
+	}
+	
+
 	for(int nCntTree = 0; nCntTree < MAX_TREE; nCntTree++)
 	{
 		if(g_cookiesign[nCntTree].bUse)
@@ -276,7 +294,7 @@ void UpdateTree(void)
 				float dt = 1.0f / g_cookiesign->tbl_adr[index].frame;	// 1フレームで進める時間
 				g_cookiesign->move_time += dt;							// アニメーションの合計時間に足す
 
-				if (index > (size - 2))	// ゴールをオーバーしていたら、最初へ戻す
+				if (index > (size - 2))			// ゴールをオーバーしていたら、最初へ戻す
 				{
 					g_cookiesign->move_time = 0.0f;
 					index = 0;
@@ -473,23 +491,6 @@ void UpdateTree(void)
 		g_bAlpaTest = g_bAlpaTest ? false: true;
 	}
 
-	//// アルファテストの閾値変更
-	//if(GetKeyboardPress(DIK_I))
-	//{
-	//	g_nAlpha--;
-	//	if(g_nAlpha < 0)
-	//	{
-	//		g_nAlpha = 0;
-	//	}
-	//}
-	//if(GetKeyboardPress(DIK_K))
-	//{
-	//	g_nAlpha++;
-	//	if(g_nAlpha > 255)
-	//	{
-	//		g_nAlpha = 255;
-	//	}
-	//}
 #endif
 
 }
@@ -536,11 +537,6 @@ void DrawTree(void)
 			// ビューマトリックスを取得
 			mtxView = XMLoadFloat4x4(&cam->mtxView);
 
-			//mtxWorld = XMMatrixInverse(nullptr, mtxView);
-			//mtxWorld.r[3].m128_f32[0] = 0.0f;
-			//mtxWorld.r[3].m128_f32[1] = 0.0f;
-			//mtxWorld.r[3].m128_f32[2] = 0.0f;
-
 			mtxWorld.r[0].m128_f32[0] = mtxView.r[0].m128_f32[0];
 			mtxWorld.r[0].m128_f32[1] = mtxView.r[1].m128_f32[0];
 			mtxWorld.r[0].m128_f32[2] = mtxView.r[2].m128_f32[0];
@@ -582,11 +578,6 @@ void DrawTree(void)
 
 			// ビューマトリックスを取得
 			mtxView = XMLoadFloat4x4(&cam->mtxView);
-
-			//mtxWorld = XMMatrixInverse(nullptr, mtxView);
-			//mtxWorld.r[3].m128_f32[0] = 0.0f;
-			//mtxWorld.r[3].m128_f32[1] = 0.0f;
-			//mtxWorld.r[3].m128_f32[2] = 0.0f;
 
 			mtxWorld.r[0].m128_f32[0] = mtxView.r[0].m128_f32[0];
 			mtxWorld.r[0].m128_f32[1] = mtxView.r[1].m128_f32[0];
@@ -630,11 +621,6 @@ void DrawTree(void)
 			// ビューマトリックスを取得
 			mtxView = XMLoadFloat4x4(&cam->mtxView);
 
-			//mtxWorld = XMMatrixInverse(nullptr, mtxView);
-			//mtxWorld.r[3].m128_f32[0] = 0.0f;
-			//mtxWorld.r[3].m128_f32[1] = 0.0f;
-			//mtxWorld.r[3].m128_f32[2] = 0.0f;
-
 			mtxWorld.r[0].m128_f32[0] = mtxView.r[0].m128_f32[0];
 			mtxWorld.r[0].m128_f32[1] = mtxView.r[1].m128_f32[0];
 			mtxWorld.r[0].m128_f32[2] = mtxView.r[2].m128_f32[0];
@@ -677,11 +663,6 @@ void DrawTree(void)
 			// ビューマトリックスを取得
 			mtxView = XMLoadFloat4x4(&cam->mtxView);
 
-			//mtxWorld = XMMatrixInverse(nullptr, mtxView);
-			//mtxWorld.r[3].m128_f32[0] = 0.0f;
-			//mtxWorld.r[3].m128_f32[1] = 0.0f;
-			//mtxWorld.r[3].m128_f32[2] = 0.0f;
-
 			mtxWorld.r[0].m128_f32[0] = mtxView.r[0].m128_f32[0];
 			mtxWorld.r[0].m128_f32[1] = mtxView.r[1].m128_f32[0];
 			mtxWorld.r[0].m128_f32[2] = mtxView.r[2].m128_f32[0];
@@ -723,11 +704,6 @@ void DrawTree(void)
 
 			// ビューマトリックスを取得
 			mtxView = XMLoadFloat4x4(&cam->mtxView);
-
-			//mtxWorld = XMMatrixInverse(nullptr, mtxView);
-			//mtxWorld.r[3].m128_f32[0] = 0.0f;
-			//mtxWorld.r[3].m128_f32[1] = 0.0f;
-			//mtxWorld.r[3].m128_f32[2] = 0.0f;
 
 			mtxWorld.r[0].m128_f32[0] = mtxView.r[0].m128_f32[0];
 			mtxWorld.r[0].m128_f32[1] = mtxView.r[1].m128_f32[0];
