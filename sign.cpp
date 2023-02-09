@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// 木処理 [tree.cpp]
+// サイン処理 [sign.cpp]
 // Author : 王　ウ華
 //
 //=============================================================================
@@ -9,7 +9,7 @@
 #include "input.h"
 #include "camera.h"
 #include "shadow.h"
-#include "tree.h"
+#include "sign.h"
 #include "dot.h"
 
 
@@ -18,18 +18,18 @@
 //*****************************************************************************
 #define TEXTURE_MAX			(5)				// テクスチャの数
 
-#define	TREE_WIDTH			(50.0f)			// 頂点サイズ
-#define	TREE_HEIGHT			(80.0f)			// 頂点サイズ
+#define	SIGN_WIDTH			(50.0f)			// 頂点サイズ
+#define	SIGN_HEIGHT			(80.0f)			// 頂点サイズ
 
 #define SIGN_OFFSET_Y		(15.0f)			// 高さ
 
-#define	MAX_TREE			(256)			// 最大数
+#define	MAX_SIGN			(256)			// 最大数
 
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT MakeVertexTree(void);
+HRESULT MakeVertexSign(void);
 
 //*****************************************************************************
 // グローバル変数
@@ -37,11 +37,11 @@ HRESULT MakeVertexTree(void);
 static ID3D11Buffer					*g_VertexBuffer = NULL;	// 頂点バッファ
 static ID3D11ShaderResourceView		*g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 
-static SIGN			g_cookiesign[MAX_TREE];
-static SIGN			g_hotdogsign[MAX_TREE];
-static SIGN			g_cherrysign[MAX_TREE];
-static SIGN			g_breadsign[MAX_TREE];
-static SIGN			g_croissantsign[MAX_TREE];
+static SIGN			g_cookiesign[MAX_SIGN];
+static SIGN			g_hotdogsign[MAX_SIGN];
+static SIGN			g_cherrysign[MAX_SIGN];
+static SIGN			g_breadsign[MAX_SIGN];
+static SIGN			g_croissantsign[MAX_SIGN];
 
 static int			g_TexNo;			// テクスチャ番号
 static bool			g_bAlpaTest;		// アルファテストON/OFF
@@ -87,9 +87,9 @@ static INTERPOLATION_MOVE move_tbl5[] = {	// pos, rot, scl, frame
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT InitTree(void)
+HRESULT InitSign(void)
 {
-	MakeVertexTree();
+	MakeVertexSign();
 
 	// get dot data
 	DOT* cookie = GetCookies();
@@ -112,58 +112,58 @@ HRESULT InitTree(void)
 	g_TexNo = 0;
 
 	// 初期化
-	for(int nCntTree = 0; nCntTree < MAX_TREE; nCntTree++)
+	for(int nCntSign = 0; nCntSign < MAX_SIGN; nCntSign++)
 	{
 		// cookie
-		ZeroMemory(&g_cookiesign[nCntTree].material, sizeof(g_cookiesign[nCntTree].material));
-		g_cookiesign[nCntTree].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		ZeroMemory(&g_cookiesign[nCntSign].material, sizeof(g_cookiesign[nCntSign].material));
+		g_cookiesign[nCntSign].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		g_cookiesign[nCntTree].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_cookiesign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		g_cookiesign[nCntTree].fWidth = TREE_WIDTH;
-		g_cookiesign[nCntTree].fHeight = TREE_HEIGHT;
-		g_cookiesign[nCntTree].bUse = false;
+		g_cookiesign[nCntSign].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_cookiesign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		g_cookiesign[nCntSign].fWidth = SIGN_WIDTH;
+		g_cookiesign[nCntSign].fHeight = SIGN_HEIGHT;
+		g_cookiesign[nCntSign].bUse = false;
 
 		// hotdog
-		ZeroMemory(&g_hotdogsign[nCntTree].material, sizeof(g_hotdogsign[nCntTree].material));
-		g_hotdogsign[nCntTree].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		ZeroMemory(&g_hotdogsign[nCntSign].material, sizeof(g_hotdogsign[nCntSign].material));
+		g_hotdogsign[nCntSign].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		g_hotdogsign[nCntTree].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_hotdogsign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		g_hotdogsign[nCntTree].fWidth = TREE_WIDTH;
-		g_hotdogsign[nCntTree].fHeight = TREE_HEIGHT;
-		g_hotdogsign[nCntTree].bUse = false;
+		g_hotdogsign[nCntSign].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_hotdogsign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		g_hotdogsign[nCntSign].fWidth = SIGN_WIDTH;
+		g_hotdogsign[nCntSign].fHeight = SIGN_HEIGHT;
+		g_hotdogsign[nCntSign].bUse = false;
 
 		// cherry
-		ZeroMemory(&g_cherrysign[nCntTree].material, sizeof(g_cherrysign[nCntTree].material));
-		g_cherrysign[nCntTree].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		ZeroMemory(&g_cherrysign[nCntSign].material, sizeof(g_cherrysign[nCntSign].material));
+		g_cherrysign[nCntSign].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		g_cherrysign[nCntTree].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_cherrysign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		g_cherrysign[nCntTree].fWidth = TREE_WIDTH;
-		g_cherrysign[nCntTree].fHeight = TREE_HEIGHT;
-		g_cherrysign[nCntTree].bUse = false;
+		g_cherrysign[nCntSign].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_cherrysign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		g_cherrysign[nCntSign].fWidth = SIGN_WIDTH;
+		g_cherrysign[nCntSign].fHeight = SIGN_HEIGHT;
+		g_cherrysign[nCntSign].bUse = false;
 
 		// bread
-		ZeroMemory(&g_breadsign[nCntTree].material, sizeof(g_breadsign[nCntTree].material));
-		g_breadsign[nCntTree].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		ZeroMemory(&g_breadsign[nCntSign].material, sizeof(g_breadsign[nCntSign].material));
+		g_breadsign[nCntSign].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		g_breadsign[nCntTree].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_breadsign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		g_breadsign[nCntTree].fWidth = TREE_WIDTH;
-		g_breadsign[nCntTree].fWidth = TREE_WIDTH;
-		g_breadsign[nCntTree].fHeight = TREE_HEIGHT;
-		g_breadsign[nCntTree].bUse = false;
+		g_breadsign[nCntSign].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_breadsign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		g_breadsign[nCntSign].fWidth = SIGN_WIDTH;
+		g_breadsign[nCntSign].fWidth = SIGN_WIDTH;
+		g_breadsign[nCntSign].fHeight = SIGN_HEIGHT;
+		g_breadsign[nCntSign].bUse = false;
 
 		// croissant
-		ZeroMemory(&g_croissantsign[nCntTree].material, sizeof(g_croissantsign[nCntTree].material));
-		g_croissantsign[nCntTree].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		ZeroMemory(&g_croissantsign[nCntSign].material, sizeof(g_croissantsign[nCntSign].material));
+		g_croissantsign[nCntSign].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		g_croissantsign[nCntTree].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_croissantsign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		g_croissantsign[nCntTree].fWidth = TREE_WIDTH;
-		g_croissantsign[nCntTree].fHeight = TREE_HEIGHT;
-		g_croissantsign[nCntTree].bUse = false;
+		g_croissantsign[nCntSign].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_croissantsign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		g_croissantsign[nCntSign].fWidth = SIGN_WIDTH;
+		g_croissantsign[nCntSign].fHeight = SIGN_HEIGHT;
+		g_croissantsign[nCntSign].bUse = false;
 
 
 	}
@@ -171,11 +171,11 @@ HRESULT InitTree(void)
 	g_bAlpaTest = true;
 
 	// sign設定
-	SetTree(XMFLOAT3(cookie->pos.x, (cookie->pos.y + 40.0f), cookie->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetTree(XMFLOAT3(hotdog->pos.x, (hotdog->pos.y + 20.0f), hotdog->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetTree(XMFLOAT3(cherry->pos.x, (cherry->pos.y + 20.0f), cherry->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetTree(XMFLOAT3(bread->pos.x, (bread->pos.y + 20.0f), bread->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetTree(XMFLOAT3(croissant->pos.x, (croissant->pos.y + 20.0f), croissant->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetSign(XMFLOAT3(cookie->pos.x, (cookie->pos.y + 40.0f), cookie->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetSign(XMFLOAT3(hotdog->pos.x, (hotdog->pos.y + 20.0f), hotdog->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetSign(XMFLOAT3(cherry->pos.x, (cherry->pos.y + 20.0f), cherry->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetSign(XMFLOAT3(bread->pos.x, (bread->pos.y + 20.0f), bread->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetSign(XMFLOAT3(croissant->pos.x, (croissant->pos.y + 20.0f), croissant->pos.z), 20.0f, 20.0f, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 
 
 	// sign 線形補間
@@ -231,7 +231,7 @@ HRESULT InitTree(void)
 //=============================================================================
 // 終了処理
 //=============================================================================
-void UninitTree(void)
+void UninitSign(void)
 {
 	for(int nCntTex = 0; nCntTex < TEXTURE_MAX; nCntTex++)
 	{
@@ -252,7 +252,7 @@ void UninitTree(void)
 //=============================================================================
 // 更新処理
 //=============================================================================
-void UpdateTree(void)
+void UpdateSign(void)
 {
 	DOT* cookies = GetCookies();
 	DOT* hotdog = GetHotdog();
@@ -277,12 +277,12 @@ void UpdateTree(void)
 	}
 	
 
-	for(int nCntTree = 0; nCntTree < MAX_TREE; nCntTree++)
+	for(int nCntSign = 0; nCntSign < MAX_SIGN; nCntSign++)
 	{
-		if(g_cookiesign[nCntTree].bUse)
+		if(g_cookiesign[nCntSign].bUse)
 		{
 			// 影の位置設定
-			SetPositionShadow(g_cookiesign[nCntTree].nIdxShadow, XMFLOAT3(g_cookiesign[nCntTree].pos.x, 0.1f, g_cookiesign[nCntTree].pos.z));
+			SetPositionShadow(g_cookiesign[nCntSign].nIdxShadow, XMFLOAT3(g_cookiesign[nCntSign].pos.x, 0.1f, g_cookiesign[nCntSign].pos.z));
 
 			if (cookies->use && g_cookiesign->tbl_adr != NULL)	// 線形補間を実行する？
 			{									// 線形補間の処理
@@ -319,10 +319,10 @@ void UpdateTree(void)
 				XMStoreFloat3(&g_cookiesign->scl, s0 + scl * time);
 			}
 		}
-		if (hotdog->use && g_hotdogsign[nCntTree].bUse)
+		if (hotdog->use && g_hotdogsign[nCntSign].bUse)
 		{
 			// 影の位置設定
-			SetPositionShadow(g_hotdogsign[nCntTree].nIdxShadow, XMFLOAT3(g_hotdogsign[nCntTree].pos.x, 0.1f, g_hotdogsign[nCntTree].pos.z));
+			SetPositionShadow(g_hotdogsign[nCntSign].nIdxShadow, XMFLOAT3(g_hotdogsign[nCntSign].pos.x, 0.1f, g_hotdogsign[nCntSign].pos.z));
 
 			if (g_hotdogsign->tbl_adr != NULL)	// 線形補間を実行する？
 			{									// 線形補間の処理
@@ -359,10 +359,10 @@ void UpdateTree(void)
 				XMStoreFloat3(&g_hotdogsign->scl, s0 + scl * time);
 			}
 		}
-		if (cherry->use && g_cherrysign[nCntTree].bUse)
+		if (cherry->use && g_cherrysign[nCntSign].bUse)
 		{
 			// 影の位置設定
-			SetPositionShadow(g_cherrysign[nCntTree].nIdxShadow, XMFLOAT3(g_cherrysign[nCntTree].pos.x, 0.1f, g_cherrysign[nCntTree].pos.z));
+			SetPositionShadow(g_cherrysign[nCntSign].nIdxShadow, XMFLOAT3(g_cherrysign[nCntSign].pos.x, 0.1f, g_cherrysign[nCntSign].pos.z));
 
 			if (g_cherrysign->tbl_adr != NULL)	// 線形補間を実行する？
 			{									// 線形補間の処理
@@ -399,10 +399,10 @@ void UpdateTree(void)
 				XMStoreFloat3(&g_cherrysign->scl, s0 + scl * time);
 			}
 		}
-		if (bread->use && g_breadsign[nCntTree].bUse)
+		if (bread->use && g_breadsign[nCntSign].bUse)
 		{
 			// 影の位置設定
-			SetPositionShadow(g_breadsign[nCntTree].nIdxShadow, XMFLOAT3(g_breadsign[nCntTree].pos.x, 0.1f, g_breadsign[nCntTree].pos.z));
+			SetPositionShadow(g_breadsign[nCntSign].nIdxShadow, XMFLOAT3(g_breadsign[nCntSign].pos.x, 0.1f, g_breadsign[nCntSign].pos.z));
 
 			if (g_breadsign->tbl_adr != NULL)	// 線形補間を実行する？
 			{									// 線形補間の処理
@@ -439,10 +439,10 @@ void UpdateTree(void)
 				XMStoreFloat3(&g_breadsign->scl, s0 + scl * time);
 			}
 		}
-		if (croissant->use && g_croissantsign[nCntTree].bUse)
+		if (croissant->use && g_croissantsign[nCntSign].bUse)
 		{
 			// 影の位置設定
-			SetPositionShadow(g_croissantsign[nCntTree].nIdxShadow, XMFLOAT3(g_croissantsign[nCntTree].pos.x, 0.1f, g_croissantsign[nCntTree].pos.z));
+			SetPositionShadow(g_croissantsign[nCntSign].nIdxShadow, XMFLOAT3(g_croissantsign[nCntSign].pos.x, 0.1f, g_croissantsign[nCntSign].pos.z));
 
 			if (g_croissantsign->tbl_adr != NULL)	// 線形補間を実行する？
 			{									// 線形補間の処理
@@ -498,7 +498,7 @@ void UpdateTree(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawTree(void)
+void DrawSign(void)
 {
 	DOT* cookies = GetCookies();
 	DOT* hotdog = GetHotdog();
@@ -527,7 +527,7 @@ void DrawTree(void)
 	// プリミティブトポロジ設定
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	for(int i = 0; i < MAX_TREE; i++)
+	for(int i = 0; i < MAX_SIGN; i++)
 	{
 		if(cookies->use && g_cookiesign[i].bUse)
 		{
@@ -750,7 +750,7 @@ void DrawTree(void)
 //=============================================================================
 // 頂点情報の作成
 //=============================================================================
-HRESULT MakeVertexTree(void)
+HRESULT MakeVertexSign(void)
 {
 	// 頂点バッファ生成
 	D3D11_BUFFER_DESC bd;
@@ -795,90 +795,90 @@ HRESULT MakeVertexTree(void)
 }
 
 //=============================================================================
-// 木のパラメータをセット
+// サインのパラメータをセット
 //=============================================================================
-int SetTree(XMFLOAT3 pos, float fWidth, float fHeight, XMFLOAT4 col)
+int SetSign(XMFLOAT3 pos, float fWidth, float fHeight, XMFLOAT4 col)
 {
-	int nIdxTree = -1;
+	int nIdxSign = -1;
 
-	for(int nCntTree = 0; nCntTree < MAX_TREE; nCntTree++)
+	for(int nCntSign = 0; nCntSign < MAX_SIGN; nCntSign++)
 	{
-		if(!g_cookiesign[nCntTree].bUse)
+		if(!g_cookiesign[nCntSign].bUse)
 		{
-			g_cookiesign[nCntTree].pos = pos;
-			g_cookiesign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-			g_cookiesign[nCntTree].fWidth = fWidth;
-			g_cookiesign[nCntTree].fHeight = fHeight;
-			g_cookiesign[nCntTree].bUse = true;
+			g_cookiesign[nCntSign].pos = pos;
+			g_cookiesign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+			g_cookiesign[nCntSign].fWidth = fWidth;
+			g_cookiesign[nCntSign].fHeight = fHeight;
+			g_cookiesign[nCntSign].bUse = true;
 
 			// 影の設定
-			g_cookiesign[nCntTree].nIdxShadow = CreateShadow(g_cookiesign[nCntTree].pos, 0.5f, 0.5f);
+			g_cookiesign[nCntSign].nIdxShadow = CreateShadow(g_cookiesign[nCntSign].pos, 0.5f, 0.5f);
 
-			nIdxTree = nCntTree;
+			nIdxSign = nCntSign;
 
 			break;
 		}
-		if (!g_hotdogsign[nCntTree].bUse)
+		if (!g_hotdogsign[nCntSign].bUse)
 		{
-			g_hotdogsign[nCntTree].pos = pos;
-			g_hotdogsign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-			g_hotdogsign[nCntTree].fWidth = fWidth;
-			g_hotdogsign[nCntTree].fHeight = fHeight;
-			g_hotdogsign[nCntTree].bUse = true;
+			g_hotdogsign[nCntSign].pos = pos;
+			g_hotdogsign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+			g_hotdogsign[nCntSign].fWidth = fWidth;
+			g_hotdogsign[nCntSign].fHeight = fHeight;
+			g_hotdogsign[nCntSign].bUse = true;
 
 			// 影の設定
-			g_hotdogsign[nCntTree].nIdxShadow = CreateShadow(g_hotdogsign[nCntTree].pos, 0.5f, 0.5f);
+			g_hotdogsign[nCntSign].nIdxShadow = CreateShadow(g_hotdogsign[nCntSign].pos, 0.5f, 0.5f);
 
-			nIdxTree = nCntTree;
+			nIdxSign = nCntSign;
 
 			break;
 		}
-		if (!g_cherrysign[nCntTree].bUse)
+		if (!g_cherrysign[nCntSign].bUse)
 		{
-			g_cherrysign[nCntTree].pos = pos;
-			g_cherrysign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-			g_cherrysign[nCntTree].fWidth = fWidth;
-			g_cherrysign[nCntTree].fHeight = fHeight;
-			g_cherrysign[nCntTree].bUse = true;
+			g_cherrysign[nCntSign].pos = pos;
+			g_cherrysign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+			g_cherrysign[nCntSign].fWidth = fWidth;
+			g_cherrysign[nCntSign].fHeight = fHeight;
+			g_cherrysign[nCntSign].bUse = true;
 
 			// 影の設定
-			g_cherrysign[nCntTree].nIdxShadow = CreateShadow(g_cherrysign[nCntTree].pos, 0.5f, 0.5f);
+			g_cherrysign[nCntSign].nIdxShadow = CreateShadow(g_cherrysign[nCntSign].pos, 0.5f, 0.5f);
 
-			nIdxTree = nCntTree;
+			nIdxSign = nCntSign;
 
 			break;
 		}
-		if (!g_breadsign[nCntTree].bUse)
+		if (!g_breadsign[nCntSign].bUse)
 		{
-			g_breadsign[nCntTree].pos = pos;
-			g_breadsign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-			g_breadsign[nCntTree].fWidth = fWidth;
-			g_breadsign[nCntTree].fHeight = fHeight;
-			g_breadsign[nCntTree].bUse = true;
+			g_breadsign[nCntSign].pos = pos;
+			g_breadsign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+			g_breadsign[nCntSign].fWidth = fWidth;
+			g_breadsign[nCntSign].fHeight = fHeight;
+			g_breadsign[nCntSign].bUse = true;
 
 			// 影の設定
-			g_breadsign[nCntTree].nIdxShadow = CreateShadow(g_breadsign[nCntTree].pos, 0.5f, 0.5f);
+			g_breadsign[nCntSign].nIdxShadow = CreateShadow(g_breadsign[nCntSign].pos, 0.5f, 0.5f);
 
-			nIdxTree = nCntTree;
+			nIdxSign = nCntSign;
 
 			break;
 		}
-		if (!g_croissantsign[nCntTree].bUse)
+		if (!g_croissantsign[nCntSign].bUse)
 		{
-			g_croissantsign[nCntTree].pos = pos;
-			g_croissantsign[nCntTree].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
-			g_croissantsign[nCntTree].fWidth = fWidth;
-			g_croissantsign[nCntTree].fHeight = fHeight;
-			g_croissantsign[nCntTree].bUse = true;
+			g_croissantsign[nCntSign].pos = pos;
+			g_croissantsign[nCntSign].scl = XMFLOAT3(1.0f, 1.0f, 1.0f);
+			g_croissantsign[nCntSign].fWidth = fWidth;
+			g_croissantsign[nCntSign].fHeight = fHeight;
+			g_croissantsign[nCntSign].bUse = true;
 
 			// 影の設定
-			g_croissantsign[nCntTree].nIdxShadow = CreateShadow(g_croissantsign[nCntTree].pos, 0.5f, 0.5f);
+			g_croissantsign[nCntSign].nIdxShadow = CreateShadow(g_croissantsign[nCntSign].pos, 0.5f, 0.5f);
 
-			nIdxTree = nCntTree;
+			nIdxSign = nCntSign;
 
 			break;
 		}
 	}
 
-	return nIdxTree;
+	return nIdxSign;
 }

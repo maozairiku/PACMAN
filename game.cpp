@@ -18,6 +18,7 @@
 #include "explosion.h"
 #include "pexplosion.h"
 #include "field.h"
+#include "sign.h"
 
 #include "player.h"
 #include "enemy.h"
@@ -25,7 +26,6 @@
 #include "meshwall.h"
 #include "sky.h"
 #include "shadow.h"
-#include "tree.h"
 #include "bullet.h"
 #include "score.h"
 #include "particle.h"
@@ -110,8 +110,8 @@ HRESULT InitGame(void)
 	// ドットの初期化
 	InitDot();
 
-	// 木を生やす
-	InitTree();
+	// サインの初期化
+	InitSign();
 
 	// 弾の初期化
 	InitBullet();
@@ -142,7 +142,7 @@ void UninitGame(void)
 	// パーティクルの終了処理
 	UninitParticle();
 
-	// sky
+	// skyの終了処理
 	UninitSky();
 
 	// スコアの終了処理
@@ -154,8 +154,8 @@ void UninitGame(void)
 	// ドットの終了処理
 	UninitDot();
 
-	// 木の終了処理
-	UninitTree();
+	// サインの終了処理
+	UninitSign();
 
 	// 壁の終了処理
 	UninitMeshWall();
@@ -236,8 +236,8 @@ void UpdateGame(void)
 	// 壁処理の更新
 	UpdateMeshWall();
 
-	// 木の更新処理
-	UpdateTree();
+	// サインの更新処理
+	UpdateSign();
 
 	// 弾の更新処理
 	UpdateBullet();
@@ -301,8 +301,8 @@ void DrawGame0(void)
 	// 壁の描画処理
 	DrawMeshWall();
 
-	// 木の描画処理
-	DrawTree();
+	// サインの描画処理
+	DrawSign();
 
 	// パーティクルの描画処理
 	DrawParticle();
@@ -416,11 +416,24 @@ void CheckHit(void)
 		//BCの当たり判定
 		if (CollisionBC(player->pos, ghostred[i].pos, player->size, ghostred[i].size))
 		{
-			// 敵キャラクターは倒される
+			// 当たったから未使用に戻す
 			ghostred[i].use = false;
 			ReleaseShadow(ghostred[i].shadowIdx);
 
-			// Game Over
+			// player die
+			player->use = false;
+			ReleaseShadow(player->shadowIdx);
+
+			// Set Pause
+			SetPause(false);
+
+			// camera shake
+			SetShake();
+
+			// particle explosion
+			SetExplosionParticle();
+
+			// to result
 			SetFade(FADE_OUT, MODE_RESULT);
 		}
 
@@ -432,11 +445,24 @@ void CheckHit(void)
 		//BCの当たり判定
 		if (CollisionBC(player->pos, ghostorange[i].pos, player->size, ghostorange[i].size))
 		{
-			// 敵キャラクターは倒される
+			// 当たったから未使用に戻す
 			ghostorange[i].use = false;
 			ReleaseShadow(ghostorange[i].shadowIdx);
 
-			// Game Over
+			// player die
+			player->use = false;
+			ReleaseShadow(player->shadowIdx);
+
+			// Set Pause
+			SetPause(false);
+
+			// camera shake
+			SetShake();
+
+			// particle explosion
+			SetExplosionParticle();
+
+			// to result
 			SetFade(FADE_OUT, MODE_RESULT);
 		}
 	}
@@ -449,36 +475,28 @@ void CheckHit(void)
 		if (CollisionBC(player->pos, cookies[d].pos, player->size, cookies[d].size))
 		{
 			// 食べられた後、座標リセット
-			//cookies[d].use = false;
-			//ReleaseShadow(cookies[d].shadowIdx);
 			cookies[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算
 			AddScore(150);
 		}
 
-
 		// hotdog
 		//BCの当たり判定
 		if (CollisionBC(player->pos, hotdog[d].pos, player->size, hotdog[d].size))
 		{
 			// 食べられた後、座標リセット
-			//hotdog[d].use = false;
-			//ReleaseShadow(hotdog[d].shadowIdx);
 			hotdog[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算
 			AddScore(150);
 		}
 
-
 		// cherry
 		//BCの当たり判定
 		if (CollisionBC(player->pos, cherry[d].pos, player->size, cherry[d].size))
 		{
 			// 食べられた後、座標リセット
-			//cherry[d].use = false;
-			//ReleaseShadow(cherry[d].shadowIdx);
 			cherry[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算
@@ -490,8 +508,6 @@ void CheckHit(void)
 		if (CollisionBC(player->pos, bread[d].pos, player->size, bread[d].size))
 		{
 			// 食べられた後、座標リセット
-			//bread[d].use = false;
-			//ReleaseShadow(bread[d].shadowIdx);
 			bread[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算
@@ -503,8 +519,6 @@ void CheckHit(void)
 		if (CollisionBC(player->pos, croissant[d].pos, player->size, croissant[d].size))
 		{
 			// 食べられた後、座標リセット
-			//croissant[d].use = false;
-			//ReleaseShadow(croissant[d].shadowIdx);
 			croissant[d].pos = XMFLOAT3(((rand() % 1260) - 650), 12.0f, ((rand() % 1300) - 650));
 
 			//点数加算

@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// 木処理 [tree.h]
+// サイン処理 [sign.h]
 // Author : 王　ウ華
 //
 //=============================================================================
@@ -25,11 +25,11 @@ struct SIGN
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitTree(void);
-void UninitTree(void);
-void UpdateTree(void);
-void DrawTree(void);
+HRESULT InitSign(void);
+void UninitSign(void);
+void UpdateSign(void);
+void DrawSign(void);
 
-int SetTree(XMFLOAT3 pos, float fWidth, float fHeight, XMFLOAT4 col);
+int SetSign(XMFLOAT3 pos, float fWidth, float fHeight, XMFLOAT4 col);
 
 
