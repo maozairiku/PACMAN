@@ -164,6 +164,7 @@
     <ClCompile Include="particle.cpp" />
     <ClCompile Include="pexplosion.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="rain.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="score.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="particle.h" />
     <ClInclude Include="pexplosion.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="rain.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="score.h" />

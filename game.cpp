@@ -19,6 +19,7 @@
 #include "pexplosion.h"
 #include "field.h"
 #include "sign.h"
+#include "rain.h"
 
 #include "player.h"
 #include "enemy.h"
@@ -107,6 +108,9 @@ HRESULT InitGame(void)
 	// sky
 	InitSky();
 
+	// rain
+	InitRain();
+
 	// ドットの初期化
 	InitDot();
 
@@ -144,6 +148,9 @@ void UninitGame(void)
 
 	// skyの終了処理
 	UninitSky();
+
+	// rainの終了処理
+	UninitRain();
 
 	// スコアの終了処理
 	UninitScore();
@@ -227,6 +234,9 @@ void UpdateGame(void)
 	// sky
 	UpdateSky();
 
+	// rain
+	UpdateRain();
+
 	// プレイヤーの更新処理
 	UpdatePlayer();
 
@@ -252,7 +262,7 @@ void UpdateGame(void)
 	UpdateShadow();
 
 	// 当たり判定処理
-	CheckHit();
+	//CheckHit();
 
 	// スコアの更新処理
 	UpdateScore();
@@ -279,6 +289,9 @@ void DrawGame0(void)
 
 	// sky
 	DrawSky();
+
+	// rain
+	DrawRain();
 
 	// 影の描画処理
 	DrawShadow();

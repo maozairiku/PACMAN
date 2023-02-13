@@ -1,7 +1,7 @@
 //=============================================================================
 //
 // パーティクル処理 [particle.cpp]
-// Author : 
+// Author : 王　ウ華
 //
 //=============================================================================
 #include "main.h"
@@ -158,17 +158,14 @@ void UpdateParticle(void)
 	{
 		for(int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
 		{
-			if(g_aParticle[nCntParticle].bUse)
-			{// 使用中
+			if(g_aParticle[nCntParticle].bUse)		// 使用中
+			{
 				g_aParticle[nCntParticle].pos.x += sinf(pPlayer->rot.y);
 				g_aParticle[nCntParticle].pos.z += cosf(pPlayer->rot.y);
 
-				//g_aParticle[nCntParticle].pos.x += g_aParticle[nCntParticle].move.x;
-				//g_aParticle[nCntParticle].pos.z += g_aParticle[nCntParticle].move.z;
-
 				g_aParticle[nCntParticle].pos.y += g_aParticle[nCntParticle].move.y;
-				if(g_aParticle[nCntParticle].pos.y <= g_aParticle[nCntParticle].fSizeY / 2)
-				{// 着地した
+				if(g_aParticle[nCntParticle].pos.y <= g_aParticle[nCntParticle].fSizeY / 2)		// 着地した
+				{
 					g_aParticle[nCntParticle].pos.y = g_aParticle[nCntParticle].fSizeY / 2;
 					g_aParticle[nCntParticle].move.y = -g_aParticle[nCntParticle].move.y * 0.75f;
 				}
@@ -178,8 +175,8 @@ void UpdateParticle(void)
 				g_aParticle[nCntParticle].move.z += (0.0f - g_aParticle[nCntParticle].move.z) * 0.015f;
 
 #ifdef DISP_SHADOW
-				if(g_aParticle[nCntParticle].nIdxShadow != -1)
-				{// 影使用中
+				if(g_aParticle[nCntParticle].nIdxShadow != -1)		// 影使用中
+				{
 					float colA;
 
 					// 影の位置設定

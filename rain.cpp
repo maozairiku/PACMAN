@@ -1,7 +1,7 @@
 //=============================================================================
 //
-// パーティクル処理 [pexplosion.cpp]
-// Author : 王　ウ華
+// パーティクル処理 [rain.cpp]
+// Author : 王ウ華
 //
 //=============================================================================
 #include "main.h"
@@ -10,20 +10,19 @@
 #include "camera.h"
 #include "model.h"
 #include "shadow.h"
-#include "pexplosion.h"
+#include "rain.h"
 #include "player.h"
-#include "input.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define TEXTURE_MAX			(1)			// テクスチャの数
 
-#define	PEXPLOSION_SIZE_X		(40.0f)		// 頂点サイズ
-#define	PEXPLOSION_SIZE_Y		(40.0f)		// 頂点サイズ
-#define	VALUE_MOVE_PEXPLOSION	(5.0f)		// 移動速度
+#define	RAIN_SIZE_X			(2.0f)		// 頂点サイズ
+#define	RAIN_SIZE_Y			(5.0f)		// 頂点サイズ
+#define	VALUE_MOVE_RAIN		(5.0f)		// 移動速度
 
-#define	MAX_PEXPLOSION		(512)		// パーティクル最大数
+#define	MAX_RAIN			(1024)		// パーティクル最大数
 
 #define	DISP_SHADOW						// 影の表示
 //#undef DISP_SHADOW
@@ -44,12 +43,12 @@ typedef struct
 	int				nLife;			// 寿命
 	bool			bUse;			// 使用しているかどうか
 
-} PEXPLOSION;
+} RAIN;
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT MakeVertexPExplosion(void);
+HRESULT MakeVertexRain(void);
 
 //*****************************************************************************
 // グローバル変数
@@ -57,12 +56,12 @@ HRESULT MakeVertexPExplosion(void);
 static ID3D11Buffer* g_VertexBuffer = NULL;		// 頂点バッファ
 
 static ID3D11ShaderResourceView* g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-static int						g_TexNo;						// テクスチャ番号
+static int							g_TexNo;					// テクスチャ番号
 
-static PEXPLOSION				g_PExplosion[MAX_PEXPLOSION];		// パーティクルワーク
+static RAIN						g_Rain[MAX_RAIN];		// パーティクルワーク
 static XMFLOAT3					g_posBase;						// ビルボード発生位置
 static float					g_fWidthBase = 5.0f;			// 基準の幅
-static float					g_fHeightBase = 10.0f;//5.0f;			// 基準の高さ
+static float					g_fHeightBase = 10.0f;			// 基準の高さ
 static float					g_roty = 0.0f;					// 移動方向
 static float					g_spd = 0.0f;					// 移動スピード
 
@@ -76,10 +75,10 @@ static BOOL						g_Load = FALSE;
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT InitPExplosion(void)
+HRESULT InitRain(void)
 {
 	// 頂点情報の作成
-	MakeVertexPExplosion();
+	MakeVertexRain();
 
 	// テクスチャ生成
 	for (int i = 0; i < TEXTURE_MAX; i++)
@@ -96,21 +95,21 @@ HRESULT InitPExplosion(void)
 	g_TexNo = 0;
 
 	// パーティクルワークの初期化
-	for (int nCntPExplosion = 0; nCntPExplosion < MAX_PEXPLOSION; nCntPExplosion++)
+	for (int nCntRain = 0; nCntRain < MAX_RAIN; nCntRain++)
 	{
-		g_PExplosion[nCntPExplosion].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_PExplosion[nCntPExplosion].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_PExplosion[nCntPExplosion].scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		g_PExplosion[nCntPExplosion].move = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		g_Rain[nCntRain].pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Rain[nCntRain].rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Rain[nCntRain].scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		g_Rain[nCntRain].move = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
-		ZeroMemory(&g_PExplosion[nCntPExplosion].material, sizeof(g_PExplosion[nCntPExplosion].material));
-		g_PExplosion[nCntPExplosion].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		ZeroMemory(&g_Rain[nCntRain].material, sizeof(g_Rain[nCntRain].material));
+		g_Rain[nCntRain].material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		g_PExplosion[nCntPExplosion].fSizeX = PEXPLOSION_SIZE_X;
-		g_PExplosion[nCntPExplosion].fSizeY = PEXPLOSION_SIZE_Y;
-		g_PExplosion[nCntPExplosion].nIdxShadow = -1;
-		g_PExplosion[nCntPExplosion].nLife = 0;
-		g_PExplosion[nCntPExplosion].bUse = false;
+		g_Rain[nCntRain].fSizeX = RAIN_SIZE_X;
+		g_Rain[nCntRain].fSizeY = RAIN_SIZE_Y;
+		g_Rain[nCntRain].nIdxShadow = -1;
+		g_Rain[nCntRain].nLife = 0;
+		g_Rain[nCntRain].bUse = false;
 	}
 
 	g_posBase = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -124,7 +123,7 @@ HRESULT InitPExplosion(void)
 //=============================================================================
 // 終了処理
 //=============================================================================
-void UninitPExplosion(void)
+void UninitRain(void)
 {
 	if (g_Load == FALSE) return;
 
@@ -151,70 +150,76 @@ void UninitPExplosion(void)
 //=============================================================================
 // 更新処理
 //=============================================================================
-void UpdatePExplosion(void)
+void UpdateRain(void)
 {
-	PLAYER *pPlayer = GetPlayer();
-	g_posBase = pPlayer->pos;
 
 	{
-		for (int nCntPExplosion = 0; nCntPExplosion < MAX_PEXPLOSION; nCntPExplosion++)
+		for (int nCntRain = 0; nCntRain < MAX_RAIN; nCntRain++)
 		{
-			if (g_PExplosion[nCntPExplosion].bUse)		// 使用中
+			if (g_Rain[nCntRain].bUse)		// 使用中
 			{
-				g_PExplosion[nCntPExplosion].pos.x += g_PExplosion[nCntPExplosion].move.x;
-				g_PExplosion[nCntPExplosion].pos.z += g_PExplosion[nCntPExplosion].move.z;
+				g_Rain[nCntRain].pos.x += g_Rain[nCntRain].move.x;
+				g_Rain[nCntRain].pos.y += g_Rain[nCntRain].move.y;
 
-				g_PExplosion[nCntPExplosion].pos.y += g_PExplosion[nCntPExplosion].move.y;
-				if (g_PExplosion[nCntPExplosion].pos.y <= g_PExplosion[nCntPExplosion].fSizeY / 2)	// 着地した
+				if (g_Rain[nCntRain].pos.y < 1.0f)	// 着地した  
 				{
-					g_PExplosion[nCntPExplosion].pos.y = g_PExplosion[nCntPExplosion].fSizeY / 2;
-					g_PExplosion[nCntPExplosion].move.y = -g_PExplosion[nCntPExplosion].move.y * 0.75f;
+					g_Rain[nCntRain].bUse = FALSE;
 				}
 
-				g_PExplosion[nCntPExplosion].move.x += (0.0f - g_PExplosion[nCntPExplosion].move.x) * 0.015f;
-				g_PExplosion[nCntPExplosion].move.y -= 0.25f;
-				g_PExplosion[nCntPExplosion].move.z += (0.0f - g_PExplosion[nCntPExplosion].move.z) * 0.015f;
 
-#ifdef DISP_SHADOW
-				if (g_PExplosion[nCntPExplosion].nIdxShadow != -1)		// 影使用中
-				{
-					float colA;
+#ifdef DISP_SHADOW		// shadow用
 
-					// 影の位置設定
-					SetPositionShadow(g_PExplosion[nCntPExplosion].nIdxShadow, XMFLOAT3(g_PExplosion[nCntPExplosion].pos.x, 0.1f, g_PExplosion[nCntPExplosion].pos.z));
-
-					// 影の色の設定
-					colA = g_PExplosion[nCntPExplosion].material.Diffuse.w;
-					SetColorShadow(g_PExplosion[nCntPExplosion].nIdxShadow, XMFLOAT4(0.5f, 0.5f, 0.5f, colA));
-				}
 #endif
 
-				g_PExplosion[nCntPExplosion].nLife--;
-				if (g_PExplosion[nCntPExplosion].nLife <= 0)
+				g_Rain[nCntRain].nLife--;
+				if (g_Rain[nCntRain].nLife <= 0)
 				{
-					g_PExplosion[nCntPExplosion].bUse = false;
-					ReleaseShadow(g_PExplosion[nCntPExplosion].nIdxShadow);
-					g_PExplosion[nCntPExplosion].nIdxShadow = -1;
+					g_Rain[nCntRain].bUse = false;
+					ReleaseShadow(g_Rain[nCntRain].nIdxShadow);
+					g_Rain[nCntRain].nIdxShadow = -1;
 				}
 				else
 				{
-					if (g_PExplosion[nCntPExplosion].nLife <= 20)
+					if (g_Rain[nCntRain].nLife <= 80)
 					{
-						g_PExplosion[nCntPExplosion].material.Diffuse.x = 0.7f - (float)(20 - g_PExplosion[nCntPExplosion].nLife) / 20 * 0.7f;
-						g_PExplosion[nCntPExplosion].material.Diffuse.y = 0.5f - (float)(20 - g_PExplosion[nCntPExplosion].nLife) / 20 * 0.5f;
-						g_PExplosion[nCntPExplosion].material.Diffuse.z = 0.0f - (float)(20 - g_PExplosion[nCntPExplosion].nLife) / 20 * 0.0f;
+						g_Rain[nCntRain].material.Diffuse.x = 1.0f - (float)(80 - g_Rain[nCntRain].nLife) / 80 * 1.0f;
+						g_Rain[nCntRain].material.Diffuse.y = 1.0f - (float)(80 - g_Rain[nCntRain].nLife) / 80 * 1.0f;
+						g_Rain[nCntRain].material.Diffuse.z = 1.0f - (float)(80 - g_Rain[nCntRain].nLife) / 80 * 1.0f;
 					}
 
-					if (g_PExplosion[nCntPExplosion].nLife <= 10)
+					if (g_Rain[nCntRain].nLife <= 20)
 					{
 						// α値設定
-						g_PExplosion[nCntPExplosion].material.Diffuse.w -= 0.05f;
-						if (g_PExplosion[nCntPExplosion].material.Diffuse.w < 0.0f)
+						g_Rain[nCntRain].material.Diffuse.w -= 0.05f;
+						if (g_Rain[nCntRain].material.Diffuse.w < 0.0f)
 						{
-							g_PExplosion[nCntPExplosion].material.Diffuse.w = 0.0f;
+							g_Rain[nCntRain].material.Diffuse.w = 0.0f;
 						}
 					}
 				}
+			}
+		}
+
+		// パーティクル発生
+		{
+			XMFLOAT3 move;
+			float fAngle, fLength;
+			int nLife;
+			float fSize;
+
+			// rain set
+			for (int r = 0; r < 100; r++)
+			{
+				fAngle = (float)(rand() % 628 - 314) / 100.0f;
+				fLength = rand() % (int)(g_fWidthBase * 200) / 100.0f - g_fWidthBase;
+				move.x = 0.0f;
+				move.y = -(rand() % 10);
+				move.z = 0.0f;
+
+				nLife = rand() % 100 + 150;
+
+				// ビルボードの設定
+				SetRain(XMFLOAT3((rand() % 1300 - 650), 100.0f, (rand() % 1300 - 650)), move, XMFLOAT4(1.0f, 1.0f, 1.0f, 0.85f), RAIN_SIZE_X, RAIN_SIZE_Y, nLife);
 			}
 		}
 	}
@@ -223,7 +228,7 @@ void UpdatePExplosion(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawPExplosion(void)
+void DrawRain(void)
 {
 	XMMATRIX mtxScl, mtxTranslate, mtxWorld, mtxView;
 	CAMERA* cam = GetCamera();
@@ -251,9 +256,9 @@ void DrawPExplosion(void)
 	// テクスチャ設定
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture[g_TexNo]);
 
-	for (int nCntPExplosion = 0; nCntPExplosion < MAX_PEXPLOSION; nCntPExplosion++)
+	for (int nCntRain = 0; nCntRain < MAX_RAIN; nCntRain++)
 	{
-		if (g_PExplosion[nCntPExplosion].bUse)
+		if (g_Rain[nCntRain].bUse)
 		{
 			// ワールドマトリックスの初期化
 			mtxWorld = XMMatrixIdentity();
@@ -275,18 +280,18 @@ void DrawPExplosion(void)
 			mtxWorld.r[2].m128_f32[2] = mtxView.r[2].m128_f32[2];
 
 			// スケールを反映
-			mtxScl = XMMatrixScaling(g_PExplosion[nCntPExplosion].scale.x, g_PExplosion[nCntPExplosion].scale.y, g_PExplosion[nCntPExplosion].scale.z);
+			mtxScl = XMMatrixScaling(g_Rain[nCntRain].scale.x, g_Rain[nCntRain].scale.y, g_Rain[nCntRain].scale.z);
 			mtxWorld = XMMatrixMultiply(mtxWorld, mtxScl);
 
 			// 移動を反映
-			mtxTranslate = XMMatrixTranslation(g_PExplosion[nCntPExplosion].pos.x, g_PExplosion[nCntPExplosion].pos.y, g_PExplosion[nCntPExplosion].pos.z);
+			mtxTranslate = XMMatrixTranslation(g_Rain[nCntRain].pos.x, g_Rain[nCntRain].pos.y, g_Rain[nCntRain].pos.z);
 			mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
 
 			// ワールドマトリックスの設定
 			SetWorldMatrix(&mtxWorld);
 
 			// マテリアル設定
-			SetMaterial(g_PExplosion[nCntPExplosion].material);
+			SetMaterial(g_Rain[nCntRain].material);
 
 			// ポリゴンの描画
 			GetDeviceContext()->Draw(4, 0);
@@ -310,7 +315,7 @@ void DrawPExplosion(void)
 //=============================================================================
 // 頂点情報の作成
 //=============================================================================
-HRESULT MakeVertexPExplosion(void)
+HRESULT MakeVertexRain(void)
 {
 	// 頂点バッファ生成
 	D3D11_BUFFER_DESC bd;
@@ -329,10 +334,10 @@ HRESULT MakeVertexPExplosion(void)
 		VERTEX_3D* vertex = (VERTEX_3D*)msr.pData;
 
 		// 頂点座標の設定
-		vertex[0].Position = XMFLOAT3(-PEXPLOSION_SIZE_X / 2, PEXPLOSION_SIZE_Y / 2, 0.0f);
-		vertex[1].Position = XMFLOAT3(PEXPLOSION_SIZE_X / 2, PEXPLOSION_SIZE_Y / 2, 0.0f);
-		vertex[2].Position = XMFLOAT3(-PEXPLOSION_SIZE_X / 2, -PEXPLOSION_SIZE_Y / 2, 0.0f);
-		vertex[3].Position = XMFLOAT3(PEXPLOSION_SIZE_X / 2, -PEXPLOSION_SIZE_Y / 2, 0.0f);
+		vertex[0].Position = XMFLOAT3(-RAIN_SIZE_X / 2, RAIN_SIZE_Y / 2, 0.0f);
+		vertex[1].Position = XMFLOAT3(RAIN_SIZE_X / 2, RAIN_SIZE_Y / 2, 0.0f);
+		vertex[2].Position = XMFLOAT3(-RAIN_SIZE_X / 2, -RAIN_SIZE_Y / 2, 0.0f);
+		vertex[3].Position = XMFLOAT3(RAIN_SIZE_X / 2, -RAIN_SIZE_Y / 2, 0.0f);
 
 		// 法線の設定
 		vertex[0].Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
@@ -361,79 +366,41 @@ HRESULT MakeVertexPExplosion(void)
 //=============================================================================
 // マテリアルカラーの設定
 //=============================================================================
-void SetColorPExplosion(int nIdxPExplosion, XMFLOAT4 col)
+void SetColorRain(int nIdxRain, XMFLOAT4 col)
 {
-	g_PExplosion[nIdxPExplosion].material.Diffuse = col;
+	g_Rain[nIdxRain].material.Diffuse = col;
 }
 
 //=============================================================================
 // パーティクルの発生処理
 //=============================================================================
-int SetPExplosion(XMFLOAT3 pos, XMFLOAT3 move, XMFLOAT4 col, float fSizeX, float fSizeY, int nLife)
+int SetRain(XMFLOAT3 pos, XMFLOAT3 move, XMFLOAT4 col, float fSizeX, float fSizeY, int nLife)
 {
-	int nIdxPExplosion = -1;
+	int nIdxRain = -1;
 
-	for (int nCntPExplosion = 0; nCntPExplosion < MAX_PEXPLOSION; nCntPExplosion++)
+	for (int nCntRain = 0; nCntRain < MAX_RAIN; nCntRain++)
 	{
-		if (!g_PExplosion[nCntPExplosion].bUse)
+		if (!g_Rain[nCntRain].bUse)
 		{
-			g_PExplosion[nCntPExplosion].pos = pos;
-			g_PExplosion[nCntPExplosion].rot = { 0.0f, 0.0f, 0.0f };
-			g_PExplosion[nCntPExplosion].scale = { 1.0f, 1.0f, 1.0f };
-			g_PExplosion[nCntPExplosion].move = move;
-			g_PExplosion[nCntPExplosion].material.Diffuse = col;
-			g_PExplosion[nCntPExplosion].fSizeX = fSizeX;
-			g_PExplosion[nCntPExplosion].fSizeY = fSizeY;
-			g_PExplosion[nCntPExplosion].nLife = nLife;
-			g_PExplosion[nCntPExplosion].bUse = true;
+			g_Rain[nCntRain].pos = pos;
+			g_Rain[nCntRain].rot = { 0.0f, 0.0f, 0.0f };
+			g_Rain[nCntRain].scale = { 1.0f, 1.0f, 1.0f };
+			g_Rain[nCntRain].move = move;
+			g_Rain[nCntRain].material.Diffuse = col;
+			g_Rain[nCntRain].fSizeX = fSizeX;
+			g_Rain[nCntRain].fSizeY = fSizeY;
+			g_Rain[nCntRain].nLife = nLife;
+			g_Rain[nCntRain].bUse = true;
 
-			nIdxPExplosion = nCntPExplosion;
+			nIdxRain = nCntRain;
 
-#ifdef DISP_SHADOW
-			// 影の設定
-			g_PExplosion[nCntPExplosion].nIdxShadow = CreateShadow(XMFLOAT3(pos.x, 0.1f, pos.z), 0.8f, 0.8f);		// 影の設定
-			if (g_PExplosion[nCntPExplosion].nIdxShadow != -1)
-			{
-				SetColorShadow(g_PExplosion[nCntPExplosion].nIdxShadow, XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f));
-			}
+#ifdef DISP_SHADOW		// shadow用
+
 #endif
 
 			break;
 		}
 	}
 
-	return nIdxPExplosion;
-}
-
-//=============================================================================
-// set particle explosion
-//=============================================================================
-void SetExplosionParticle(void)
-{
-	XMFLOAT3 pos;
-	XMFLOAT3 move;
-	float fAngle, fLength;
-	int nLife;
-	float fSize;
-
-	pos = g_posBase;
-
-	fAngle = (float)(rand() % 628 - 314) / 100.0f;
-	fLength = rand() % (int)(g_fWidthBase * 200) / 100.0f - g_fWidthBase;
-
-	nLife = 30;
-
-	fSize = (float)(rand() % 30 + 20);
-
-	pos.y = fSize / 2;
-
-	for (int i = 0; i < 50; i++)
-	{
-		move.x = (rand() % 6) - 3;	
-		move.y = rand() % 5;		
-		move.z = (rand() % 6) - 3;	
-
-		SetPExplosion(pos, move, XMFLOAT4(1.0f, 0.0f, 0.0f, 0.85f), fSize, fSize, nLife);
-	}
-
+	return nIdxRain;
 }
