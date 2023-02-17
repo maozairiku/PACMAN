@@ -43,10 +43,8 @@ int wavemove;
 
 
 static char* g_TextureName[] = {
-	//"data/TEXTURE/stainless.jpg",
 	"data/TEXTURE/ocean.jpg"
 };
-
 
 // reflection
 static ID3D11PixelShader* g_ReflectionPixelShader = NULL;

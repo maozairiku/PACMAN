@@ -11,7 +11,7 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define	NUM_KEY_MAX			(256)
+#define	NUM_KEY_MAX		(256)
 
 // game pad用設定値
 #define DEADZONE		2500			// 各軸の25%を無効ゾーンとする
@@ -410,11 +410,6 @@ HRESULT InitializePad(void)			// パッド初期化
 		result = pGamePad[i]->SetDataFormat(&c_dfDIJoystick);
 		if ( FAILED(result) )
 			return false; // データフォーマットの設定に失敗
-
-		// モードを設定（フォアグラウンド＆非排他モード）
-//		result = pGamePad[i]->SetCooperativeLevel(hWindow, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
-//		if ( FAILED(result) )
-//			return false; // モードの設定に失敗
 
 		// 軸の値の範囲を設定
 		// X軸、Y軸のそれぞれについて、オブジェクトが報告可能な値の範囲をセットする。

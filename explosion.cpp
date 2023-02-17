@@ -276,7 +276,6 @@ void DrawExplosion(void)
 			// ワールドマトリックスの設定
 			SetWorldMatrix(&mtxWorld);
 
-
 			// マテリアル設定
 			SetMaterial(g_Explosion[i].material);
 

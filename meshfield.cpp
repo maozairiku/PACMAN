@@ -17,7 +17,6 @@
 #define TEXTURE_MAX				(1)				// テクスチャの数
 #define TEXTURE_FLOOR_WIDTH		(960)
 #define TEXTURE_FLOOR_HEIGHT	(960)
-//#define DEBUG_SHADER
 
 //*****************************************************************************
 // グローバル変数
@@ -41,8 +40,6 @@ static float		g_fBlockSizeXField, g_fBlockSizeZField;	// ブロックサイズ
 
 
 static char* g_TextureName[TEXTURE_MAX] = {
-	//"data/TEXTURE/field.jpg",
-	//"data/TEXTURE/rainbow.jpeg",
 	"data/TEXTURE/suke.png",
 
 };
@@ -133,11 +130,6 @@ HRESULT InitMeshField(XMFLOAT3 pos, XMFLOAT3 rot,
 
 			// 波紋の中心点からの距離を得る
 			float len = (float)sqrt(dx * dx + dz * dz);
-
-			// 波の高さを、sin関数で得る
-			// 波の高さ　= sin( -経過時間 * 周波数 + 距離 * 距離補正 ) * 振幅
-			//g_Vertex[z * (g_nNumBlockXField + 1) + x].Position.y = sinf(-g_Time * g_wave_frequency + len * g_wave_correction) * g_wave_amplitude;
-
 
 			// 法線の設定
 			g_Vertex[z * (g_nNumBlockXField + 1) + x].Normal = XMFLOAT3(0.0f, 1.0, 0.0f);

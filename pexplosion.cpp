@@ -17,15 +17,15 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define TEXTURE_MAX			(1)			// テクスチャの数
+#define TEXTURE_MAX				(1)			// テクスチャの数
 
 #define	PEXPLOSION_SIZE_X		(40.0f)		// 頂点サイズ
 #define	PEXPLOSION_SIZE_Y		(40.0f)		// 頂点サイズ
 #define	VALUE_MOVE_PEXPLOSION	(5.0f)		// 移動速度
 
-#define	MAX_PEXPLOSION		(512)		// パーティクル最大数
+#define	MAX_PEXPLOSION			(512)		// パーティクル最大数
 
-#define	DISP_SHADOW						// 影の表示
+#define	DISP_SHADOW							// 影の表示
 //#undef DISP_SHADOW
 
 //*****************************************************************************
@@ -57,14 +57,14 @@ HRESULT MakeVertexPExplosion(void);
 static ID3D11Buffer* g_VertexBuffer = NULL;		// 頂点バッファ
 
 static ID3D11ShaderResourceView* g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
-static int						g_TexNo;						// テクスチャ番号
+static int						g_TexNo;							// テクスチャ番号
 
 static PEXPLOSION				g_PExplosion[MAX_PEXPLOSION];		// パーティクルワーク
-static XMFLOAT3					g_posBase;						// ビルボード発生位置
-static float					g_fWidthBase = 5.0f;			// 基準の幅
-static float					g_fHeightBase = 10.0f;//5.0f;			// 基準の高さ
-static float					g_roty = 0.0f;					// 移動方向
-static float					g_spd = 0.0f;					// 移動スピード
+static XMFLOAT3					g_posBase;							// ビルボード発生位置
+static float					g_fWidthBase = 5.0f;				// 基準の幅
+static float					g_fHeightBase = 10.0f;				// 基準の高さ
+static float					g_roty = 0.0f;						// 移動方向
+static float					g_spd = 0.0f;						// 移動スピード
 
 static char* g_TextureName[TEXTURE_MAX] =
 {

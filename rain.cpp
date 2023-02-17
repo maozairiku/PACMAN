@@ -25,7 +25,6 @@
 #define	MAX_RAIN			(1024)		// パーティクル最大数
 
 #define	DISP_SHADOW						// 影の表示
-//#undef DISP_SHADOW
 
 //*****************************************************************************
 // 構造体定義
@@ -58,7 +57,7 @@ static ID3D11Buffer* g_VertexBuffer = NULL;		// 頂点バッファ
 static ID3D11ShaderResourceView* g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 static int							g_TexNo;					// テクスチャ番号
 
-static RAIN						g_Rain[MAX_RAIN];		// パーティクルワーク
+static RAIN						g_Rain[MAX_RAIN];				// パーティクルワーク
 static XMFLOAT3					g_posBase;						// ビルボード発生位置
 static float					g_fWidthBase = 5.0f;			// 基準の幅
 static float					g_fHeightBase = 10.0f;			// 基準の高さ
@@ -156,7 +155,7 @@ void UpdateRain(void)
 	{
 		for (int nCntRain = 0; nCntRain < MAX_RAIN; nCntRain++)
 		{
-			if (g_Rain[nCntRain].bUse)		// 使用中
+			if (g_Rain[nCntRain].bUse)				// 使用中
 			{
 				g_Rain[nCntRain].pos.x += g_Rain[nCntRain].move.x;
 				g_Rain[nCntRain].pos.y += g_Rain[nCntRain].move.y;

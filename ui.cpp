@@ -168,9 +168,6 @@ void UpdateUi(void)
 	}
 
 
-	//g_BG.scrl -= 0.0f;		// 0.005f;		// スクロール
-
-
 #ifdef _DEBUG	// デバッグ情報を表示する
 
 #endif

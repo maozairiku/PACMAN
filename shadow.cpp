@@ -43,8 +43,8 @@ HRESULT MakeVertexShadow(void);
 static ID3D11Buffer					*g_VertexBuffer = NULL;	// 頂点情報
 static ID3D11ShaderResourceView		*g_Texture[TEXTURE_MAX] = { NULL };	// テクスチャ情報
 
-static SHADOW					g_aShadow[MAX_SHADOW];		// 影ワーク
-static int						g_TexNo;					// テクスチャ番号
+static SHADOW						g_aShadow[MAX_SHADOW];	// 影ワーク
+static int							g_TexNo;				// テクスチャ番号
 
 static char* g_TextureName[] = {
 	"data/TEXTURE/shadow000.jpg",

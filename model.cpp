@@ -132,12 +132,6 @@ void LoadModel(char* FileName, DX11_MODEL* Model)
 				NULL);
 		}
 	}
-
-	/*delete[] model.VertexArray;
-	delete[] model.IndexArray;
-	delete[] model.SubsetArray;*/
-
-
 }
 
 

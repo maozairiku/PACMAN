@@ -242,20 +242,6 @@ void UpdateEnemy(void)
 
 			}
 
-			//// レイキャストして足元の高さを求める
-			//XMFLOAT3 HitPosition;		// 交点
-			//XMFLOAT3 Normal;			// ぶつかったポリゴンの法線ベクトル（向き）
-			//bool ans = RayHitField(g_GhostRed[i].pos, &HitPosition, &Normal);
-			//if (ans)
-			//{
-			//	g_GhostRed[i].pos.y = HitPosition.y + ENEMY_OFFSET_Y;
-			//}
-			//else
-			//{
-			//	g_GhostRed[i].pos.y = ENEMY_OFFSET_Y;
-			//	Normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
-			//}
-
 			// 影もエネミーの位置に合わせる
 			XMFLOAT3 pos = g_GhostRed[i].pos;
 			pos.y -= (ENEMY_OFFSET_Y - 0.1f);

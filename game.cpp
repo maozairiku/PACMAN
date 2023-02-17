@@ -33,11 +33,6 @@
 #include "collision.h"
 #include "debugproc.h"
 
-//*****************************************************************************
-// マクロ定義
-//*****************************************************************************
-
-
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -216,9 +211,6 @@ void UpdateGame(void)
 
 	if (g_bPause == false)
 	{
-		// explosion
-		//UpdateExplosion();
-
 		// particle explosion
 		UpdatePExplosion();
 
@@ -262,7 +254,7 @@ void UpdateGame(void)
 	UpdateShadow();
 
 	// 当たり判定処理
-	//CheckHit();
+	CheckHit();
 
 	// スコアの更新処理
 	UpdateScore();

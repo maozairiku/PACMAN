@@ -20,7 +20,6 @@
 #include <DirectXMath.h>
 
 
-// –{—ˆ‚Íƒwƒbƒ_‚É‘‚©‚È‚¢•û‚ª—Ç‚¢
 using namespace DirectX;
 
 
