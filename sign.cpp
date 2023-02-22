@@ -102,7 +102,7 @@ HRESULT InitSign(void)
 	for (int i = 0; i < TEXTURE_MAX; i++)
 	{
 		D3DX11CreateShaderResourceViewFromFile(GetDevice(),
-			g_TextureName[i],
+			g_TextureName[0],
 			NULL,
 			NULL,
 			&g_Texture[i],
